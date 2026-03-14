@@ -1,0 +1,246 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = 'Search';
+const description = 'Search blog posts';
+---
+
+<Layout title={title} description={description}>
+  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Search Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Search</h1>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">Find articles by title or content</p>
+
+        <!-- Search Box -->
+        <div class="relative">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search for articles..."
+            class="w-full px-6 py-4 pr-14 border border-gray-300 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900 text-lg focus:outline-none focus:ring-2 focus:ring-red-500 shadow-lg"
+          />
+          <button
+            id="searchBtn"
+            class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition"
+          >
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div id="searchResults" class="space-y-6">
+        <!-- Results will be loaded here -->
+      </div>
+
+      <!-- Initial state -->
+      <div id="initialState" class="text-center py-12">
+        <svg class="h-24 w-24 mx-auto text-gray-300 dark:text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <p class="mt-4 text-gray-500 dark:text-gray-400">Enter a search term to find articles</p>
+      </div>
+
+      <!-- Loading state -->
+      <div id="loading" class="hidden text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">Searching...</p>
+      </div>
+
+      <!-- No results -->
+      <div id="noResults" class="hidden text-center py-12">
+        <svg class="h-24 w-24 mx-auto text-gray-300 dark:text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">No results found for "<span id="searchTerm"></span>"</p>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-500">Try different keywords</p>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="hidden mt-8 flex items-center justify-center gap-4">
+        <button id="prevBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          Previous
+        </button>
+        <span id="pageInfo" class="text-sm text-gray-600 dark:text-gray-400">Page 1</span>
+        <button id="nextBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { apiClient } from '../lib/api.js';
+
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentSearchTerm = '';
+    let debounceTimer = null;
+
+    const performSearch = async (term, page = 1) => {
+      if (!term || term.trim().length === 0) {
+        showInitialState();
+        return;
+      }
+
+      currentSearchTerm = term.trim();
+      const loading = document.getElementById('loading');
+      const initialState = document.getElementById('initialState');
+      const noResults = document.getElementById('noResults');
+      const searchResults = document.getElementById('searchResults');
+      const pagination = document.getElementById('pagination');
+
+      initialState.classList.add('hidden');
+      noResults.classList.add('hidden');
+      searchResults.classList.add('hidden');
+      pagination.classList.add('hidden');
+      loading.classList.remove('hidden');
+
+      try {
+        // Search through all posts and filter client-side
+        // In production, you'd have a dedicated search endpoint
+        const response = await apiClient.getPosts(page, 20);
+
+        if (response.success && response.data) {
+          const { content, total, size, number } = response.data;
+          currentPage = number;
+          totalPages = Math.ceil(total / size);
+
+          // Filter results by search term
+          const filtered = content.filter(post =>
+            post.title.toLowerCase().includes(currentSearchTerm.toLowerCase()) ||
+            (post.summary && post.summary.toLowerCase().includes(currentSearchTerm.toLowerCase())) ||
+            (post.content && post.content.toLowerCase().includes(currentSearchTerm.toLowerCase()))
+          );
+
+          loading.classList.add('hidden');
+
+          if (filtered.length === 0) {
+            noResults.classList.remove('hidden');
+            document.getElementById('searchTerm').textContent = currentSearchTerm;
+            return;
+          }
+
+          searchResults.classList.remove('hidden');
+          pagination.classList.remove('hidden');
+
+          renderResults(filtered);
+          document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+          document.getElementById('prevBtn').disabled = currentPage <= 1;
+          document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+      } catch (error) {
+        console.error('Search failed:', error);
+        loading.classList.add('hidden');
+        showError('Search failed. Please try again.');
+      }
+    };
+
+    const renderResults = (results) => {
+      const container = document.getElementById('searchResults');
+      let html = '';
+
+      results.forEach(post => {
+        const searchTerms = currentSearchTerm.split(' ').filter(t => t.length > 0);
+        let title = post.title;
+        let summary = post.summary || post.content?.substring(0, 200) || '';
+
+        // Highlight search terms
+        searchTerms.forEach(term => {
+          const regex = new RegExp(`(${term})`, 'gi');
+          title = title.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800 px-1 rounded">$1</mark>');
+          summary = summary.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-800 px-1 rounded">$1</mark>');
+        });
+
+        html += `
+          <a href="/blog/${post.id}" class="block bg-white dark:bg-zinc-900 shadow rounded-lg p-6 hover:shadow-lg transition">
+            <div class="flex gap-4">
+              ${post.featuredImage ? `
+                <div class="w-32 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                  <img src="${post.featuredImage}" class="w-full h-full object-cover" />
+                </div>
+              ` : ''}
+              <div class="flex-1 min-w-0">
+                <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || 'Uncategorized'}</div>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white line-clamp-1">${title}</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-2">${summary}${summary.length >= 200 ? '...' : ''}</p>
+                <div class="flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
+                  <span>${new Date(post.createdAt).toLocaleDateString()}</span>
+                  <span class="flex items-center gap-1">
+                    <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                    ${post.likeCount || 0}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                    ${post.commentCount || 0}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        `;
+      });
+
+      container.innerHTML = html;
+    };
+
+    const showInitialState = () => {
+      document.getElementById('initialState').classList.remove('hidden');
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('searchResults').classList.add('hidden');
+      document.getElementById('noResults').classList.add('hidden');
+      document.getElementById('pagination').classList.add('hidden');
+    };
+
+    // Search input handler with debounce
+    document.getElementById('searchInput')?.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        performSearch(e.target.value, 1);
+      }, 500);
+    });
+
+    // Search button handler
+    document.getElementById('searchBtn')?.addEventListener('click', () => {
+      const term = document.getElementById('searchInput').value;
+      performSearch(term, 1);
+    });
+
+    // Enter key handler
+    document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const term = e.target.value;
+        performSearch(term, 1);
+      }
+    });
+
+    // Pagination handlers
+    document.getElementById('prevBtn')?.addEventListener('click', () => {
+      if (currentPage > 1) {
+        performSearch(currentSearchTerm, currentPage - 1);
+      }
+    });
+
+    document.getElementById('nextBtn')?.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        performSearch(currentSearchTerm, currentPage + 1);
+      }
+    });
+
+    // Check for search query in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q');
+    if (query) {
+      document.getElementById('searchInput').value = query;
+      performSearch(query, 1);
+    }
+  </script>
+</Layout>

@@ -1,0 +1,125 @@
+---
+// This component will be used to provide authentication context
+// Note: Astro doesn't have built-in context like React, so we'll use a different approach
+---
+
+<script>
+  // Client-side authentication utilities
+  class AuthManager {
+    constructor() {
+      this.currentUser = null;
+      this.isAuthenticated = false;
+      this.isLoading = true;
+      this.listeners = [];
+      this.apiClient = window.apiClient || null;
+    }
+
+    async init() {
+      try {
+        if (this.apiClient && this.apiClient.token) {
+          const response = await this.apiClient.getProfile();
+          if (response.success) {
+            this.currentUser = response.data;
+            this.isAuthenticated = true;
+          } else {
+            this.apiClient.logout();
+          }
+        }
+      } catch (error) {
+        console.error('Auth initialization failed:', error);
+      } finally {
+        this.isLoading = false;
+        this.notifyListeners();
+      }
+    }
+
+    async login(credentials) {
+      try {
+        const response = await this.apiClient.login(credentials);
+        if (response.success) {
+          await this.init();
+          return { success: true };
+        }
+        return response;
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
+    }
+
+    async register(userData) {
+      try {
+        const response = await this.apiClient.register(userData);
+        if (response.success) {
+          await this.init();
+          return { success: true };
+        }
+        return response;
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
+    }
+
+    async logout() {
+      if (this.apiClient) {
+        this.apiClient.logout();
+      }
+      this.currentUser = null;
+      this.isAuthenticated = false;
+      this.notifyListeners();
+    }
+
+    async updateProfile(profileData) {
+      try {
+        const response = await this.apiClient.updateProfile(profileData);
+        if (response.success) {
+          this.currentUser = response.data;
+          this.notifyListeners();
+        }
+        return response;
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
+    }
+
+    hasRole(role) {
+      return this.currentUser && this.currentUser.role === role;
+    }
+
+    isAdmin() {
+      return this.hasRole('ADMIN');
+    }
+
+    addListener(listener) {
+      this.listeners.push(listener);
+    }
+
+    removeListener(listener) {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    }
+
+    notifyListeners() {
+      const state = {
+        user: this.currentUser,
+        isAuthenticated: this.isAuthenticated,
+        isLoading: this.isLoading
+      };
+      this.listeners.forEach(listener => listener(state));
+    }
+
+    getAuthState() {
+      return {
+        user: this.currentUser,
+        isAuthenticated: this.isAuthenticated,
+        isLoading: this.isLoading
+      };
+    }
+  }
+
+  // Create global auth manager
+  window.authManager = new AuthManager();
+
+  // Initialize auth on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    window.authManager.init();
+  });
+</script>

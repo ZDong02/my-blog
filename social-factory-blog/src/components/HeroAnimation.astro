@@ -1,0 +1,6 @@
+<script>
+  import { gsap } from 'gsap';
+  document.addEventListener('DOMContentLoaded', () => {
+    gsap.fromTo('img', { scale:1.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: 'power3.out' });
+  });
+</script>

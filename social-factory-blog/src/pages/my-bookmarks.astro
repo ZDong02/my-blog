@@ -1,0 +1,199 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = 'My Bookmarks';
+const description = 'Posts you have bookmarked';
+---
+
+<Layout title={title} description={description}>
+  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4">
+    <div class="max-w-5xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+          <a href="/dashboard" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+          </a>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Bookmarks</h1>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400">Posts you've saved for later</p>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading" class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading your bookmarks...</p>
+      </div>
+
+      <!-- Not authenticated -->
+      <div id="notAuthenticated" class="hidden bg-white dark:bg-zinc-900 shadow rounded-lg p-8 text-center">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">Please log in to view your bookmarks.</p>
+        <a href="/login" class="inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition">Login</a>
+      </div>
+
+      <!-- No bookmarks -->
+      <div id="noBookmarks" class="hidden bg-white dark:bg-zinc-900 shadow rounded-lg p-12 text-center">
+        <svg class="h-16 w-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+        </svg>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">You haven't bookmarked any posts yet.</p>
+        <a href="/blog" class="inline-block mt-4 text-red-600 hover:text-red-700">Browse Posts →</a>
+      </div>
+
+      <!-- Bookmarks list -->
+      <div id="bookmarksList" class="hidden space-y-4">
+        <!-- Posts will be loaded here -->
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="hidden mt-8 flex items-center justify-center gap-4">
+        <button id="prevBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          Previous
+        </button>
+        <span id="pageInfo" class="text-sm text-gray-600 dark:text-gray-400">Page 1</span>
+        <button id="nextBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { apiClient } from '../lib/api.js';
+
+    let currentPage = 1;
+    let totalPages = 1;
+
+    const checkAuthAndLoad = async () => {
+      if (window.authManager.isLoading) {
+        setTimeout(checkAuthAndLoad, 100);
+        return;
+      }
+
+      const loading = document.getElementById('loading');
+      const notAuthenticated = document.getElementById('notAuthenticated');
+
+      if (!window.authManager.isAuthenticated) {
+        loading.classList.add('hidden');
+        notAuthenticated.classList.remove('hidden');
+        return;
+      }
+
+      loading.classList.add('hidden');
+      loadBookmarks();
+    };
+
+    const loadBookmarks = async () => {
+      const bookmarksList = document.getElementById('bookmarksList');
+      const noBookmarks = document.getElementById('noBookmarks');
+      const pagination = document.getElementById('pagination');
+
+      try {
+        const response = await apiClient.getMyBookmarks(currentPage, 10);
+
+        if (response.success && response.data) {
+          const { content, total, size, number } = response.data;
+          currentPage = number;
+          totalPages = Math.ceil(total / size);
+
+          if (content.length === 0) {
+            bookmarksList.classList.add('hidden');
+            pagination.classList.add('hidden');
+            noBookmarks.classList.remove('hidden');
+            return;
+          }
+
+          noBookmarks.classList.add('hidden');
+          bookmarksList.classList.remove('hidden');
+          pagination.classList.remove('hidden');
+
+          let html = '';
+          content.forEach(bookmark => {
+            const post = bookmark.post;
+            if (!post) return;
+
+            html += `
+              <div class="bg-white dark:bg-zinc-900 shadow rounded-lg overflow-hidden">
+                <div class="flex">
+                  ${post.featuredImage ? `
+                    <div class="w-48 h-32 flex-shrink-0">
+                      <img src="${post.featuredImage}" class="w-full h-full object-cover" />
+                    </div>
+                  ` : ''}
+                  <div class="flex-1 p-4">
+                    <div class="flex items-start justify-between">
+                      <div class="flex-1">
+                        <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || 'Uncategorized'}</div>
+                        <a href="/blog/${post.id}" class="text-lg font-medium text-gray-900 dark:text-white hover:text-red-600 line-clamp-1">${post.title}</a>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-2">${post.summary || post.content?.substring(0, 150) || ''}</p>
+                        <div class="flex items-center gap-4 mt-4 text-xs text-gray-500 dark:text-gray-400">
+                          <span>${new Date(bookmark.createdAt).toLocaleDateString()}</span>
+                          <span class="flex items-center gap-1">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            ${post.likeCount || 0}
+                          </span>
+                          <span class="flex items-center gap-1">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                            ${post.commentCount || 0}
+                          </span>
+                        </div>
+                      </div>
+                      <button onclick="removeBookmark(${bookmark.id}, ${post.id})" class="ml-4 text-gray-400 hover:text-red-600 transition p-2">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M6 2h12a2 2 0 012 2v18l-8-4-8 4V4a2 2 0 012-2z"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          bookmarksList.innerHTML = html;
+          document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+          document.getElementById('prevBtn').disabled = currentPage <= 1;
+          document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+        }
+      } catch (error) {
+        console.error('Failed to load bookmarks:', error);
+        showError('Failed to load bookmarks');
+      }
+    };
+
+    const removeBookmark = async (bookmarkId, postId) => {
+      if (!confirm('Remove this bookmark?')) return;
+
+      try {
+        await apiClient.removeBookmark(postId);
+        showSuccess('Bookmark removed');
+        loadBookmarks();
+      } catch (error) {
+        showError('Failed to remove bookmark');
+      }
+    };
+
+    // Pagination
+    document.getElementById('prevBtn')?.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        loadBookmarks();
+      }
+    });
+
+    document.getElementById('nextBtn')?.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        loadBookmarks();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', checkAuthAndLoad);
+  </script>
+</Layout>

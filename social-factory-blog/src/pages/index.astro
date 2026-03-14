@@ -1,0 +1,209 @@
+---
+import Layout from "../layouts/Layout.astro";
+import HeroAnimation from "../components/HeroAnimation.astro";
+---
+
+<Layout title="Social Factory | No Favouritism">
+  <main class="min-h-screen pt-20">
+    <!-- Hero Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3">
+      <!-- 左侧竖排 -->
+      <div
+        class="bg-white dark:bg-zinc-950 p-12 flex flex-col justify-between border-r border-zinc-200 dark:border-zinc-800"
+      >
+        <div>
+          <div class="text-red-600 text-7xl font-black">XXX</div>
+          <div
+            class="mt-12 text-[2.5rem] font-light tracking-[0.6em] text-zinc-400 dark:text-zinc-600 [writing-mode:vertical-rl] rotate-180"
+          >
+            DOOFILIDOO
+          </div>
+        </div>
+        <div
+          class="max-w-xs text-sm leading-relaxed text-zinc-600 dark:text-zinc-400"
+        >
+          You Have great compassion and seek to create a more humane society. you
+          are to those who suffer physically or are at the hand of injustice.
+          <div class="mt-8 text-xs uppercase tracking-widest text-red-600">
+            DISPOSITION / SOCIAL FACTORY
+          </div>
+        </div>
+      </div>
+
+      <!-- 中间 Hero -->
+      <div class="relative bg-[#9C0000] overflow-hidden">
+        <HeroAnimation />
+        <img
+          src="/images/hero.jpg"
+          alt="Hero"
+          class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+        />
+        <div class="absolute top-0 left-0 w-24 h-40 bg-red-600"></div>
+      </div>
+
+      <!-- 右侧 -->
+      <div
+        class="bg-white dark:bg-zinc-950 p-12 flex flex-col justify-between border-l border-zinc-200 dark:border-zinc-800"
+      >
+        <div class="flex-1 flex items-center justify-center">
+          <div class="-mt-12 text-center">
+            <p class="text-3xl font-medium tracking-[0.5em]">NO FAVOURITISM</p>
+            <div
+              class="text-[8rem] leading-none font-black text-red-600 mt-20 text-center"
+            >
+              ZDong
+            </div>
+
+            <!-- Auth Buttons -->
+            <div id="home-auth-buttons" class="mt-12 flex flex-col gap-4 items-center">
+              <a href="/login" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">LOGIN</a>
+              <a href="/register" class="px-8 py-3 border border-red-600 text-red-600 dark:text-red-400 uppercase tracking-widest hover:bg-red-600 hover:text-white transition">REGISTER</a>
+            </div>
+
+            <!-- User Info (shown when logged in) -->
+            <div id="home-user-info" class="hidden mt-12 flex flex-col gap-4 items-center">
+              <span id="home-username" class="text-lg font-medium text-red-600"></span>
+              <a href="/dashboard" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">DASHBOARD</a>
+              <a href="/blog" class="px-8 py-3 border border-zinc-300 dark:border-zinc-700 uppercase tracking-widest hover:border-red-600 transition">BROWSE BLOG</a>
+              <button id="home-logout-btn" class="text-sm uppercase tracking-widest text-zinc-500 hover:text-red-600 transition">LOGOUT</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between text-xs uppercase tracking-widest text-zinc-400">
+          <a href="#" class="hover:text-red-600">FB</a>
+          <a href="#" class="hover:text-red-600">TW</a>
+          <a href="#" class="hover:text-red-600">IN</a>
+          <a href="#" class="hover:text-red-600">YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Latest Posts Section -->
+    <div class="bg-gray-50 dark:bg-zinc-950 py-16 px-4">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">LATEST POSTS</h2>
+          <p class="text-gray-600 dark:text-gray-400">Recent thoughts and stories</p>
+        </div>
+
+        <div id="loading" class="text-center py-8">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+        </div>
+
+        <div id="postsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+          <!-- Posts will be loaded here -->
+        </div>
+
+        <div class="text-center mt-12">
+          <a href="/blog" class="inline-block px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">View All Posts</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    import { apiClient } from '../lib/api.js';
+
+    // Home page auth state management
+    function updateHomeAuthUI(user, isAuthenticated) {
+      const authButtons = document.getElementById('home-auth-buttons');
+      const userInfo = document.getElementById('home-user-info');
+      const username = document.getElementById('home-username');
+      const logoutBtn = document.getElementById('home-logout-btn');
+
+      if (isAuthenticated && user) {
+        authButtons.classList.add('hidden');
+        userInfo.classList.remove('hidden');
+
+        const displayName = user.nickname || user.username;
+        username.textContent = displayName;
+
+        logoutBtn.onclick = async () => {
+          if (window.authManager) {
+            await window.authManager.logout();
+            window.location.href = '/';
+          }
+        };
+      } else {
+        authButtons.classList.remove('hidden');
+        userInfo.classList.add('hidden');
+      }
+    }
+
+    // Load latest posts
+    const loadPosts = async () => {
+      try {
+        const response = await apiClient.getPosts(1, 6);
+
+        if (response.success && response.data && response.data.content) {
+          const posts = response.data.content;
+          const container = document.getElementById('postsContainer');
+          const loading = document.getElementById('loading');
+
+          loading.classList.add('hidden');
+          container.classList.remove('hidden');
+
+          let html = '';
+          posts.forEach(post => {
+            html += `
+              <a href="/blog/${post.id}" class="group bg-white dark:bg-zinc-900 rounded-lg shadow overflow-hidden hover:shadow-xl transition">
+                ${post.featuredImage ? `
+                  <div class="h-48 overflow-hidden">
+                    <img src="${post.featuredImage}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                  </div>
+                ` : `
+                  <div class="h-48 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+                    <svg class="h-20 w-20 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                    </svg>
+                  </div>
+                `}
+                <div class="p-6">
+                  <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || 'Uncategorized'}</div>
+                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-red-600 transition line-clamp-2">${post.title}</h3>
+                  <p class="text-gray-600 dark:text-gray-400 mt-3 line-clamp-3 text-sm">${post.summary || post.content?.substring(0, 150) || ''}</p>
+                  <div class="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400">
+                    <span>${new Date(post.createdAt).toLocaleDateString()}</span>
+                    <span class="flex items-center gap-1">
+                      <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                      </svg>
+                      ${post.likeCount || 0}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            `;
+          });
+
+          container.innerHTML = html;
+        }
+      } catch (error) {
+        console.error('Failed to load posts:', error);
+      }
+    };
+
+    // Initialize auth state on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.authManager) {
+        window.authManager.addListener(({ user, isAuthenticated }) => {
+          updateHomeAuthUI(user, isAuthenticated);
+        });
+
+        // Initial state
+        const authState = window.authManager.getAuthState();
+        updateHomeAuthUI(authState.user, authState.isAuthenticated);
+      }
+
+      loadPosts();
+    });
+
+    // Also update immediately if auth is already loaded
+    if (window.authManager) {
+      const authState = window.authManager.getAuthState();
+      if (!authState.isLoading) {
+        updateHomeAuthUI(authState.user, authState.isAuthenticated);
+      }
+    }
+  </script>
+</Layout>

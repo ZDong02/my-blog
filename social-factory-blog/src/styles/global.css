@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { font-feature-settings: "kern"; }
+.prose :where(pre):not(:where([class~="not-prose"] *)) { background: #1e1e1e; }

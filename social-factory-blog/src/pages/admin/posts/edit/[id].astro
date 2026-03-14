@@ -1,0 +1,311 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+
+// This route is client-side rendered, no static paths needed
+export const prerender = false;
+export function getStaticPaths() {
+  return [];
+}
+
+const title = 'Edit Post - Admin';
+const description = 'Edit blog post';
+---
+
+<AdminLayout title={title} description={description}>
+  <div class="py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-6">
+        <a href="/admin/posts" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-2">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Posts
+        </a>
+      </div>
+
+      <div id="loading" class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading post...</p>
+      </div>
+
+      <form id="editPostForm" class="bg-white dark:bg-zinc-900 shadow rounded-lg hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Post</h2>
+          <span id="postStatus" class="px-3 py-1 rounded-full text-xs font-medium"></span>
+        </div>
+
+        <div class="px-6 py-6 space-y-6">
+          <!-- Title -->
+          <div>
+            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Title <span class="text-red-600">*</span>
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              required
+              maxlength="200"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <!-- Category -->
+          <div>
+            <label for="categoryId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Category
+            </label>
+            <select
+              id="categoryId"
+              name="categoryId"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">Select a category</option>
+            </select>
+          </div>
+
+          <!-- Featured Image -->
+          <div>
+            <label for="featuredImage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Featured Image URL
+            </label>
+            <input
+              type="url"
+              id="featuredImage"
+              name="featuredImage"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
+          <!-- Summary -->
+          <div>
+            <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Summary
+            </label>
+            <textarea
+              id="summary"
+              name="summary"
+              rows="3"
+              maxlength="500"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+            ></textarea>
+          </div>
+
+          <!-- Content -->
+          <div>
+            <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Content <span class="text-red-600">*</span>
+            </label>
+            <div class="border border-gray-300 dark:border-zinc-700 rounded-lg overflow-hidden">
+              <div class="flex border-b border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 px-2 py-1 gap-1">
+                <button type="button" onclick="insertMarkdown('**', '**')" class="px-2 py-1 text-xs font-bold hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Bold">B</button>
+                <button type="button" onclick="insertMarkdown('*', '*')" class="px-2 py-1 text-xs italic hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Italic">I</button>
+                <button type="button" onclick="insertMarkdown('# ', '')" class="px-2 py-1 text-xs font-bold hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Heading">H</button>
+                <button type="button" onclick="insertMarkdown('## ', '')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Subheading">H2</button>
+                <button type="button" onclick="insertMarkdown('- ', '')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="List">• List</button>
+                <button type="button" onclick="insertMarkdown('`', '`')" class="px-2 py-1 text-xs font-mono hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Code">`</button>
+              </div>
+              <textarea
+                id="content"
+                name="content"
+                required
+                rows="20"
+                class="w-full px-4 py-2 border-0 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-0 font-mono text-sm"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              id="publishBtn"
+              class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium hidden"
+            >
+              Publish
+            </button>
+            <button
+              type="button"
+              id="unpublishBtn"
+              class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium hidden"
+            >
+              Unpublish
+            </button>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              onclick="window.history.back()"
+              class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    import { apiClient } from '../../../../lib/api.js';
+
+    let postId = null;
+
+    // Check admin access and load post
+    const checkAdminAccess = async () => {
+      if (window.authManager.isLoading) {
+        setTimeout(checkAdminAccess, 100);
+        return;
+      }
+
+      if (!window.authManager.isAuthenticated) {
+        window.location.href = '/login';
+        return;
+      }
+
+      const user = window.authManager.currentUser;
+      if (user.role !== 'ADMIN') {
+        window.location.href = '/dashboard';
+        showWarning('Access denied. Admin only.');
+        return;
+      }
+
+      // Get post ID from URL
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      postId = pathParts[pathParts.length - 1];
+
+      if (!postId || isNaN(parseInt(postId))) {
+        showError('Invalid post ID');
+        setTimeout(() => window.history.back(), 1500);
+        return;
+      }
+
+      loadPost();
+      loadCategories();
+    };
+
+    const loadPost = async () => {
+      try {
+        const response = await apiClient.getPost(postId);
+        if (response.success && response.data) {
+          const post = response.data;
+
+          document.getElementById('title').value = post.title;
+          document.getElementById('categoryId').value = post.category?.id || '';
+          document.getElementById('featuredImage').value = post.featuredImage || '';
+          document.getElementById('summary').value = post.summary || '';
+          document.getElementById('content').value = post.content;
+
+          // Update status badge
+          const statusEl = document.getElementById('postStatus');
+          statusEl.textContent = post.status;
+          statusEl.className = `px-3 py-1 rounded-full text-xs font-medium ${
+            post.status === 'PUBLISHED'
+              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+          }`;
+
+          // Show publish/unpublish buttons
+          const publishBtn = document.getElementById('publishBtn');
+          const unpublishBtn = document.getElementById('unpublishBtn');
+
+          if (post.status === 'DRAFT') {
+            publishBtn.classList.remove('hidden');
+          } else {
+            unpublishBtn.classList.remove('hidden');
+          }
+
+          // Setup button handlers
+          publishBtn.onclick = async () => {
+            try {
+              await apiClient.request(`/posts/${postId}/publish`, { method: 'PUT' });
+              showSuccess('Post published!');
+              loadPost();
+            } catch (error) {
+              showError('Failed to publish');
+            }
+          };
+
+          unpublishBtn.onclick = async () => {
+            try {
+              await apiClient.request(`/posts/${postId}/unpublish`, { method: 'PUT' });
+              showSuccess('Post unpublished');
+              loadPost();
+            } catch (error) {
+              showError('Failed to unpublish');
+            }
+          };
+
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('editPostForm').classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Failed to load post:', error);
+        showError('Failed to load post');
+      }
+    };
+
+    const loadCategories = async () => {
+      try {
+        const response = await apiClient.getCategories();
+        if (response.success && response.data) {
+          const select = document.getElementById('categoryId');
+          response.data.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      }
+    };
+
+    // Markdown insertion helper
+    const insertMarkdown = (prefix, suffix) => {
+      const textarea = document.getElementById('content');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      const newText = textarea.value.substring(0, start) + prefix + selectedText + suffix + textarea.value.substring(end);
+      textarea.value = newText;
+      textarea.focus();
+      textarea.selectionStart = start + prefix.length;
+      textarea.selectionEnd = start + prefix.length + selectedText.length;
+    };
+
+    // Form submission
+    document.getElementById('editPostForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        title: document.getElementById('title').value,
+        content: document.getElementById('content').value,
+        summary: document.getElementById('summary').value,
+        categoryId: document.getElementById('categoryId').value ? parseInt(document.getElementById('categoryId').value) : null,
+        featuredImage: document.getElementById('featuredImage').value
+      };
+
+      try {
+        const response = await apiClient.updatePost(postId, formData);
+        if (response.success) {
+          showSuccess('Post updated successfully!');
+        }
+      } catch (error) {
+        console.error('Failed to update post:', error);
+        showError(error.message || 'Failed to update post');
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', checkAdminAccess);
+  </script>
+</AdminLayout>

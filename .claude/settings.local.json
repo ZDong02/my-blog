@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd blog-backend:*)",
+      "Bash(cd \"D:/my-blog/social-factory-blog\" && npm run build 2>&1 | head -50)",
+      "Bash(cd \"D:/my-blog/social-factory-blog\" && mkdir -p src/content/blog)",
+      "Bash(npm run:*)",
+      "Bash(cd \"D:/my-blog/blog-backend\" && mvn compile -q 2>&1 | head -10)",
+      "Bash(mvn compile:*)",
+      "Bash(cd \"D:/my-blog/blog-backend\" && mvn clean compile 2>&1 | tail -10)",
+      "Bash(cd \"D:\\\\my-blog\\\\blog-backend\" && mvn clean compile -q)",
+      "Bash(cd D:\\\\my-blog\\\\blog-backend && rm src\\\\test\\\\java\\\\com\\\\example\\\\blog\\\\PaginationTest.java)",
+      "Bash(cd \"D:\\\\my-blog\\\\blog-backend\" && del src\\\\test\\\\java\\\\com\\\\example\\\\blog\\\\PaginationTest.java)",
+      "Bash(cd \"D:\\\\my-blog\\\\blog-backend\" && mvn clean compile)",
+      "Bash(cd D:\\\\my-blog\\\\social-factory-blog && npm install 2>&1 | tail -20)",
+      "Bash(cd /d/my-blog/social-factory-blog && npm install 2>&1 | tail -20)",
+      "Bash(npx astro:*)",
+      "Bash(npm install:*)",
+      "Bash(curl -s http://localhost:8080/api/auth/register -X POST -H \"Content-Type: application/json\" -d '{\"username\":\"test\",\"email\":\"test@test.com\",\"password\":\"123456\"}' 2>&1 || echo \"Backend not running\")",
+      "Bash(cd D:\\\\my-blog\\\\blog-backend && mvn spring-boot:run -Dspring-boot.run.fork=false 2>&1 | head -100)",
+      "Read(//mnt/d/my-blog/**)",
+      "Bash(mvn spring-boot:run -Dspring-boot.run.fork=false)",
+      "Bash(netstat -ano | findstr :8080)",
+      "Bash(tasklist | findstr 2032)",
+      "Bash(taskkill /F /PID 2032)",
+      "Bash(cd \"D:\\\\my-blog\\\\blog-backend\" && mvn -q exec:java -Dexec.mainClass=\"com.mysql.cj.jdbc.Driver\" 2>&1 || echo \"Maven exec not available, trying alternative...\")",
+      "Bash(mysql --version 2>&1 || echo \"MySQL client not found in PATH\")",
+      "Bash(java -version 2>&1)",
+      "Bash(cd \"D:\\\\my-blog\\\\blog-backend\" && mvn -q dependency:build-classpath -Dmdep.outputFile=cp.txt && cat cp.txt)",
+      "Bash(cd \"D:\\\\my-blog\\\\blog-backend\" && rm -f cp.txt)",
+      "Bash(netstat -ano | findstr :4321)",
+      "Bash(cd /d/my-blog/blog-backend && mvn spring-boot:run)",
+      "Bash(taskkill /F /PID 15376)",
+      "Bash(ls -la \"D:/my-blog/social-factory-blog/src\" 2>/dev/null || ls -la \"D:/my-blog/src\" 2>/dev/null || find \"D:/my-blog\" -maxdepth 3 -name \"*.astro\" -o -name \"*.tsx\" -o -name \"*.js\" 2>/dev/null | head -30)"
+    ]
+  }
+}

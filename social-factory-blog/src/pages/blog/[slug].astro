@@ -1,0 +1,364 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = await getEntry('blog', slug);
+const { Content } = await post.render();
+const readingTime = Math.ceil(post.body.split(' ').length / 200);
+---
+
+<Layout title={`${post.data.title} - Social Factory`}>
+  <article class="max-w-3xl mx-auto px-8 py-20">
+    <div class="text-red-600 text-sm uppercase mb-4">{post.data.category}</div>
+    <h1 class="text-5xl font-bold text-gray-900 dark:text-white">{post.data.title}</h1>
+    <div class="flex gap-4 text-xs text-zinc-500 mt-6">
+      <span>{post.data.pubDate.toLocaleDateString('zh-TW')}</span>
+      <span>{readingTime} �����Ķ�</span>
+    </div>
+
+    <img src={post.data.image || '/images/hero.jpg'} class="my-12 rounded-xl" />
+
+    <div class="prose dark:prose-invert">
+      <Content />
+    </div>
+
+    <!-- Backend Integration: Post interactions -->
+    <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+          <button id="likeBtn" class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200">
+            <svg id="likeIcon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span id="likeCount">0</span>
+          </button>
+
+          <button id="bookmarkBtn" class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors duration-200">
+            <svg id="bookmarkIcon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+            <span>Bookmark</span>
+          </button>
+
+          <button class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            <span>Share</span>
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+          <div class="flex items-center space-x-1">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span id="viewCount">0</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span id="commentCount">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backend Integration: Comments system -->
+    <div class="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+        ���� (<span id="commentsCount">0</span>)
+      </h3>
+
+      <!-- Add comment form -->
+      <div id="commentForm" class="hidden mb-8">
+        <form id="addCommentForm" class="space-y-4">
+          <div>
+            <label for="commentContent" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">��������</label>
+            <textarea
+              id="commentContent"
+              rows="4"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+              placeholder="��������뷨..."
+            ></textarea>
+          </div>
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md transition-colors duration-200"
+            >��������</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Login to comment message -->
+      <div id="loginToComment" class="hidden mb-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg text-center">
+        <p class="text-gray-600 dark:text-gray-400 mb-2">
+          �� <a href="/login" class="text-red-600 hover:text-red-700">��¼</a> �󷢱����ۡ�</p>
+      </div>
+
+      <!-- Comments list -->
+      <div id="commentsList" class="space-y-6">
+        <!-- Comments will be loaded here -->
+      </div>
+    </div>
+  </article>
+
+  <script>
+    // Backend integration for post interactions and comments
+    import { apiClient } from '../../lib/api.js';
+
+    // Get post ID from URL - will be set when page loads
+    let postId = null;
+    let isLiked = false;
+    let isBookmarked = false;
+
+    // Try to get post ID from URL slug or default to 1 for testing
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    postId = pathParts[pathParts.length - 1] || '1';
+
+    // If postId is not a number, try to extract it or use 1
+    if (isNaN(parseInt(postId))) {
+      // For now, use 1 as default - in production you'd map slugs to IDs
+      postId = '1';
+    }
+
+    // Load post data from API
+    const loadPostData = async () => {
+      try {
+        const response = await apiClient.getPost(postId);
+        if (response.success && response.data) {
+          const post = response.data;
+          document.getElementById('viewCount').textContent = post.viewCount || 0;
+          document.getElementById('likeCount').textContent = post.likeCount || 0;
+          document.getElementById('commentCount').textContent = post.commentCount || 0;
+        }
+      } catch (error) {
+        console.error('Failed to load post data:', error);
+      }
+    };
+
+    // Wait for auth to initialize
+    const checkAuthAndSetup = async () => {
+      if (window.authManager.isLoading) {
+        setTimeout(checkAuthAndSetup, 100);
+        return;
+      }
+
+      if (window.authManager.isAuthenticated) {
+        await checkInteractionStatus();
+        document.getElementById('commentForm').classList.remove('hidden');
+      } else {
+        document.getElementById('loginToComment').classList.remove('hidden');
+      }
+
+      setupInteractionHandlers();
+      await loadComments();
+    };
+
+    const checkInteractionStatus = async () => {
+      try {
+        const [likeResponse, bookmarkResponse] = await Promise.all([
+          apiClient.checkLikeStatus(postId),
+          apiClient.checkBookmarkStatus(postId)
+        ]);
+
+        if (likeResponse.success) {
+          isLiked = likeResponse.data;
+          updateLikeButton();
+        }
+
+        if (bookmarkResponse.success) {
+          isBookmarked = bookmarkResponse.data;
+          updateBookmarkButton();
+        }
+      } catch (error) {
+        console.error('Failed to check interaction status:', error);
+      }
+    };
+
+    const updateLikeButton = () => {
+      const likeBtn = document.getElementById('likeBtn');
+      const likeIcon = document.getElementById('likeIcon');
+
+      if (isLiked) {
+        likeIcon.setAttribute('fill', 'currentColor');
+        likeBtn.classList.add('text-red-600', 'dark:text-red-400');
+        likeBtn.classList.remove('text-gray-600', 'dark:text-gray-400');
+      } else {
+        likeIcon.setAttribute('fill', 'none');
+        likeBtn.classList.remove('text-red-600', 'dark:text-red-400');
+        likeBtn.classList.add('text-gray-600', 'dark:text-gray-400');
+      }
+    };
+
+    const updateBookmarkButton = () => {
+      const bookmarkBtn = document.getElementById('bookmarkBtn');
+      const bookmarkIcon = document.getElementById('bookmarkIcon');
+
+      if (isBookmarked) {
+        bookmarkIcon.setAttribute('fill', 'currentColor');
+        bookmarkBtn.classList.add('text-yellow-600', 'dark:text-yellow-400');
+        bookmarkBtn.classList.remove('text-gray-600', 'dark:text-gray-400');
+      } else {
+        bookmarkIcon.setAttribute('fill', 'none');
+        bookmarkBtn.classList.remove('text-yellow-600', 'dark:text-yellow-400');
+        bookmarkBtn.classList.add('text-gray-600', 'dark:text-gray-400');
+      }
+    };
+
+    const setupInteractionHandlers = () => {
+      // Like button handler
+      document.getElementById('likeBtn').addEventListener('click', async () => {
+        if (!window.authManager.isAuthenticated) {
+          window.location.href = '/login';
+          return;
+        }
+
+        try {
+          if (isLiked) {
+            await apiClient.unlikePost(postId);
+            isLiked = false;
+            const likeCount = parseInt(document.getElementById('likeCount').textContent) - 1;
+            document.getElementById('likeCount').textContent = likeCount;
+          } else {
+            await apiClient.likePost(postId);
+            isLiked = true;
+            const likeCount = parseInt(document.getElementById('likeCount').textContent) + 1;
+            document.getElementById('likeCount').textContent = likeCount;
+          }
+          updateLikeButton();
+        } catch (error) {
+          console.error('Failed to toggle like:', error);
+        }
+      });
+
+      // Bookmark button handler
+      document.getElementById('bookmarkBtn').addEventListener('click', async () => {
+        if (!window.authManager.isAuthenticated) {
+          window.location.href = '/login';
+          return;
+        }
+
+        try {
+          if (isBookmarked) {
+            await apiClient.removeBookmark(postId);
+            isBookmarked = false;
+          } else {
+            await apiClient.bookmarkPost(postId);
+            isBookmarked = true;
+          }
+          updateBookmarkButton();
+        } catch (error) {
+          console.error('Failed to toggle bookmark:', error);
+        }
+      });
+
+      // Comment form handler
+      document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const content = document.getElementById('commentContent').value.trim();
+        if (!content) return;
+
+        try {
+          const response = await apiClient.addComment(postId, { content });
+          if (response.success) {
+            document.getElementById('commentContent').value = '';
+            await loadComments(); // Reload comments
+
+            // Update comment count
+            const commentCount = parseInt(document.getElementById('commentCount').textContent) + 1;
+            document.getElementById('commentCount').textContent = commentCount;
+          }
+        } catch (error) {
+          console.error('Failed to add comment:', error);
+        }
+      });
+    };
+
+    const loadComments = async () => {
+      try {
+        const response = await apiClient.getComments(postId);
+        if (response.success && response.data) {
+          renderComments(response.data);
+          document.getElementById('commentsCount').textContent = response.data.length;
+        }
+      } catch (error) {
+        console.error('Failed to load comments:', error);
+      }
+    };
+
+    const renderComments = (comments) => {
+      const container = document.getElementById('commentsList');
+
+      if (!comments || comments.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-8">��û�����ۡ���������һ�����۰ɣ�</p>';
+        return;
+      }
+
+      let html = '';
+      comments.forEach(comment => {
+        html += `
+          <div class="border-l-4 border-red-200 dark:border-red-800 pl-6 py-4">
+            <div class="flex items-start space-x-3">
+              <img src="${comment.user?.avatar || '/images/default-avatar.png'}" alt="${comment.user?.nickname || comment.user?.username}" class="h-8 w-8 rounded-full object-cover" />
+              <div class="flex-1">
+                <div class="flex items-center space-x-2 mb-2">
+                  <h4 class="font-medium text-gray-900 dark:text-white">${comment.user?.nickname || comment.user?.username}</h4>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">${new Date(comment.createdAt).toLocaleDateString('zh-TW')}</span>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300">${comment.content}</p>
+              </div>
+            </div>
+            ${comment.replies && comment.replies.length > 0 ? renderReplies(comment.replies) : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    };
+
+    const renderReplies = (replies) => {
+      let html = '<div class="ml-8 mt-4 space-y-4">';
+      replies.forEach(reply => {
+        html += `
+          <div class="flex items-start space-x-3">
+            <img src="${reply.user?.avatar || '/images/default-avatar.png'}" alt="${reply.user?.nickname || reply.user?.username}" class="h-6 w-6 rounded-full object-cover" />
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-1">
+                <h5 class="font-medium text-gray-900 dark:text-white text-sm">${reply.user?.nickname || reply.user?.username}</h5>
+                <span class="text-xs text-gray-500 dark:text-gray-400">${new Date(reply.createdAt).toLocaleDateString('zh-TW')}</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 text-sm">${reply.content}</p>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      return html;
+    };
+
+    // Initialize
+    const init = () => {
+      loadPostData();
+      checkAuthAndSetup();
+    };
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</Layout>
+
+
+
+
+
+

@@ -1,0 +1,1 @@
+document.addEventListener("DOMContentLoaded",()=>{const e=window.location.pathname;document.querySelectorAll(".admin-nav-link").forEach(t=>{t.getAttribute("href")===e&&t.classList.add("bg-gray-100","dark:bg-zinc-800")})});

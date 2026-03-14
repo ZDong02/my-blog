@@ -1,0 +1,26 @@
+import{a as s}from"./api.C1xNrEEc.js";import"./hoisted.DWgf2xLV.js";import"./Toast.astro_astro_type_script_index_0_lang.DEjscZYH.js";let o=null,r=!1,c=!1;const i=window.location.pathname.split("/").filter(Boolean);o=i[i.length-1]||"1";isNaN(parseInt(o))&&(o="1");const k=async()=>{try{const t=await s.getPost(o);if(t.success&&t.data){const e=t.data;document.getElementById("viewCount").textContent=e.viewCount||0,document.getElementById("likeCount").textContent=e.likeCount||0,document.getElementById("commentCount").textContent=e.commentCount||0}}catch(t){console.error("Failed to load post data:",t)}},d=async()=>{if(window.authManager.isLoading){setTimeout(d,100);return}window.authManager.isAuthenticated?(await g(),document.getElementById("commentForm").classList.remove("hidden")):document.getElementById("loginToComment").classList.remove("hidden"),x(),await u()},g=async()=>{try{const[t,e]=await Promise.all([s.checkLikeStatus(o),s.checkBookmarkStatus(o)]);t.success&&(r=t.data,l()),e.success&&(c=e.data,m())}catch(t){console.error("Failed to check interaction status:",t)}},l=()=>{const t=document.getElementById("likeBtn"),e=document.getElementById("likeIcon");r?(e.setAttribute("fill","currentColor"),t.classList.add("text-red-600","dark:text-red-400"),t.classList.remove("text-gray-600","dark:text-gray-400")):(e.setAttribute("fill","none"),t.classList.remove("text-red-600","dark:text-red-400"),t.classList.add("text-gray-600","dark:text-gray-400"))},m=()=>{const t=document.getElementById("bookmarkBtn"),e=document.getElementById("bookmarkIcon");c?(e.setAttribute("fill","currentColor"),t.classList.add("text-yellow-600","dark:text-yellow-400"),t.classList.remove("text-gray-600","dark:text-gray-400")):(e.setAttribute("fill","none"),t.classList.remove("text-yellow-600","dark:text-yellow-400"),t.classList.add("text-gray-600","dark:text-gray-400"))},x=()=>{document.getElementById("likeBtn").addEventListener("click",async()=>{if(!window.authManager.isAuthenticated){window.location.href="/login";return}try{if(r){await s.unlikePost(o),r=!1;const t=parseInt(document.getElementById("likeCount").textContent)-1;document.getElementById("likeCount").textContent=t}else{await s.likePost(o),r=!0;const t=parseInt(document.getElementById("likeCount").textContent)+1;document.getElementById("likeCount").textContent=t}l()}catch(t){console.error("Failed to toggle like:",t)}}),document.getElementById("bookmarkBtn").addEventListener("click",async()=>{if(!window.authManager.isAuthenticated){window.location.href="/login";return}try{c?(await s.removeBookmark(o),c=!1):(await s.bookmarkPost(o),c=!0),m()}catch(t){console.error("Failed to toggle bookmark:",t)}}),document.getElementById("addCommentForm").addEventListener("submit",async t=>{t.preventDefault();const e=document.getElementById("commentContent").value.trim();if(e)try{if((await s.addComment(o,{content:e})).success){document.getElementById("commentContent").value="",await u();const a=parseInt(document.getElementById("commentCount").textContent)+1;document.getElementById("commentCount").textContent=a}}catch(n){console.error("Failed to add comment:",n)}})},u=async()=>{try{const t=await s.getComments(o);t.success&&t.data&&(y(t.data),document.getElementById("commentsCount").textContent=t.data.length)}catch(t){console.error("Failed to load comments:",t)}},y=t=>{const e=document.getElementById("commentsList");if(!t||t.length===0){e.innerHTML='<p class="text-gray-500 dark:text-gray-400 text-center py-8">��û�����ۡ���������һ�����۰ɣ�</p>';return}let n="";t.forEach(a=>{n+=`
+          <div class="border-l-4 border-red-200 dark:border-red-800 pl-6 py-4">
+            <div class="flex items-start space-x-3">
+              <img src="${a.user?.avatar||"/images/default-avatar.png"}" alt="${a.user?.nickname||a.user?.username}" class="h-8 w-8 rounded-full object-cover" />
+              <div class="flex-1">
+                <div class="flex items-center space-x-2 mb-2">
+                  <h4 class="font-medium text-gray-900 dark:text-white">${a.user?.nickname||a.user?.username}</h4>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">${new Date(a.createdAt).toLocaleDateString("zh-TW")}</span>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300">${a.content}</p>
+              </div>
+            </div>
+            ${a.replies&&a.replies.length>0?f(a.replies):""}
+          </div>
+        `}),e.innerHTML=n},f=t=>{let e='<div class="ml-8 mt-4 space-y-4">';return t.forEach(n=>{e+=`
+          <div class="flex items-start space-x-3">
+            <img src="${n.user?.avatar||"/images/default-avatar.png"}" alt="${n.user?.nickname||n.user?.username}" class="h-6 w-6 rounded-full object-cover" />
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-1">
+                <h5 class="font-medium text-gray-900 dark:text-white text-sm">${n.user?.nickname||n.user?.username}</h5>
+                <span class="text-xs text-gray-500 dark:text-gray-400">${new Date(n.createdAt).toLocaleDateString("zh-TW")}</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 text-sm">${n.content}</p>
+            </div>
+          </div>
+        `}),e+="</div>",e},h=()=>{k(),d()};document.addEventListener("DOMContentLoaded",h);

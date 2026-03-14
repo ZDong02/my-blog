@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="social-factory-blog">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/social-factory-blog.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

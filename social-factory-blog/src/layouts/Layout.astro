@@ -1,0 +1,33 @@
+---
+import Navbar from "../components/Navbar.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import AuthProvider from "../components/AuthProvider.astro";
+import Toast from "../components/Toast.astro";
+import "../styles/global.css";
+
+const { title = "Social Factory", description = "No Favouritism" } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-TW" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body
+    class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-white font-sans"
+  >
+    <AuthProvider />
+    <Toast />
+    <Navbar />
+    <slot />
+    <ThemeToggle />
+    <footer class="text-center py-8 text-xs text-zinc-500">
+      (c) 2026 Social Factory - No Favouritism
+    </footer>
+  </body>
+</html>
+
