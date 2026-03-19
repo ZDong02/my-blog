@@ -2,23 +2,30 @@ package com.example.blog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.blog.entity.User;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    @Select("SELECT * FROM users WHERE username = #{username} AND status = 1")
+    // 按用户名查询
     User findByUsername(@Param("username") String username);
 
-    @Select("SELECT * FROM users WHERE email = #{email} AND status = 1")
+    // 按邮箱查询
     User findByEmail(@Param("email") String email);
 
-    @Update("UPDATE users SET nickname = #{nickname}, avatar = #{avatar}, bio = #{bio}, updated_at = NOW() WHERE id = #{id}")
+    // 更新个人资料
     int updateProfile(User user);
 
-    @Update("UPDATE users SET is_first_user = 0 WHERE id = #{userId}")
+    // 标记为非首个用户
     int markAsNotFirstUser(@Param("userId") Long userId);
 
-    @Select("SELECT COUNT(*) FROM users")
+    // 统计用户总数
     int countTotalUsers();
+
+    // 查询用户及统计信息
+    User selectWithStats(Long id);
+
+    // 查询所有头像为空的用户
+    java.util.List<User> findAllUsersWithNullAvatar();
 }

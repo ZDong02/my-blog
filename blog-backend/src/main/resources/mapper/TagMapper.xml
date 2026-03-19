@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.mapper.TagMapper">
+
+    <resultMap id="TagResultMap" type="com.example.blog.entity.Tag">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="slug" column="slug"/>
+        <result property="description" column="description"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="postCount" column="post_count"/>
+    </resultMap>
+
+    <!-- 按名称查询标签 -->
+    <select id="selectByName" resultType="com.example.blog.entity.Tag">
+        SELECT * FROM tags WHERE name = #{name}
+    </select>
+
+    <!-- 按 slug 查询标签 -->
+    <select id="selectBySlug" resultType="com.example.blog.entity.Tag">
+        SELECT * FROM tags WHERE slug = #{slug}
+    </select>
+
+    <!-- 查询所有标签及文章数量 -->
+    <select id="findAllWithPostCount" resultMap="TagResultMap">
+        SELECT t.*, COUNT(pt.post_id) as post_count
+        FROM tags t
+        LEFT JOIN post_tags pt ON t.id = pt.tag_id
+        LEFT JOIN posts p ON pt.post_id = p.id AND p.status = 'PUBLISHED'
+        GROUP BY t.id, t.name, t.slug, t.description, t.created_at, t.updated_at
+        ORDER BY t.name
+    </select>
+
+    <!-- 查询标签及文章数量 -->
+    <select id="selectWithPostCount" resultMap="TagResultMap">
+        SELECT t.*, COUNT(pt.post_id) as post_count
+        FROM tags t
+        LEFT JOIN post_tags pt ON t.id = pt.tag_id
+        LEFT JOIN posts p ON pt.post_id = p.id AND p.status = 'PUBLISHED'
+        WHERE t.id = #{id}
+        GROUP BY t.id, t.name, t.slug, t.description, t.created_at, t.updated_at
+    </select>
+
+    <!-- 查询文章的所有标签 -->
+    <select id="findByPostId" resultMap="TagResultMap">
+        SELECT t.*
+        FROM tags t
+        INNER JOIN post_tags pt ON t.id = pt.tag_id
+        WHERE pt.post_id = #{postId}
+        ORDER BY t.name
+    </select>
+
+    <!-- 按关键词搜索标签 -->
+    <select id="searchTags" resultMap="TagResultMap">
+        SELECT * FROM tags
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY name
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 统计搜索结果 -->
+    <select id="countSearchTags" resultType="int">
+        SELECT COUNT(*) FROM tags
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+</mapper>

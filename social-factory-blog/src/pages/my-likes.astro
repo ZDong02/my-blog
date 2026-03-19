@@ -1,45 +1,50 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const title = 'My Likes';
-const description = 'Posts you have liked';
+const title = '我的点赞';
+const description = '您点赞过的文章';
 ---
 
 <Layout title={title} description={description}>
-  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4">
-    <div class="max-w-5xl mx-auto">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-zinc-950 dark:to-zinc-900 pt-24 pb-12 px-4">
+    <div class="max-w-6xl mx-auto">
       <!-- Header -->
       <div class="mb-8">
         <div class="flex items-center gap-3 mb-4">
-          <a href="/dashboard" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          <a href="/dashboard" class="p-2 text-gray-600 dark:text-gray-400 hover:text-white hover:bg-red-600 rounded-lg transition">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
           </a>
-          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Likes</h1>
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">我的点赞</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">您点赞过的文章会保存在这里</p>
+          </div>
         </div>
-        <p class="text-gray-600 dark:text-gray-400">Posts you've liked are saved here</p>
       </div>
 
       <!-- Loading -->
-      <div id="loading" class="text-center py-12">
+      <div id="loading" class="text-center py-16">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading your likes...</p>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载您的点赞...</p>
       </div>
 
       <!-- Not authenticated -->
-      <div id="notAuthenticated" class="hidden bg-white dark:bg-zinc-900 shadow rounded-lg p-8 text-center">
-        <p class="text-gray-600 dark:text-gray-400 mb-4">Please log in to view your likes.</p>
-        <a href="/login" class="inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition">Login</a>
+      <div id="notAuthenticated" class="hidden bg-white dark:bg-zinc-900 shadow-xl rounded-2xl p-12 text-center border border-gray-100 dark:border-zinc-800">
+        <svg class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+        <p class="text-gray-600 dark:text-gray-400 mb-4">请登录以查看您的点赞。</p>
+        <a href="/login" class="inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition shadow-lg shadow-red-600/20">登录</a>
       </div>
 
       <!-- No likes -->
-      <div id="noLikes" class="hidden bg-white dark:bg-zinc-900 shadow rounded-lg p-12 text-center">
+      <div id="noLikes" class="hidden bg-white dark:bg-zinc-900 shadow-xl rounded-2xl p-12 text-center border border-gray-100 dark:border-zinc-800">
         <svg class="h-16 w-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
         </svg>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">You haven't liked any posts yet.</p>
-        <a href="/blog" class="inline-block mt-4 text-red-600 hover:text-red-700">Browse Posts →</a>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">您还没有点赞任何文章。</p>
+        <a href="/blog" class="inline-block mt-4 text-red-600 hover:text-red-700 font-medium">浏览文章 →</a>
       </div>
 
       <!-- Likes list -->
@@ -49,12 +54,12 @@ const description = 'Posts you have liked';
 
       <!-- Pagination -->
       <div id="pagination" class="hidden mt-8 flex items-center justify-center gap-4">
-        <button id="prevBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
-          Previous
+        <button id="prevBtn" class="px-5 py-2.5 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+          上一页
         </button>
-        <span id="pageInfo" class="text-sm text-gray-600 dark:text-gray-400">Page 1</span>
-        <button id="nextBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
-          Next
+        <span id="pageInfo" class="text-sm font-medium text-gray-600 dark:text-gray-400 px-4">第 1 页</span>
+        <button id="nextBtn" class="px-5 py-2.5 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+          下一页
         </button>
       </div>
     </div>
@@ -115,19 +120,22 @@ const description = 'Posts you have liked';
             if (!post) return;
 
             html += `
-              <a href="/blog/${post.id}" class="block bg-white dark:bg-zinc-900 shadow rounded-lg overflow-hidden hover:shadow-lg transition">
+              <a href="/blog/${post.id}" class="group block bg-white dark:bg-zinc-900 shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-zinc-800">
                 <div class="flex">
                   ${post.featuredImage ? `
-                    <div class="w-48 h-32 flex-shrink-0">
-                      <img src="${post.featuredImage}" class="w-full h-full object-cover" />
+                    <div class="w-48 h-36 flex-shrink-0 overflow-hidden">
+                      <img src="${post.featuredImage}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                     </div>
                   ` : ''}
-                  <div class="flex-1 p-4">
-                    <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || 'Uncategorized'}</div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white line-clamp-1">${post.title}</h3>
+                  <div class="flex-1 p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="px-2.5 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-medium rounded-full uppercase">
+                        ${post.category?.name || '未分类'}
+                      </span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-red-600 transition-colors line-clamp-1">${post.title}</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-2">${post.summary || post.content?.substring(0, 150) || ''}</p>
-                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-500 dark:text-gray-400">
-                      <span>${new Date(post.createdAt).toLocaleDateString()}</span>
+                    <div class="flex items-center gap-5 mt-4 text-xs text-gray-500 dark:text-gray-400">
                       <span class="flex items-center gap-1">
                         <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -140,6 +148,7 @@ const description = 'Posts you have liked';
                         </svg>
                         ${post.commentCount || 0}
                       </span>
+                      <span class="ml-auto text-gray-400">${new Date(post.createdAt).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
@@ -148,13 +157,13 @@ const description = 'Posts you have liked';
           });
 
           likesList.innerHTML = html;
-          document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+          document.getElementById('pageInfo').textContent = `第 ${currentPage} 页，共 ${totalPages} 页`;
           document.getElementById('prevBtn').disabled = currentPage <= 1;
           document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
       } catch (error) {
         console.error('Failed to load likes:', error);
-        showError('Failed to load liked posts');
+        showError('加载点赞文章失败');
       }
     };
 

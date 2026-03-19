@@ -4,6 +4,14 @@
 ---
 
 <script>
+  // @ts-nocheck
+  import { apiClient } from '../lib/api.js';
+
+  // Set apiClient globally before initializing authManager
+  if (typeof window !== 'undefined') {
+    window.apiClient = apiClient;
+  }
+
   // Client-side authentication utilities
   class AuthManager {
     constructor() {
@@ -11,22 +19,29 @@
       this.isAuthenticated = false;
       this.isLoading = true;
       this.listeners = [];
-      this.apiClient = window.apiClient || null;
+      this.apiClient = apiClient;
     }
 
     async init() {
       try {
-        if (this.apiClient && this.apiClient.token) {
-          const response = await this.apiClient.getProfile();
-          if (response.success) {
+        const client = this.apiClient;
+        if (client && client.token) {
+          const response = await client.getProfile();
+          if (response.success && response.data) {
             this.currentUser = response.data;
             this.isAuthenticated = true;
           } else {
-            this.apiClient.logout();
+            // API returned but no valid data - clear tokens
+            client.clearTokens();
+            this.currentUser = null;
+            this.isAuthenticated = false;
           }
         }
       } catch (error) {
         console.error('Auth initialization failed:', error);
+        // Network error or other exception - assume not authenticated
+        this.currentUser = null;
+        this.isAuthenticated = false;
       } finally {
         this.isLoading = false;
         this.notifyListeners();
@@ -35,8 +50,9 @@
 
     async login(credentials) {
       try {
+        if (!this.apiClient) return { success: false, message: 'API client not available' };
         const response = await this.apiClient.login(credentials);
-        if (response.success) {
+        if (response.success && response.data) {
           await this.init();
           return { success: true };
         }
@@ -48,8 +64,9 @@
 
     async register(userData) {
       try {
+        if (!this.apiClient) return { success: false, message: 'API client not available' };
         const response = await this.apiClient.register(userData);
-        if (response.success) {
+        if (response.success && response.data) {
           await this.init();
           return { success: true };
         }
@@ -70,8 +87,9 @@
 
     async updateProfile(profileData) {
       try {
+        if (!this.apiClient) return { success: false, message: 'API client not available' };
         const response = await this.apiClient.updateProfile(profileData);
-        if (response.success) {
+        if (response.success && response.data) {
           this.currentUser = response.data;
           this.notifyListeners();
         }

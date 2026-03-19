@@ -46,7 +46,7 @@ class ApiClient {
     const config = {
       ...options,
       headers,
-      credentials: 'omit', // Don't send cookies for API requests
+      credentials: 'include', // Include credentials for CORS requests
     };
 
     try {
@@ -61,8 +61,10 @@ class ApiClient {
           const retryResponse = await fetch(url, { ...config, headers });
           return this.handleResponse(retryResponse);
         } else {
-          // Refresh failed, redirect to login
           this.clearTokens();
+          if (typeof window !== 'undefined' && window.showToast) {
+            window.showToast('Session expired. Please login again.', 'error');
+          }
           throw new Error('Authentication failed');
         }
       }
@@ -70,12 +72,15 @@ class ApiClient {
       return this.handleResponse(response);
     } catch (error) {
       console.error('API request failed:', error);
+      // Show error toast
+      if (typeof window !== 'undefined' && window.showToast) {
+        window.showToast(error.message || 'Request failed. Please try again.', 'error');
+      }
       throw error;
     }
   }
 
   async handleResponse(response) {
-    // Check if response is empty (e.g., 403 with no body)
     const contentType = response.headers.get('content-type');
     const text = await response.text();
 
@@ -99,6 +104,7 @@ class ApiClient {
     }
 
     const data = JSON.parse(text);
+
     return data;
   }
 
@@ -253,6 +259,13 @@ class ApiClient {
     });
   }
 
+  async changePassword(passwordData) {
+    return this.request('/users/change-password', {
+      method: 'PUT',
+      body: JSON.stringify(passwordData),
+    });
+  }
+
   // Dashboard methods
   async getDashboardStats() {
     return this.request('/dashboard/stats');
@@ -265,6 +278,26 @@ class ApiClient {
   // Category methods
   async getCategories() {
     return this.request('/categories');
+  }
+
+  async createCategory(categoryData) {
+    return this.request('/categories', {
+      method: 'POST',
+      body: JSON.stringify(categoryData),
+    });
+  }
+
+  async updateCategory(id, categoryData) {
+    return this.request(`/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(categoryData),
+    });
+  }
+
+  async deleteCategory(id) {
+    return this.request(`/categories/${id}`, {
+      method: 'DELETE',
+    });
   }
 
   // Get user's liked posts
@@ -281,6 +314,76 @@ class ApiClient {
   async getMyComments(page = 1, size = 10) {
     return this.request(`/comments/my-comments?page=${page}&size=${size}`);
   }
+
+  // Search posts
+  async searchPosts(keyword, categoryId, page = 1, size = 10) {
+    let url = `/posts/search?page=${page}&size=${size}`;
+    if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+    if (categoryId) url += `&categoryId=${categoryId}`;
+    return this.request(url);
+  }
+
+  // Get hot posts
+  async getHotPosts(size = 10) {
+    return this.request(`/posts/hot?size=${size}`);
+  }
+
+  // Get archive stats
+  async getArchiveStats() {
+    return this.request(`/posts/archive`);
+  }
+
+  // Upload file
+  async uploadFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.request('/upload', {
+      method: 'POST',
+      body: formData,
+      headers: {},
+    });
+  }
+
+  // Tags
+  async getTags() {
+    return this.request('/tags');
+  }
+
+  async getTagById(id) {
+    return this.request(`/tags/${id}`);
+  }
+
+  async getTagBySlug(slug) {
+    return this.request(`/tags/slug/${slug}`);
+  }
+
+  async getPostsByTag(tagId, page = 1, size = 10) {
+    return this.request(`/tags/${tagId}/posts?page=${page}&size=${size}`);
+  }
+
+  async getHotTags(limit = 20) {
+    return this.request(`/tags/hot?limit=${limit}`);
+  }
+
+  async createTag(tagData) {
+    return this.request('/tags', {
+      method: 'POST',
+      body: JSON.stringify(tagData),
+    });
+  }
+
+  async updateTag(id, tagData) {
+    return this.request(`/tags/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(tagData),
+    });
+  }
+
+  async deleteTag(id) {
+    return this.request(`/tags/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 // Create and export singleton instance
@@ -289,9 +392,4 @@ export const apiClient = new ApiClient();
 // Load tokens on initialization
 if (typeof window !== 'undefined') {
   apiClient.loadTokens();
-}
-
-// Make apiClient available globally for use in other scripts
-if (typeof window !== 'undefined') {
-  window.apiClient = apiClient;
 }

@@ -37,30 +37,30 @@ public class JwtTokenProvider {
     }
 
     public Long getUserIdFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(jwtSecret)
+        Claims claims = Jwts.parser()
+                .verifyWith(jwtSecret)
                 .build()
-                .parseClaimsJws(token)
+                .parseSignedClaims(token)
                 .getBody();
 
         return Long.parseLong(claims.getSubject());
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(jwtSecret)
+        Claims claims = Jwts.parser()
+                .verifyWith(jwtSecret)
                 .build()
-                .parseClaimsJws(token)
+                .parseSignedClaims(token)
                 .getBody();
 
         return claims.get("username", String.class);
     }
 
     public String getRoleFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(jwtSecret)
+        Claims claims = Jwts.parser()
+                .verifyWith(jwtSecret)
                 .build()
-                .parseClaimsJws(token)
+                .parseSignedClaims(token)
                 .getBody();
 
         return claims.get("role", String.class);
@@ -68,10 +68,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(jwtSecret)
+            Jwts.parser()
+                    .verifyWith(jwtSecret)
                     .build()
-                    .parseClaimsJws(authToken);
+                    .parseSignedClaims(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
             return false;

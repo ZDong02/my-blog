@@ -4,6 +4,7 @@ import rehypePrettyCode from 'rehype-pretty-code';
 
 export default defineConfig({
   integrations: [tailwind()],
+  output: 'static',
   markdown: {
     syntaxHighlight: 'shiki',
     rehypePlugins: [[rehypePrettyCode, {

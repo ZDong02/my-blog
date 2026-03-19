@@ -1,6 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.dto.request.UserProfileUpdateRequest;
+import com.example.blog.dto.request.PasswordChangeRequest;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.entity.User;
 import com.example.blog.security.JwtUserDetails;
@@ -12,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @CrossOrigin
 public class UserController {
 
@@ -36,6 +37,14 @@ public class UserController {
         // Remove sensitive information
         updatedUser.setPassword(null);
         return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", updatedUser));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            @AuthenticationPrincipal JwtUserDetails userDetails,
+            @Valid @RequestBody PasswordChangeRequest request) {
+        userService.changePassword(userDetails.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Password changed successfully", null));
     }
 
     @GetMapping("/{userId}")

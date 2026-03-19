@@ -7,8 +7,8 @@ export function getStaticPaths() {
   return [];
 }
 
-const title = 'Edit Post - Admin';
-const description = 'Edit blog post';
+const title = '编辑文章 - 管理员';
+const description = '编辑文章';
 ---
 
 <AdminLayout title={title} description={description}>
@@ -19,18 +19,18 @@ const description = 'Edit blog post';
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
-          Back to Posts
+          返回文章列表
         </a>
       </div>
 
       <div id="loading" class="text-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading post...</p>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载文章...</p>
       </div>
 
       <form id="editPostForm" class="bg-white dark:bg-zinc-900 shadow rounded-lg hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Edit Post</h2>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">编辑文章</h2>
           <span id="postStatus" class="px-3 py-1 rounded-full text-xs font-medium"></span>
         </div>
 
@@ -38,7 +38,7 @@ const description = 'Edit blog post';
           <!-- Title -->
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Title <span class="text-red-600">*</span>
+              标题 <span class="text-red-600">*</span>
             </label>
             <input
               type="text"
@@ -53,21 +53,21 @@ const description = 'Edit blog post';
           <!-- Category -->
           <div>
             <label for="categoryId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Category
+              分类
             </label>
             <select
               id="categoryId"
               name="categoryId"
               class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
-              <option value="">Select a category</option>
+              <option value="">选择分类</option>
             </select>
           </div>
 
           <!-- Featured Image -->
           <div>
             <label for="featuredImage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Featured Image URL
+              精选图片 URL
             </label>
             <input
               type="url"
@@ -80,7 +80,7 @@ const description = 'Edit blog post';
           <!-- Summary -->
           <div>
             <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Summary
+              摘要
             </label>
             <textarea
               id="summary"
@@ -94,7 +94,7 @@ const description = 'Edit blog post';
           <!-- Content -->
           <div>
             <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Content <span class="text-red-600">*</span>
+              内容 <span class="text-red-600">*</span>
             </label>
             <div class="border border-gray-300 dark:border-zinc-700 rounded-lg overflow-hidden">
               <div class="flex border-b border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 px-2 py-1 gap-1">
@@ -123,14 +123,14 @@ const description = 'Edit blog post';
               id="publishBtn"
               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium hidden"
             >
-              Publish
+              发布
             </button>
             <button
               type="button"
               id="unpublishBtn"
               class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition font-medium hidden"
             >
-              Unpublish
+              取消发布
             </button>
           </div>
           <div class="flex items-center gap-3">
@@ -139,13 +139,13 @@ const description = 'Edit blog post';
               onclick="window.history.back()"
               class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
             >
-              Cancel
+              取消
             </button>
             <button
               type="submit"
               class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
             >
-              Save Changes
+              保存更改
             </button>
           </div>
         </div>
@@ -173,7 +173,7 @@ const description = 'Edit blog post';
       const user = window.authManager.currentUser;
       if (user.role !== 'ADMIN') {
         window.location.href = '/dashboard';
-        showWarning('Access denied. Admin only.');
+        showWarning('访问受限，仅限管理员。');
         return;
       }
 
@@ -182,7 +182,7 @@ const description = 'Edit blog post';
       postId = pathParts[pathParts.length - 1];
 
       if (!postId || isNaN(parseInt(postId))) {
-        showError('Invalid post ID');
+        showError('无效的文章 ID');
         setTimeout(() => window.history.back(), 1500);
         return;
       }
@@ -226,20 +226,20 @@ const description = 'Edit blog post';
           publishBtn.onclick = async () => {
             try {
               await apiClient.request(`/posts/${postId}/publish`, { method: 'PUT' });
-              showSuccess('Post published!');
+              showSuccess('文章已发布！');
               loadPost();
             } catch (error) {
-              showError('Failed to publish');
+              showError('发布失败');
             }
           };
 
           unpublishBtn.onclick = async () => {
             try {
               await apiClient.request(`/posts/${postId}/unpublish`, { method: 'PUT' });
-              showSuccess('Post unpublished');
+              showSuccess('文章已取消发布');
               loadPost();
             } catch (error) {
-              showError('Failed to unpublish');
+              showError('取消发布失败');
             }
           };
 
@@ -248,7 +248,7 @@ const description = 'Edit blog post';
         }
       } catch (error) {
         console.error('Failed to load post:', error);
-        showError('Failed to load post');
+        showError('加载文章失败');
       }
     };
 
@@ -297,11 +297,11 @@ const description = 'Edit blog post';
       try {
         const response = await apiClient.updatePost(postId, formData);
         if (response.success) {
-          showSuccess('Post updated successfully!');
+          showSuccess('文章更新成功！');
         }
       } catch (error) {
         console.error('Failed to update post:', error);
-        showError(error.message || 'Failed to update post');
+        showError(error.message || '更新文章失败');
       }
     });
 

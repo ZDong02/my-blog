@@ -7,6 +7,8 @@
   // Toast notification system
   const toastContainer = document.getElementById('toast-container');
 
+  type ToastType = 'success' | 'error' | 'warning' | 'info';
+
   const toastTypes = {
     success: {
       bg: 'bg-green-50 dark:bg-green-900/20',
@@ -34,9 +36,11 @@
     }
   };
 
-  function showToast(message, type = 'info', duration = 3000) {
+  function showToast(message: string, type: ToastType = 'info', duration = 3000) {
+    if (!toastContainer) return;
+
     const toast = document.createElement('div');
-    const config = toastTypes[type] || toastTypes.info;
+    const config = toastTypes[type as ToastType] || toastTypes.info;
 
     toast.className = `
       flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border
@@ -73,11 +77,16 @@
   }
 
   // Expose to window
+  // @ts-ignore - extending window object
   window.showToast = showToast;
 
   // Expose specific helpers
-  window.showSuccess = (msg) => showToast(msg, 'success');
-  window.showError = (msg) => showToast(msg, 'error');
-  window.showWarning = (msg) => showToast(msg, 'warning');
-  window.showInfo = (msg) => showToast(msg, 'info');
+  // @ts-ignore - extending window object
+  window.showSuccess = (msg: string) => showToast(msg, 'success');
+  // @ts-ignore - extending window object
+  window.showError = (msg: string) => showToast(msg, 'error');
+  // @ts-ignore - extending window object
+  window.showWarning = (msg: string) => showToast(msg, 'warning');
+  // @ts-ignore - extending window object
+  window.showInfo = (msg: string) => showToast(msg, 'info');
 </script>

@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = '标签';
+const description = '浏览所有标签';
+---
+
+<Layout title={title} description={description}>
+  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">标签</h1>
+        <p class="text-gray-600 dark:text-gray-400">浏览所有标签，查找感兴趣的内容</p>
+      </div>
+
+      <!-- Tags Grid -->
+      <div id="tagsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <!-- Tags will be loaded here -->
+      </div>
+
+      <!-- Loading state -->
+      <div id="loading" class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+        <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载标签...</p>
+      </div>
+
+      <!-- Hot Tags Section -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">热门标签</h2>
+        <div id="hotTags" class="flex flex-wrap gap-2">
+          <!-- Hot tags will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { loadTags } from './_loadTags.mts';
+
+    export const renderTags = (tags) => {
+      const container = document.getElementById('tagsGrid');
+      let html = '';
+
+      tags.forEach(tag => {
+        const postCount = tag.postCount || 0;
+        const sizeClass = postCount > 10 ? 'text-lg font-semibold' : postCount > 5 ? 'text-base' : 'text-sm';
+        const colorClass = postCount > 10 ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200' :
+                          postCount > 5 ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200' :
+                          'bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300';
+
+        html += `
+          <a href="/tag/${tag.slug}" class="block">
+            <div class="p-4 rounded-xl ${colorClass} hover:shadow-lg transition ${sizeClass}">
+              <div class="truncate">${tag.name}</div>
+              ${postCount > 0 ? `<div class="text-xs opacity-70 mt-1">${postCount} 篇文章</div>` : ''}
+            </div>
+          </a>
+        `;
+      });
+
+      container.innerHTML = html;
+    };
+
+    export const renderHotTags = (tags) => {
+      const container = document.getElementById('hotTags');
+      let html = '';
+
+      tags.forEach((tag, index) => {
+        const postCount = tag.postCount || 0;
+        html += `
+          <a href="/tag/${tag.slug}" class="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 rounded-full hover:bg-red-200 dark:hover:bg-red-900/50 transition">
+            <span class="text-xs font-bold text-red-600">#${index + 1}</span>
+            <span>${tag.name}</span>
+            <span class="text-xs opacity-70">(${postCount})</span>
+          </a>
+        `;
+      });
+
+      container.innerHTML = html;
+    };
+
+    // Initialize
+    loadTags();
+  </script>
+</Layout>

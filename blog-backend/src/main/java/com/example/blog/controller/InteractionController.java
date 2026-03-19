@@ -2,7 +2,7 @@ package com.example.blog.controller;
 
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.entity.Bookmark;
-import com.example.blog.entity.Like;
+import com.example.blog.entity.LikeRecord;
 import com.example.blog.security.JwtUserDetails;
 import com.example.blog.service.BookmarkService;
 import com.example.blog.service.LikeService;
@@ -13,8 +13,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 互动控制器
+ * 处理点赞和收藏相关请求
+ *
+ * @author Blog Team
+ * @date 2026-03-18
+ */
 @RestController
-@RequestMapping("/api/interactions")
+@RequestMapping("/interactions")
 @CrossOrigin
 public class InteractionController {
 
@@ -24,23 +31,43 @@ public class InteractionController {
     @Autowired
     private BookmarkService bookmarkService;
 
-    // Like operations
+    /**
+     * 点赞文章
+     *
+     * @param postId      文章 ID
+     * @param userDetails 当前用户
+     * @return 响应
+     */
     @PostMapping("/like/{postId}")
     public ResponseEntity<ApiResponse<Void>> likePost(
             @PathVariable Long postId,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         likeService.likePost(postId, userDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("Post liked successfully", null));
+        return ResponseEntity.ok(ApiResponse.success("点赞成功", null));
     }
 
+    /**
+     * 取消点赞文章
+     *
+     * @param postId      文章 ID
+     * @param userDetails 当前用户
+     * @return 响应
+     */
     @DeleteMapping("/like/{postId}")
     public ResponseEntity<ApiResponse<Void>> unlikePost(
             @PathVariable Long postId,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         likeService.unlikePost(postId, userDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("Post unliked successfully", null));
+        return ResponseEntity.ok(ApiResponse.success("已取消点赞", null));
     }
 
+    /**
+     * 检查点赞状态
+     *
+     * @param postId      文章 ID
+     * @param userDetails 当前用户
+     * @return 是否点赞
+     */
     @GetMapping("/like/check/{postId}")
     public ResponseEntity<ApiResponse<Boolean>> checkLikeStatus(
             @PathVariable Long postId,
@@ -49,32 +76,60 @@ public class InteractionController {
         return ResponseEntity.ok(ApiResponse.success(isLiked));
     }
 
+    /**
+     * 获取我的点赞列表
+     *
+     * @param userDetails 当前用户
+     * @param page        页码
+     * @param size        每页大小
+     * @return 点赞列表
+     */
     @GetMapping("/likes/my-likes")
-    public ResponseEntity<ApiResponse<List<Like>>> getMyLikes(
+    public ResponseEntity<ApiResponse<List<LikeRecord>>> getMyLikes(
             @AuthenticationPrincipal JwtUserDetails userDetails,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        List<Like> likes = likeService.getUserLikes(userDetails.getId(), page, size);
+        List<LikeRecord> likes = likeService.getUserLikes(userDetails.getId(), page, size);
         return ResponseEntity.ok(ApiResponse.success(likes));
     }
 
-    // Bookmark operations
+    /**
+     * 收藏文章
+     *
+     * @param postId      文章 ID
+     * @param userDetails 当前用户
+     * @return 响应
+     */
     @PostMapping("/bookmark/{postId}")
     public ResponseEntity<ApiResponse<Void>> bookmarkPost(
             @PathVariable Long postId,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         bookmarkService.bookmarkPost(postId, userDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("Post bookmarked successfully", null));
+        return ResponseEntity.ok(ApiResponse.success("收藏成功", null));
     }
 
+    /**
+     * 取消收藏
+     *
+     * @param postId      文章 ID
+     * @param userDetails 当前用户
+     * @return 响应
+     */
     @DeleteMapping("/bookmark/{postId}")
     public ResponseEntity<ApiResponse<Void>> removeBookmark(
             @PathVariable Long postId,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         bookmarkService.removeBookmark(postId, userDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("Bookmark removed successfully", null));
+        return ResponseEntity.ok(ApiResponse.success("已取消收藏", null));
     }
 
+    /**
+     * 检查收藏状态
+     *
+     * @param postId      文章 ID
+     * @param userDetails 当前用户
+     * @return 是否收藏
+     */
     @GetMapping("/bookmark/check/{postId}")
     public ResponseEntity<ApiResponse<Boolean>> checkBookmarkStatus(
             @PathVariable Long postId,
@@ -83,6 +138,14 @@ public class InteractionController {
         return ResponseEntity.ok(ApiResponse.success(isBookmarked));
     }
 
+    /**
+     * 获取我的收藏列表
+     *
+     * @param userDetails 当前用户
+     * @param page        页码
+     * @param size        每页大小
+     * @return 收藏列表
+     */
     @GetMapping("/bookmarks/my-bookmarks")
     public ResponseEntity<ApiResponse<List<Bookmark>>> getMyBookmarks(
             @AuthenticationPrincipal JwtUserDetails userDetails,

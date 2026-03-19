@@ -2,79 +2,58 @@ package com.example.blog.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.blog.entity.Post;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PostMapper extends BaseMapper<Post> {
 
-    @Select("SELECT p.*, u.username as author_username, u.nickname as author_nickname, " +
-            "c.name as category_name " +
-            "FROM posts p " +
-            "LEFT JOIN users u ON p.author_id = u.id " +
-            "LEFT JOIN categories c ON p.category_id = c.id " +
-            "WHERE p.status = 'PUBLISHED' " +
-            "ORDER BY p.created_at DESC " +
-            "LIMIT #{offset}, #{limit}")
-    @Results({
-        @Result(property = "id", column = "id"),
-        @Result(property = "title", column = "title"),
-        @Result(property = "content", column = "content"),
-        @Result(property = "summary", column = "summary"),
-        @Result(property = "categoryId", column = "category_id"),
-        @Result(property = "authorId", column = "author_id"),
-        @Result(property = "status", column = "status"),
-        @Result(property = "viewCount", column = "view_count"),
-        @Result(property = "likeCount", column = "like_count"),
-        @Result(property = "commentCount", column = "comment_count"),
-        @Result(property = "createdAt", column = "created_at"),
-        @Result(property = "updatedAt", column = "updated_at"),
-        @Result(property = "publishedAt", column = "published_at"),
-        @Result(property = "author.username", column = "author_username"),
-        @Result(property = "author.nickname", column = "author_nickname"),
-        @Result(property = "category.name", column = "category_name")
-    })
+    // 查询已发布的文章（分页）
     List<Post> findPublishedPosts(@Param("offset") int offset, @Param("limit") int limit);
 
-    @Select("SELECT COUNT(*) FROM posts WHERE status = 'PUBLISHED'")
+    // 统计已发布文章数量
     int countPublishedPosts();
 
-    @Select("SELECT * FROM posts WHERE author_id = #{authorId} AND status != 'DELETED' ORDER BY created_at DESC")
+    // 按作者查询文章
     List<Post> findByAuthorId(@Param("authorId") Long authorId);
 
-    @Select("SELECT p.*, u.username as author_username, u.nickname as author_nickname, " +
-            "c.name as category_name " +
-            "FROM posts p " +
-            "LEFT JOIN users u ON p.author_id = u.id " +
-            "LEFT JOIN categories c ON p.category_id = c.id " +
-            "WHERE p.id = #{postId} AND p.status = 'PUBLISHED'")
-    @Results({
-        @Result(property = "id", column = "id"),
-        @Result(property = "title", column = "title"),
-        @Result(property = "content", column = "content"),
-        @Result(property = "summary", column = "summary"),
-        @Result(property = "categoryId", column = "category_id"),
-        @Result(property = "authorId", column = "author_id"),
-        @Result(property = "status", column = "status"),
-        @Result(property = "viewCount", column = "view_count"),
-        @Result(property = "likeCount", column = "like_count"),
-        @Result(property = "commentCount", column = "comment_count"),
-        @Result(property = "createdAt", column = "created_at"),
-        @Result(property = "updatedAt", column = "updated_at"),
-        @Result(property = "publishedAt", column = "published_at"),
-        @Result(property = "author.username", column = "author_username"),
-        @Result(property = "author.nickname", column = "author_nickname"),
-        @Result(property = "category.name", column = "category_name")
-    })
+    // 查询已发布文章
     Post findPublishedPostById(@Param("postId") Long postId);
 
-    @Update("UPDATE posts SET view_count = view_count + 1 WHERE id = #{postId}")
+    // 增加浏览量
     void incrementViewCount(@Param("postId") Long postId);
 
-    @Update("UPDATE posts SET like_count = like_count + #{increment} WHERE id = #{postId}")
+    // 更新点赞数
     void updateLikeCount(@Param("postId") Long postId, @Param("increment") int increment);
 
-    @Update("UPDATE posts SET comment_count = comment_count + #{increment} WHERE id = #{postId}")
+    // 更新评论数
     void updateCommentCount(@Param("postId") Long postId, @Param("increment") int increment);
+
+    // 按标题查询
+    Post selectByTitle(@Param("title") String title);
+
+    // 搜索文章
+    List<Post> searchPosts(@Param("keyword") String keyword,
+                           @Param("categoryId") Long categoryId,
+                           @Param("offset") int offset,
+                           @Param("limit") int limit);
+
+    // 统计搜索结果
+    int countSearchPosts(@Param("keyword") String keyword,
+                         @Param("categoryId") Long categoryId);
+
+    // 查询热门文章
+    List<Post> findHotPosts(@Param("limit") int limit);
+
+    // 获取归档统计
+    List<Map<String, Object>> getArchiveStats();
+
+    // 按标签查询文章
+    List<Post> findPostsByTag(@Param("tagId") Long tagId, @Param("offset") int offset, @Param("limit") int limit);
+
+    // 统计标签下的文章数量
+    int countPostsByTag(@Param("tagId") Long tagId);
 }

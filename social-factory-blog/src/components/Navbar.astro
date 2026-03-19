@@ -13,18 +13,18 @@
 
     <!-- Desktop Navigation -->
     <div class="hidden md:flex items-center gap-6">
-      <a href="/about" class="text-sm uppercase tracking-widest hover:text-red-600 transition">ABOUT</a>
-      <a href="/roadmap" class="text-sm uppercase tracking-widest hover:text-red-600 transition">ROADMAP</a>
-      <a href="/faq" class="text-sm uppercase tracking-widest hover:text-red-600 transition">FAQ</a>
-      <a href="/contact" class="text-sm uppercase tracking-widest hover:text-red-600 transition">CONTACT</a>
-      <a href="/blog" class="text-sm uppercase tracking-widest hover:text-red-600 transition">BLOG</a>
+      <a href="/about" class="text-sm hover:text-red-600 transition">关于</a>
+      <a href="/roadmap" class="text-sm hover:text-red-600 transition">路线</a>
+      <a href="/faq" class="text-sm hover:text-red-600 transition">问答</a>
+      <a href="/contact" class="text-sm hover:text-red-600 transition">联系</a>
+      <a href="/blog" class="text-sm hover:text-red-600 transition">博客</a>
 
       <!-- Search Box -->
       <form action="/search" method="GET" class="relative">
         <input
           type="text"
           name="q"
-          placeholder="Search..."
+          placeholder="搜索..."
           class="w-48 px-3 py-1.5 text-sm border border-gray-300 dark:border-zinc-700 rounded-full bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
         <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600">
@@ -49,15 +49,32 @@
     <div class="hidden md:flex items-center gap-4">
       <!-- Auth links - shown when not logged in -->
       <div id="desktop-auth-links" class="flex items-center gap-4">
-        <a href="/login" class="text-xs uppercase tracking-widest hover:text-red-600">LOGIN</a>
-        <a href="/register" class="text-xs uppercase tracking-widest hover:text-red-600">REGISTER</a>
+        <a href="/login" class="text-sm hover:text-red-600">登录</a>
+        <a href="/register" class="text-sm hover:text-red-600">注册</a>
       </div>
 
       <!-- User info - shown when logged in -->
       <div id="desktop-user-info" class="hidden flex items-center gap-3">
-        <a href="/dashboard" class="text-xs uppercase tracking-widest hover:text-red-600">DASHBOARD</a>
-        <a id="desktop-admin-link" href="/admin/posts" class="hidden text-xs uppercase tracking-widest text-red-600 hover:text-red-500">ADMIN</a>
-        <button id="desktop-logout-btn" class="text-xs uppercase tracking-widest hover:text-red-600">LOGOUT</button>
+        <a id="desktop-admin-link" href="/admin" class="hidden text-sm text-red-600 hover:text-red-500 font-medium">管理后台</a>
+
+        <!-- User profile dropdown -->
+        <div class="relative">
+          <button id="user-menu-button" class="flex items-center gap-2 hover:opacity-80 transition">
+            <img id="desktop-user-avatar" src="" alt="Avatar" class="h-8 w-8 rounded-full object-cover border border-zinc-300 dark:border-zinc-700" />
+            <span id="desktop-username" class="text-sm font-medium"></span>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-zinc-200 dark:border-zinc-800 py-1 z-50">
+            <a href="/dashboard" class="block px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">仪表盘</a>
+            <a href="/profile" class="block px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">个人设置</a>
+            <a href="/my-likes" class="block px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">我的点赞</a>
+            <a href="/my-bookmarks" class="block px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">我的收藏</a>
+            <a href="/my-comments" class="block px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">我的评论</a>
+            <hr class="border-zinc-200 dark:border-zinc-800 my-1" />
+            <button id="desktop-logout-btn" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">退出登录</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -75,7 +92,7 @@
         <input
           type="text"
           name="q"
-          placeholder="Search..."
+          placeholder="搜索..."
           class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
         <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
@@ -85,28 +102,35 @@
         </button>
       </form>
 
-      <a href="/about" class="hover:text-red-600 transition py-2">ABOUT</a>
-      <a href="/roadmap" class="hover:text-red-600 transition py-2">ROADMAP</a>
-      <a href="/faq" class="hover:text-red-600 transition py-2">FAQ</a>
-      <a href="/contact" class="hover:text-red-600 transition py-2">CONTACT</a>
-      <a href="/blog" class="hover:text-red-600 transition py-2">BLOG</a>
+      <a href="/about" class="hover:text-red-600 transition py-2">关于</a>
+      <a href="/roadmap" class="hover:text-red-600 transition py-2">路线</a>
+      <a href="/faq" class="hover:text-red-600 transition py-2">问答</a>
+      <a href="/contact" class="hover:text-red-600 transition py-2">联系</a>
+      <a href="/blog" class="hover:text-red-600 transition py-2">博客</a>
 
       <!-- Mobile Auth links - shown when not logged in -->
       <div id="mobile-auth-links" class="pt-2 border-t border-zinc-200 dark:border-zinc-800 flex gap-4">
-        <a href="/login" class="hover:text-red-600 transition py-2">LOGIN</a>
-        <a href="/register" class="hover:text-red-600 transition py-2">REGISTER</a>
+        <a href="/login" class="hover:text-red-600 transition py-2">登录</a>
+        <a href="/register" class="hover:text-red-600 transition py-2">注册</a>
       </div>
 
       <!-- Mobile User info - shown when logged in -->
       <div id="mobile-user-info" class="hidden pt-2 border-t border-zinc-200 dark:border-zinc-800 flex flex-col gap-2">
-        <span id="mobile-username" class="text-xs uppercase tracking-widest text-red-600"></span>
-        <a href="/dashboard" class="hover:text-red-600 transition py-2">DASHBOARD</a>
-        <a href="/my-likes" class="hover:text-red-600 transition py-2">My Likes</a>
-        <a href="/my-bookmarks" class="hover:text-red-600 transition py-2">Bookmarks</a>
-        <a href="/my-comments" class="hover:text-red-600 transition py-2">Comments</a>
-        <a href="/profile" class="hover:text-red-600 transition py-2">Profile</a>
-        <a id="mobile-admin-link" href="/admin/posts" class="hidden text-red-600 hover:text-red-500 transition py-2">ADMIN PANEL</a>
-        <button id="mobile-logout-btn" class="text-left hover:text-red-600 transition py-2">LOGOUT</button>
+        <!-- User profile with avatar -->
+        <div class="flex items-center gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+          <img id="mobile-user-avatar" src="" alt="Avatar" class="h-12 w-12 rounded-full object-cover border border-zinc-300 dark:border-zinc-700" />
+          <div class="flex-1">
+            <a id="mobile-username-link" href="/profile" class="text-sm font-medium text-red-600 hover:text-red-500"></a>
+            <p class="text-xs text-zinc-500">点击编辑个人资料</p>
+          </div>
+        </div>
+        <a href="/dashboard" class="hover:text-red-600 transition py-2">仪表盘</a>
+        <a id="mobile-admin-link" href="/admin/posts" class="hidden text-red-600 hover:text-red-500 font-medium transition py-2">管理后台</a>
+        <a href="/my-likes" class="hover:text-red-600 transition py-2">我的点赞</a>
+        <a href="/my-bookmarks" class="hover:text-red-600 transition py-2">我的收藏</a>
+        <a href="/my-comments" class="hover:text-red-600 transition py-2">我的评论</a>
+        <a href="/profile" class="hover:text-red-600 transition py-2">个人设置</a>
+        <button id="mobile-logout-btn" class="text-left hover:text-red-600 transition py-2">退出登录</button>
       </div>
 
       <div class="flex items-center gap-4 pt-2 border-t border-zinc-200 dark:border-zinc-800">
@@ -117,16 +141,41 @@
   </div>
 
   <script>
+    // @ts-nocheck
+    // Setup user dropdown menu - runs once on DOMContentLoaded
+    function setupUserDropdown() {
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userDropdown = document.getElementById('user-dropdown');
+
+      if (!userMenuButton || !userDropdown) return;
+
+      // Toggle dropdown on button click
+      userMenuButton.onclick = (e) => {
+        e.stopPropagation();
+        userDropdown.classList.toggle('hidden');
+      };
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!userDropdown.contains(e.target) && e.target !== userMenuButton) {
+          userDropdown.classList.add('hidden');
+        }
+      });
+    }
+
     // Auth state management
     function updateAuthUI(user, isAuthenticated) {
       const desktopAuthLinks = document.getElementById('desktop-auth-links');
       const desktopUserInfo = document.getElementById('desktop-user-info');
       const desktopAdminLink = document.getElementById('desktop-admin-link');
       const desktopLogoutBtn = document.getElementById('desktop-logout-btn');
+      const desktopUsername = document.getElementById('desktop-username');
+      const desktopUserAvatar = document.getElementById('desktop-user-avatar');
 
       const mobileAuthLinks = document.getElementById('mobile-auth-links');
       const mobileUserInfo = document.getElementById('mobile-user-info');
-      const mobileUsername = document.getElementById('mobile-username');
+      const mobileUsernameLink = document.getElementById('mobile-username-link');
+      const mobileUserAvatar = document.getElementById('mobile-user-avatar');
       const mobileAdminLink = document.getElementById('mobile-admin-link');
       const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
 
@@ -137,19 +186,23 @@
         mobileAuthLinks.classList.add('hidden');
         mobileUserInfo.classList.remove('hidden');
 
-        // Set username
+        // Set username and avatar
         const displayName = user.nickname || user.username;
-        desktopUsername.textContent = '@' + displayName;
-        mobileUsername.textContent = displayName;
+        const defaultAvatar = '/images/default-avatar.svg';
+        const avatar = user.avatar || defaultAvatar;
+
+        desktopUsername.textContent = displayName;
+        desktopUserAvatar.src = avatar;
+        desktopUserAvatar.onerror = () => { desktopUserAvatar.src = defaultAvatar; };
+
+        mobileUsernameLink.textContent = displayName;
+        mobileUserAvatar.src = avatar;
+        mobileUserAvatar.onerror = () => { mobileUserAvatar.src = defaultAvatar; };
 
         // Show admin link if admin
-        if (user.role === 'ADMIN') {
-          desktopAdminLink.classList.remove('hidden');
-          mobileAdminLink.classList.remove('hidden');
-        } else {
-          desktopAdminLink.classList.add('hidden');
-          mobileAdminLink.classList.add('hidden');
-        }
+        const isAdmin = user.role === 'ADMIN';
+        desktopAdminLink.classList.toggle('hidden', !isAdmin);
+        mobileAdminLink.classList.toggle('hidden', !isAdmin);
 
         // Logout handlers
         desktopLogoutBtn.onclick = handleLogout;
@@ -170,14 +223,18 @@
       }
     }
 
-    // Initialize auth state on page load
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
+      // Setup dropdown menu (always runs once)
+      setupUserDropdown();
+
+      // Setup auth state listeners
       if (window.authManager) {
         window.authManager.addListener(({ user, isAuthenticated }) => {
           updateAuthUI(user, isAuthenticated);
         });
 
-        // Initial state
+        // Initial auth state
         const authState = window.authManager.getAuthState();
         updateAuthUI(authState.user, authState.isAuthenticated);
       }

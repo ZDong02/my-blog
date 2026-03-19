@@ -2,6 +2,7 @@ package com.example.blog.service;
 
 import com.example.blog.dto.request.UserProfileUpdateRequest;
 import com.example.blog.dto.request.UserRegistrationRequest;
+import com.example.blog.dto.request.PasswordChangeRequest;
 import com.example.blog.entity.User;
 import com.example.blog.exception.BusinessException;
 import com.example.blog.mapper.UserMapper;
@@ -39,6 +40,7 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setNickname(request.getNickname() != null ? request.getNickname() : request.getUsername());
+        user.setAvatar("/images/default-avatar.svg");
         user.setRole(isFirstUser ? "ADMIN" : "USER");
         user.setStatus(1);
         user.setIsFirstUser(isFirstUser ? 1 : 0);
@@ -71,6 +73,22 @@ public class UserService {
 
         userMapper.updateProfile(user);
         return userMapper.selectById(userId);
+    }
+
+    public void changePassword(Long userId, PasswordChangeRequest request) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException("User not found");
+        }
+
+        // Verify current password
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new BusinessException("Current password is incorrect");
+        }
+
+        // Update password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userMapper.updateById(user);
     }
 
     public User findById(Long userId) {

@@ -1,53 +1,107 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-const title = 'Blog - Social Factory';
-const description = 'Browse all blog posts';
+const title = '博客 - 社会工厂';
+const description = '浏览所有文章';
 ---
 
 <Layout title={title} description={description}>
-  <div class="max-w-7xl mx-auto px-8 py-20">
-    <h1 class="text-6xl font-black mb-12">BLOG</h1>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
+    <!-- Page Header -->
+    <div class="text-center mb-16">
+      <h1 class="text-4xl sm:text-5xl font-black text-zinc-900 dark:text-white mb-4">博客</h1>
+      <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+        探索最新的技术文章、教程和思考
+      </p>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-      <!-- Posts list -->
-      <div class="md:col-span-2">
-        <div id="loading" class="text-center py-12">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-          <p class="mt-4 text-gray-600 dark:text-gray-400">Loading posts...</p>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
+      <!-- Posts List -->
+      <div class="lg:col-span-3">
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-16">
+          <div class="spinner mx-auto mb-4"></div>
+          <p class="text-zinc-500 dark:text-zinc-400">正在加载文章...</p>
         </div>
 
-        <div id="posts" class="space-y-12 hidden">
+        <!-- Empty State -->
+        <div id="noPosts" class="hidden text-center py-16">
+          <div class="w-20 h-20 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
+          </div>
+          <p class="text-xl font-medium text-zinc-900 dark:text-white mb-2">暂无文章</p>
+          <p class="text-zinc-500 dark:text-zinc-400">请稍后再来查看新内容！</p>
+        </div>
+
+        <!-- Posts Grid -->
+        <div id="posts" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
           <!-- Posts will be loaded here -->
         </div>
 
-        <div id="noPosts" class="hidden text-center py-12">
-          <p class="text-gray-600 dark:text-gray-400 text-lg">No posts available yet.</p>
-          <p class="text-gray-500 dark:text-gray-500 text-sm mt-2">Check back later for new content!</p>
-        </div>
-
         <!-- Pagination -->
-        <div id="pagination" class="hidden mt-12 flex items-center justify-between">
-          <button id="prevBtn" class="px-6 py-2 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-red-600 hover:border-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
-            Previous
+        <div id="pagination" class="hidden mt-12 flex items-center justify-center gap-4">
+          <button
+            id="prevBtn"
+            class="btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            上一页
           </button>
-          <span id="pageInfo" class="text-sm text-gray-600 dark:text-gray-400">Page 1</span>
-          <button id="nextBtn" class="px-6 py-2 border border-zinc-300 dark:border-zinc-700 rounded hover:bg-red-600 hover:border-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed">
-            Next
+          <span id="pageInfo" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 px-4">
+            第 1 页
+          </span>
+          <button
+            id="nextBtn"
+            class="btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            下一页
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
           </button>
         </div>
       </div>
 
-      <!-- Categories + Tags -->
-      <div>
-        <h3 class="uppercase tracking-widest text-sm mb-6">Categories</h3>
-        <div class="flex flex-wrap gap-2" id="categories">
-          <!-- Categories will be loaded here -->
+      <!-- Sidebar -->
+      <div class="lg:col-span-1 space-y-8">
+        <!-- Categories -->
+        <div class="card p-6">
+          <h3 class="text-sm uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold mb-4">
+            分类
+          </h3>
+          <div class="flex flex-wrap gap-2" id="categories">
+            <!-- Categories will be loaded here -->
+          </div>
         </div>
 
-        <h3 class="uppercase tracking-widest text-sm mt-12 mb-6">Recent Posts</h3>
-        <div id="recentPosts" class="space-y-4">
-          <!-- Recent posts will be loaded here -->
+        <!-- Recent Posts -->
+        <div class="card p-6">
+          <h3 class="text-sm uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold mb-4">
+            最新文章
+          </h3>
+          <div id="recentPosts" class="space-y-4">
+            <!-- Recent posts will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Newsletter / Subscribe -->
+        <div class="card p-6 bg-gradient-to-br from-red-600 to-red-700 border-none">
+          <h3 class="text-white font-bold text-lg mb-2">订阅更新</h3>
+          <p class="text-red-100 text-sm mb-4">获取最新文章通知</p>
+          <div class="space-y-3">
+            <input
+              type="email"
+              placeholder="您的邮箱"
+              class="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder:text-red-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"
+            />
+            <button class="w-full px-3 py-2 bg-white text-red-600 font-medium rounded-lg text-sm hover:bg-red-50 transition">
+              订阅
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -91,24 +145,45 @@ const description = 'Browse all blog posts';
           content.forEach(post => {
             const postDate = new Date(post.createdAt).toLocaleDateString('zh-TW');
             const readingTime = Math.ceil((post.content?.length || 0) / 200);
+            const excerpt = post.summary || post.content?.substring(0, 120) || '';
 
-            // Collect categories
             if (post.category?.name) {
               allCategories.add(post.category.name);
             }
 
             html += `
-              <a href="/blog/${post.id}" class="block group">
-                <div class="flex gap-8">
-                  <div class="w-40 h-28 bg-zinc-200 dark:bg-zinc-800 rounded overflow-hidden flex-shrink-0">
-                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="w-full h-full object-cover" />` : ''}
+              <a href="/blog/${post.id}" class="card-hover group block overflow-hidden">
+                <div class="flex flex-col sm:flex-row gap-4 p-4">
+                  <div class="w-full sm:w-40 h-40 bg-zinc-200 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0">
+                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />` : `
+                      <div class="w-full h-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+                        <svg class="w-10 h-10 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                        </svg>
+                      </div>
+                    `}
                   </div>
-                  <div class="flex-1">
-                    <div class="text-red-600 text-xs uppercase">${post.category?.name || 'Uncategorized'}</div>
-                    <h2 class="text-3xl font-medium group-hover:text-red-600 transition">${post.title}</h2>
-                    <p class="text-zinc-500 mt-3 line-clamp-2">${post.summary || post.content?.substring(0, 200) || ''}</p>
-                    <div class="mt-4 text-xs text-zinc-400">
-                      ${postDate} • ${readingTime} min read
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="badge-red">${post.category?.name || '未分类'}</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition line-clamp-2">
+                      ${post.title}
+                    </h2>
+                    <p class="text-zinc-600 dark:text-zinc-400 mt-2 line-clamp-2 text-sm">
+                      ${excerpt}
+                    </p>
+                    <div class="flex items-center gap-4 mt-4 text-xs text-zinc-500 dark:text-zinc-400">
+                      <span>${postDate}</span>
+                      <span>·</span>
+                      <span>${readingTime} 分钟阅读</span>
+                      <span>·</span>
+                      <span class="flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        ${post.likeCount || 0}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -123,28 +198,33 @@ const description = 'Browse all blog posts';
           pagination.classList.remove('hidden');
 
           // Update pagination
-          document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+          document.getElementById('pageInfo').textContent = `第 ${currentPage} 页，共 ${totalPages} 页`;
           document.getElementById('prevBtn').disabled = currentPage <= 1;
           document.getElementById('nextBtn').disabled = currentPage >= totalPages;
 
           // Render categories
           renderCategories();
+          renderRecentPosts(content.slice(0, 5));
         }
       } catch (error) {
         console.error('Failed to load posts:', error);
         loading.classList.add('hidden');
         noPosts.classList.remove('hidden');
-        noPosts.querySelector('p').textContent = 'Failed to load posts. Please try again later.';
+        noPosts.querySelector('p').textContent = '加载文章失败，请稍后再试。';
       }
     };
 
     const renderCategories = () => {
       const container = document.getElementById('categories');
+      if (allCategories.size === 0) {
+        container.innerHTML = '<p class="text-sm text-zinc-500 dark:text-zinc-400">暂无分类</p>';
+        return;
+      }
       let html = '';
       allCategories.forEach(cat => {
         html += `
           <button onclick="filterByCategory('${cat.replace(/'/g, "\\'")}')"
-                  class="px-4 py-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full text-sm hover:bg-red-100 dark:hover:bg-red-900 transition">
+                  class="badge hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 transition cursor-pointer">
             ${cat}
           </button>
         `;
@@ -152,12 +232,39 @@ const description = 'Browse all blog posts';
       container.innerHTML = html;
     };
 
-    const filterByCategory = (category) => {
-      const posts = document.querySelectorAll('#posts > a');
+    const renderRecentPosts = (posts) => {
+      const container = document.getElementById('recentPosts');
+      let html = '';
       posts.forEach(post => {
-        const postCategory = post.querySelector('.text-red-600.text-xs').textContent;
-        post.style.display = postCategory === category ? 'block' : 'none';
+        html += `
+          <a href="/blog/${post.id}" class="group flex gap-3 items-start">
+            <div class="w-16 h-16 bg-zinc-200 dark:bg-zinc-800 rounded-lg overflow-hidden flex-shrink-0">
+              ${post.featuredImage ? `<img src="${post.featuredImage}" class="w-full h-full object-cover" />` : `
+                <div class="w-full h-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                  </svg>
+                </div>
+              `}
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-sm font-medium text-zinc-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition line-clamp-2">
+                ${post.title}
+              </h4>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 block">
+                ${new Date(post.createdAt).toLocaleDateString('zh-TW')}
+              </span>
+            </div>
+          </a>
+        `;
       });
+      container.innerHTML = html;
+    };
+
+    const filterByCategory = (category) => {
+      // For now, just highlight the category
+      // In production, you would fetch posts by category
+      showToast(`筛选分类：${category}`, 'info');
     };
 
     // Pagination handlers
@@ -172,6 +279,22 @@ const description = 'Browse all blog posts';
         loadPosts(currentPage + 1);
       }
     });
+
+    const showToast = (message, type = 'info') => {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 transition-all ${
+        type === 'success' ? 'bg-green-600 text-white' :
+        type === 'error' ? 'bg-red-600 text-white' :
+        'bg-zinc-800 text-white'
+      }`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    };
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {

@@ -5,12 +5,12 @@ import AuthProvider from "../components/AuthProvider.astro";
 import Toast from "../components/Toast.astro";
 import "../styles/global.css";
 
-const { title = "Social Factory", description = "No Favouritism" } =
+const { title = "社会工厂", description = "不偏不倚" } =
   Astro.props;
 ---
 
 <!doctype html>
-<html lang="zh-TW" class="dark">
+<html lang="zh-CN" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +26,7 @@ const { title = "Social Factory", description = "No Favouritism" } =
     <slot />
     <ThemeToggle />
     <footer class="text-center py-8 text-xs text-zinc-500">
-      (c) 2026 Social Factory - No Favouritism
+      (c) 2026 社会工厂 - 不偏不倚
     </footer>
   </body>
 </html>

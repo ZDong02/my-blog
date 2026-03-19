@@ -1,152 +1,229 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection, getEntry } from 'astro:content';
 
+// This page uses client-side rendering to fetch data from API
+// getStaticPaths returns a single path for build - actual data is loaded via JS
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({ params: { slug: post.slug } }));
+  // Return a default path for build - the actual post is loaded client-side
+  return [{ params: { slug: '1' } }];
 }
-
-const { slug } = Astro.params;
-const post = await getEntry('blog', slug);
-const { Content } = await post.render();
-const readingTime = Math.ceil(post.body.split(' ').length / 200);
 ---
 
-<Layout title={`${post.data.title} - Social Factory`}>
-  <article class="max-w-3xl mx-auto px-8 py-20">
-    <div class="text-red-600 text-sm uppercase mb-4">{post.data.category}</div>
-    <h1 class="text-5xl font-bold text-gray-900 dark:text-white">{post.data.title}</h1>
-    <div class="flex gap-4 text-xs text-zinc-500 mt-6">
-      <span>{post.data.pubDate.toLocaleDateString('zh-TW')}</span>
-      <span>{readingTime} �����Ķ�</span>
+<Layout title="文章 - Social Factory" description="阅读文章详情">
+  <article class="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20">
+    <!-- Loading State -->
+    <div id="loading" class="text-center py-16">
+      <div class="spinner mx-auto mb-4"></div>
+      <p class="text-zinc-500 dark:text-zinc-400">正在加载文章...</p>
     </div>
 
-    <img src={post.data.image || '/images/hero.jpg'} class="my-12 rounded-xl" />
-
-    <div class="prose dark:prose-invert">
-      <Content />
-    </div>
-
-    <!-- Backend Integration: Post interactions -->
-    <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-6">
-          <button id="likeBtn" class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200">
-            <svg id="likeIcon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <span id="likeCount">0</span>
-          </button>
-
-          <button id="bookmarkBtn" class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors duration-200">
-            <svg id="bookmarkIcon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-            </svg>
-            <span>Bookmark</span>
-          </button>
-
-          <button class="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-            </svg>
-            <span>Share</span>
-          </button>
+    <!-- Article Content (loaded via JS) -->
+    <div id="articleContent" class="hidden">
+      <!-- Article Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+          <span id="category" class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs uppercase font-medium rounded-full"></span>
         </div>
-
-        <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-          <div class="flex items-center space-x-1">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            <span id="viewCount">0</span>
-          </div>
-          <div class="flex items-center space-x-1">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <span id="commentCount">0</span>
-          </div>
+        <h1 id="title" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight"></h1>
+        <div class="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400 mt-6">
+          <span id="pubDate"></span>
+          <span>·</span>
+          <span id="readingTime"></span>
         </div>
       </div>
-    </div>
 
-    <!-- Backend Integration: Comments system -->
-    <div class="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
-        ���� (<span id="commentsCount">0</span>)
-      </h3>
-
-      <!-- Add comment form -->
-      <div id="commentForm" class="hidden mb-8">
-        <form id="addCommentForm" class="space-y-4">
-          <div>
-            <label for="commentContent" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">��������</label>
-            <textarea
-              id="commentContent"
-              rows="4"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
-              placeholder="��������뷨..."
-            ></textarea>
-          </div>
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md transition-colors duration-200"
-            >��������</button>
-          </div>
-        </form>
+      <!-- Featured Image -->
+      <div class="mb-10 overflow-hidden rounded-2xl shadow-lg">
+        <img id="featuredImage" src="" alt="" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
       </div>
 
-      <!-- Login to comment message -->
-      <div id="loginToComment" class="hidden mb-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg text-center">
-        <p class="text-gray-600 dark:text-gray-400 mb-2">
-          �� <a href="/login" class="text-red-600 hover:text-red-700">��¼</a> �󷢱����ۡ�</p>
+      <!-- Article Content -->
+      <div id="content" class="prose prose-lg dark:prose-invert max-w-none
+                    prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
+                    prose-a:text-red-600 dark:prose-a:text-red-400 prose-a:no-underline hover:prose-a:underline
+                    prose-img:rounded-xl prose-img:shadow-md
+                    prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-800
+                    prose-blockquote:border-red-500 prose-blockquote:bg-red-50 dark:prose-blockquote:bg-red-900/20
+                    prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-zinc-100 dark:prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:rounded">
       </div>
 
-      <!-- Comments list -->
-      <div id="commentsList" class="space-y-6">
-        <!-- Comments will be loaded here -->
+      <!-- Article Footer - Interactions -->
+      <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Like Button -->
+            <button id="likeBtn" class="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+              <svg id="likeIcon" class="h-5 w-5 text-gray-400 group-hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <span id="likeCount" class="text-sm font-medium text-gray-700 dark:text-gray-300">0</span>
+            </button>
+
+            <!-- Bookmark Button -->
+            <button id="bookmarkBtn" class="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition">
+              <svg id="bookmarkIcon" class="h-5 w-5 text-gray-400 group-hover:text-yellow-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">收藏</span>
+            </button>
+
+            <!-- Share Button -->
+            <button onclick="shareArticle()" class="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition">
+              <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">分享</span>
+            </button>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <div class="flex items-center gap-1.5">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span id="viewCount">0</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <span id="commentCount">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div class="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+          <span>评论</span>
+          <span id="commentsCount" class="px-2.5 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-full">0</span>
+        </h3>
+
+        <!-- Comment Form (for logged in users) -->
+        <div id="commentForm" class="hidden mb-10">
+          <form id="addCommentForm" class="space-y-4">
+            <div>
+              <label for="commentContent" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">发表评论</label>
+              <textarea
+                id="commentContent"
+                rows="4"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-zinc-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-zinc-800 dark:text-white resize-none"
+                placeholder="分享你的想法..."
+              ></textarea>
+            </div>
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-full transition shadow-md hover:shadow-lg"
+              >发表评论</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Login Prompt -->
+        <div id="loginToComment" class="hidden mb-10 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl text-center">
+          <p class="text-gray-600 dark:text-gray-400">
+            请 <a href="/login" class="text-red-600 dark:text-red-400 font-medium hover:underline">登录</a> 后发表评论
+          </p>
+        </div>
+
+        <!-- Comments List -->
+        <div id="commentsList" class="space-y-6">
+          <!-- Comments will be loaded here -->
+        </div>
       </div>
     </div>
   </article>
 
   <script>
-    // Backend integration for post interactions and comments
     import { apiClient } from '../../lib/api.js';
 
-    // Get post ID from URL - will be set when page loads
     let postId = null;
     let isLiked = false;
     let isBookmarked = false;
+    let postTitle = '';
+    let postDescription = '';
 
-    // Try to get post ID from URL slug or default to 1 for testing
+    // Extract post ID from URL path
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     postId = pathParts[pathParts.length - 1] || '1';
 
-    // If postId is not a number, try to extract it or use 1
     if (isNaN(parseInt(postId))) {
-      // For now, use 1 as default - in production you'd map slugs to IDs
       postId = '1';
     }
 
-    // Load post data from API
     const loadPostData = async () => {
       try {
         const response = await apiClient.getPost(postId);
         if (response.success && response.data) {
           const post = response.data;
+
+          // Set page title and description
+          postTitle = post.title || '文章';
+          postDescription = post.summary || post.content?.substring(0, 160) || '';
+          document.title = `${postTitle} - Social Factory`;
+
+          // Update article header
+          document.getElementById('title').textContent = post.title;
+          document.getElementById('category').textContent = post.category?.name || '未分类';
+
+          // Format date
+          const pubDate = new Date(post.publishedAt || post.createdAt);
+          document.getElementById('pubDate').textContent = pubDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
+
+          // Calculate reading time
+          const readingTime = Math.ceil((post.content?.length || 0) / 200);
+          document.getElementById('readingTime').textContent = `${readingTime} 分钟阅读`;
+
+          // Set featured image
+          const featuredImage = document.getElementById('featuredImage');
+          if (post.featuredImage) {
+            featuredImage.src = post.featuredImage;
+            featuredImage.alt = post.title;
+          } else {
+            featuredImage.style.display = 'none';
+          }
+
+          // Render content (handle markdown-like formatting)
+          const contentDiv = document.getElementById('content');
+          if (post.content) {
+            // Convert newlines to <br> and wrap in paragraphs
+            const formattedContent = post.content
+              .split('\n\n')
+              .map(p => `<p>${p.trim()}</p>`)
+              .join('');
+            contentDiv.innerHTML = formattedContent;
+          }
+
+          // Update stats
           document.getElementById('viewCount').textContent = post.viewCount || 0;
           document.getElementById('likeCount').textContent = post.likeCount || 0;
           document.getElementById('commentCount').textContent = post.commentCount || 0;
+
+          // Show article content, hide loading
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('articleContent').classList.remove('hidden');
+        } else {
+          // Show error state
+          document.getElementById('loading').innerHTML = `
+            <div class="text-center py-16">
+              <p class="text-zinc-500 dark:text-zinc-400">文章未找到</p>
+            </div>
+          `;
         }
       } catch (error) {
         console.error('Failed to load post data:', error);
+        document.getElementById('loading').innerHTML = `
+          <div class="text-center py-16">
+            <p class="text-zinc-500 dark:text-zinc-400">加载文章失败，请稍后再试</p>
+          </div>
+        `;
       }
     };
 
-    // Wait for auth to initialize
     const checkAuthAndSetup = async () => {
       if (window.authManager.isLoading) {
         setTimeout(checkAuthAndSetup, 100);
@@ -188,15 +265,16 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
     const updateLikeButton = () => {
       const likeBtn = document.getElementById('likeBtn');
       const likeIcon = document.getElementById('likeIcon');
+      const likeCount = document.getElementById('likeCount');
 
       if (isLiked) {
         likeIcon.setAttribute('fill', 'currentColor');
-        likeBtn.classList.add('text-red-600', 'dark:text-red-400');
-        likeBtn.classList.remove('text-gray-600', 'dark:text-gray-400');
+        likeIcon.classList.add('text-red-500');
+        likeCount.classList.add('text-red-600', 'dark:text-red-400');
       } else {
         likeIcon.setAttribute('fill', 'none');
-        likeBtn.classList.remove('text-red-600', 'dark:text-red-400');
-        likeBtn.classList.add('text-gray-600', 'dark:text-gray-400');
+        likeIcon.classList.remove('text-red-500');
+        likeCount.classList.remove('text-red-600', 'dark:text-red-400');
       }
     };
 
@@ -206,17 +284,14 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
 
       if (isBookmarked) {
         bookmarkIcon.setAttribute('fill', 'currentColor');
-        bookmarkBtn.classList.add('text-yellow-600', 'dark:text-yellow-400');
-        bookmarkBtn.classList.remove('text-gray-600', 'dark:text-gray-400');
+        bookmarkIcon.classList.add('text-yellow-500');
       } else {
         bookmarkIcon.setAttribute('fill', 'none');
-        bookmarkBtn.classList.remove('text-yellow-600', 'dark:text-yellow-400');
-        bookmarkBtn.classList.add('text-gray-600', 'dark:text-gray-400');
+        bookmarkIcon.classList.remove('text-yellow-500');
       }
     };
 
     const setupInteractionHandlers = () => {
-      // Like button handler
       document.getElementById('likeBtn').addEventListener('click', async () => {
         if (!window.authManager.isAuthenticated) {
           window.location.href = '/login';
@@ -227,13 +302,13 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
           if (isLiked) {
             await apiClient.unlikePost(postId);
             isLiked = false;
-            const likeCount = parseInt(document.getElementById('likeCount').textContent) - 1;
-            document.getElementById('likeCount').textContent = likeCount;
+            const count = parseInt(document.getElementById('likeCount').textContent) - 1;
+            document.getElementById('likeCount').textContent = count;
           } else {
             await apiClient.likePost(postId);
             isLiked = true;
-            const likeCount = parseInt(document.getElementById('likeCount').textContent) + 1;
-            document.getElementById('likeCount').textContent = likeCount;
+            const count = parseInt(document.getElementById('likeCount').textContent) + 1;
+            document.getElementById('likeCount').textContent = count;
           }
           updateLikeButton();
         } catch (error) {
@@ -241,7 +316,6 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
         }
       });
 
-      // Bookmark button handler
       document.getElementById('bookmarkBtn').addEventListener('click', async () => {
         if (!window.authManager.isAuthenticated) {
           window.location.href = '/login';
@@ -262,25 +336,23 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
         }
       });
 
-      // Comment form handler
-      document.getElementById('addCommentForm').addEventListener('submit', async (e) => {
+      document.getElementById('addCommentForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        const content = document.getElementById('commentContent').value.trim();
+        const content = document.getElementById('commentContent')?.value.trim();
         if (!content) return;
 
         try {
           const response = await apiClient.addComment(postId, { content });
           if (response.success) {
             document.getElementById('commentContent').value = '';
-            await loadComments(); // Reload comments
-
-            // Update comment count
-            const commentCount = parseInt(document.getElementById('commentCount').textContent) + 1;
-            document.getElementById('commentCount').textContent = commentCount;
+            await loadComments();
+            const count = parseInt(document.getElementById('commentCount').textContent) + 1;
+            document.getElementById('commentCount').textContent = count;
+            showToast('评论成功！', 'success');
           }
         } catch (error) {
           console.error('Failed to add comment:', error);
+          showToast('评论失败：' + error.message, 'error');
         }
       });
     };
@@ -301,25 +373,51 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
       const container = document.getElementById('commentsList');
 
       if (!comments || comments.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-8">��û�����ۡ���������һ�����۰ɣ�</p>';
+        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-10">暂无评论，快来发表第一条评论吧！</p>';
         return;
       }
 
       let html = '';
       comments.forEach(comment => {
         html += `
-          <div class="border-l-4 border-red-200 dark:border-red-800 pl-6 py-4">
-            <div class="flex items-start space-x-3">
-              <img src="${comment.user?.avatar || '/images/default-avatar.png'}" alt="${comment.user?.nickname || comment.user?.username}" class="h-8 w-8 rounded-full object-cover" />
-              <div class="flex-1">
-                <div class="flex items-center space-x-2 mb-2">
-                  <h4 class="font-medium text-gray-900 dark:text-white">${comment.user?.nickname || comment.user?.username}</h4>
-                  <span class="text-sm text-gray-500 dark:text-gray-400">${new Date(comment.createdAt).toLocaleDateString('zh-TW')}</span>
+          <div class="flex gap-4 p-5 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+            <img src="${comment.user?.avatar || '/images/default-avatar.png'}" alt="${comment.user?.nickname || comment.user?.username}" class="h-10 w-10 rounded-full object-cover flex-shrink-0" />
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-2">
+                <h4 class="font-medium text-gray-900 dark:text-white truncate">${comment.user?.nickname || comment.user?.username}</h4>
+                <span class="text-xs text-gray-500 dark:text-gray-400">${new Date(comment.createdAt).toLocaleDateString('zh-TW')}</span>
+              </div>
+              <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">${comment.content}</p>
+              <div class="mt-3 flex items-center gap-4">
+                <button onclick="showReplyForm(${comment.id})" class="text-xs text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition flex items-center gap-1">
+                  <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                  </svg>
+                  回复
+                </button>
+              </div>
+              <div id="reply-form-${comment.id}" class="reply-form-container hidden mt-4">
+                <div class="flex gap-2">
+                  <input
+                    type="hidden"
+                    id="parentCommentId"
+                    value="${comment.id}"
+                  />
+                  <input
+                    type="text"
+                    id="reply-content-${comment.id}"
+                    placeholder="写下你的回复..."
+                    class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  />
+                  <button
+                    onclick="submitReply(${comment.id})"
+                    class="px-4 py-2 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  >
+                    发送
+                  </button>
                 </div>
-                <p class="text-gray-700 dark:text-gray-300">${comment.content}</p>
               </div>
             </div>
-            ${comment.replies && comment.replies.length > 0 ? renderReplies(comment.replies) : ''}
           </div>
         `;
       });
@@ -327,27 +425,84 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
       container.innerHTML = html;
     };
 
-    const renderReplies = (replies) => {
-      let html = '<div class="ml-8 mt-4 space-y-4">';
-      replies.forEach(reply => {
-        html += `
-          <div class="flex items-start space-x-3">
-            <img src="${reply.user?.avatar || '/images/default-avatar.png'}" alt="${reply.user?.nickname || reply.user?.username}" class="h-6 w-6 rounded-full object-cover" />
-            <div class="flex-1">
-              <div class="flex items-center space-x-2 mb-1">
-                <h5 class="font-medium text-gray-900 dark:text-white text-sm">${reply.user?.nickname || reply.user?.username}</h5>
-                <span class="text-xs text-gray-500 dark:text-gray-400">${new Date(reply.createdAt).toLocaleDateString('zh-TW')}</span>
-              </div>
-              <p class="text-gray-700 dark:text-gray-300 text-sm">${reply.content}</p>
-            </div>
-          </div>
-        `;
+    window.showReplyForm = (commentId) => {
+      document.querySelectorAll('.reply-form-container').forEach(form => {
+        if (form.id !== `reply-form-${commentId}`) {
+          form.classList.add('hidden');
+        }
       });
-      html += '</div>';
-      return html;
+
+      const replyForm = document.getElementById(`reply-form-${commentId}`);
+      if (replyForm) {
+        replyForm.classList.toggle('hidden');
+        const input = document.getElementById(`reply-content-${commentId}`);
+        if (input && !replyForm.classList.contains('hidden')) {
+          input.focus();
+        }
+      }
     };
 
-    // Initialize
+    window.submitReply = async (commentId) => {
+      const content = document.getElementById(`reply-content-${commentId}`)?.value.trim();
+      if (!content) {
+        showToast('请输入回复内容', 'error');
+        return;
+      }
+
+      try {
+        const response = await apiClient.addComment(postId, { content, parentId: commentId });
+        if (response.success) {
+          document.getElementById(`reply-content-${commentId}`).value = '';
+          document.getElementById(`reply-form-${commentId}`).classList.add('hidden');
+          await loadComments();
+          const count = parseInt(document.getElementById('commentCount').textContent) + 1;
+          document.getElementById('commentCount').textContent = count;
+          showToast('回复成功！', 'success');
+        }
+      } catch (error) {
+        console.error('Failed to add reply:', error);
+        showToast('回复失败：' + error.message, 'error');
+      }
+    };
+
+    const shareArticle = async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: document.title,
+            url: window.location.href
+          });
+        } catch (error) {
+          console.log('Share cancelled');
+        }
+      } else {
+        // Fallback: copy to clipboard
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          showToast('链接已复制到剪贴板', 'success');
+        } catch (error) {
+          showToast('复制失败，请手动复制链接', 'error');
+        }
+      }
+    };
+
+    const showToast = (message, type = 'info') => {
+      // Simple toast implementation
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 transition-all ${
+        type === 'success' ? 'bg-green-600 text-white' :
+        type === 'error' ? 'bg-red-600 text-white' :
+        'bg-zinc-800 text-white'
+      }`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translate(-50%, 10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    };
+
     const init = () => {
       loadPostData();
       checkAuthAndSetup();
@@ -356,9 +511,3 @@ const readingTime = Math.ceil(post.body.split(' ').length / 200);
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </Layout>
-
-
-
-
-
-

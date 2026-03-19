@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.example.blog.entity.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="avatar" column="avatar"/>
+        <result property="bio" column="bio"/>
+        <result property="role" column="role"/>
+        <result property="status" column="status"/>
+        <result property="isFirstUser" column="is_first_user"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
+        <!-- 统计信息 -->
+        <result property="postCount" column="post_count"/>
+        <result property="commentCount" column="comment_count"/>
+    </resultMap>
+
+    <!-- 按用户名查询 -->
+    <select id="findByUsername" resultType="com.example.blog.entity.User">
+        SELECT * FROM users WHERE username = #{username} AND status = 1
+    </select>
+
+    <!-- 按邮箱查询 -->
+    <select id="findByEmail" resultType="com.example.blog.entity.User">
+        SELECT * FROM users WHERE email = #{email} AND status = 1
+    </select>
+
+    <!-- 更新用户资料 -->
+    <update id="updateProfile">
+        UPDATE users
+        SET nickname = #{nickname},
+            avatar = #{avatar},
+            bio = #{bio},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 标记为非首位用户 -->
+    <update id="markAsNotFirstUser">
+        UPDATE users SET is_first_user = 0 WHERE id = #{userId}
+    </update>
+
+    <!-- 统计用户总数 -->
+    <select id="countTotalUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+    </select>
+
+    <!-- 查询用户及统计信息 -->
+    <select id="selectWithStats" resultMap="UserResultMap">
+        SELECT u.*,
+               COUNT(DISTINCT p.id) as post_count,
+               COUNT(DISTINCT c.id) as comment_count
+        FROM users u
+        LEFT JOIN posts p ON u.id = p.author_id AND p.status != 'DELETED'
+        LEFT JOIN comments c ON u.id = c.user_id
+        WHERE u.id = #{id}
+        GROUP BY u.id, u.username, u.email, u.nickname, u.avatar, u.bio, u.role, u.status, u.is_first_user, u.created_at, u.updated_at
+    </select>
+
+    <!-- 查询所有头像为空的用户 -->
+    <select id="findAllUsersWithNullAvatar" resultMap="UserResultMap">
+        SELECT * FROM users WHERE avatar IS NULL OR avatar = ''
+    </select>
+
+</mapper>

@@ -31,7 +31,29 @@
       "Bash(netstat -ano | findstr :4321)",
       "Bash(cd /d/my-blog/blog-backend && mvn spring-boot:run)",
       "Bash(taskkill /F /PID 15376)",
-      "Bash(ls -la \"D:/my-blog/social-factory-blog/src\" 2>/dev/null || ls -la \"D:/my-blog/src\" 2>/dev/null || find \"D:/my-blog\" -maxdepth 3 -name \"*.astro\" -o -name \"*.tsx\" -o -name \"*.js\" 2>/dev/null | head -30)"
+      "Bash(ls -la \"D:/my-blog/social-factory-blog/src\" 2>/dev/null || ls -la \"D:/my-blog/src\" 2>/dev/null || find \"D:/my-blog\" -maxdepth 3 -name \"*.astro\" -o -name \"*.tsx\" -o -name \"*.js\" 2>/dev/null | head -30)",
+      "Bash(find:*)",
+      "Bash(cd:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "Bash(javap:*)",
+      "Bash(ps:*)",
+      "Bash(tasklist:*)",
+      "Bash(D:/my-blog/blog-backend/mvnw.cmd clean:*)",
+      "Bash(mvn clean:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzczNTc2OTk0LCJleHAiOjE3NzM2NjMzOTR9.eV4UxGW-uelE2w_U50BKhTAB2dg-1qCdBG-_rdIhhzk6bXBvd6CcYhg9jtQzk3DBinQf-c0apAyBW76GhgbVrQ\" && curl -X POST \"http://localhost:8080/api/posts\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer $TOKEN\" -d \"{\\\\\"title\\\\\":\\\\\"我的第一篇 blog\\\\\",\\\\\"content\\\\\":\\\\\"欢迎来到我的博客！这是我的第一篇文章。\\\\\\\\n\\\\\\\\n## 关于这个博客\\\\\\\\n\\\\\\\\n这个博客是用来分享我的想法、经验和技术文章的地方。我希望通过这种方式，能够记录我的学习和成长历程。\\\\\\\\n\\\\\\\\n## 未来的计划\\\\\\\\n\\\\\\\\n在接下来的时间里，我计划分享以下内容：\\\\\\\\n\\\\\\\\n- 技术教程和笔记\\\\\\\\n- 生活点滴和感悟\\\\\\\\n- 旅行经历和见闻\\\\\\\\n- 美食探索和推荐\\\\\\\\n\\\\\\\\n## 结语\\\\\\\\n\\\\\\\\n感谢你的阅读！如果你有任何问题或建议，欢迎在评论区留言。\\\\\\\\n\\\\\\\\n---\\\\\\\\n\\\\\\\\n*这是使用 Spring Boot 和 Astro 构建的博客系统*\\\\\",\\\\\"summary\\\\\":\\\\\"这是我的第一篇博客文章，记录我开始写博客的时刻。\\\\\",\\\\\"categoryId\\\\\":1}\" 2>&1)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzczNTc2OTk0LCJleHAiOjE3NzM2NjMzOTR9.eV4UxGW-uelE2w_U50BKhTAB2dg-1qCdBG-_rdIhhzk6bXBvd6CcYhg9jtQzk3DBinQf-c0apAyBW76GhgbVrQ\" && curl -X POST \"http://localhost:8080/api/posts\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer $TOKEN\" -d @D:/my-blog/blog-backend/database/post-data.json 2>&1)",
+      "Bash(mysql:*)",
+      "Bash(echo:*)",
+      "Bash(\"D:/my-blog/blog-backend/test-api-security.bat\":*)",
+      "Bash(docker --version)",
+      "Bash(docker-compose --version)",
+      "Bash(mvn package:*)",
+      "Bash(node node_modules/.bin/astro build)",
+      "mcp__ide__getDiagnostics",
+      "Bash(mvn spring-boot:run)",
+      "Bash(findstr :4321)"
     ]
   }
 }

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.mapper.PostMapper">
+
+    <resultMap id="PostResultMap" type="com.example.blog.entity.Post">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="summary" column="summary"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="authorId" column="author_id"/>
+        <result property="status" column="status"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="publishedAt" column="published_at"/>
+
+        <!-- 关联查询结果 -->
+        <association property="author" javaType="com.example.blog.entity.User">
+            <id property="id" column="author_id"/>
+            <result property="username" column="author_username"/>
+            <result property="nickname" column="author_nickname"/>
+            <result property="avatar" column="author_avatar"/>
+        </association>
+
+        <association property="category" javaType="com.example.blog.entity.Category">
+            <id property="id" column="category_id"/>
+            <result property="name" column="category_name"/>
+            <result property="description" column="category_description"/>
+        </association>
+    </resultMap>
+
+    <!-- 查询已发布的文章列表 -->
+    <select id="findPublishedPosts" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.status = 'PUBLISHED'
+        ORDER BY p.created_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 统计已发布文章数量 -->
+    <select id="countPublishedPosts" resultType="int">
+        SELECT COUNT(*) FROM posts WHERE status = 'PUBLISHED'
+    </select>
+
+    <!-- 查询已发布的单篇文章 -->
+    <select id="findPublishedPostById" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.id = #{postId} AND p.status = 'PUBLISHED'
+    </select>
+
+    <!-- 按作者 ID 查询文章 -->
+    <select id="findByAuthorId" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.author_id = #{authorId} AND p.status != 'DELETED'
+        ORDER BY p.created_at DESC
+    </select>
+
+    <!-- 增加浏览量 -->
+    <update id="incrementViewCount">
+        UPDATE posts SET view_count = view_count + 1 WHERE id = #{postId}
+    </update>
+
+    <!-- 更新点赞数 -->
+    <update id="updateLikeCount">
+        UPDATE posts SET like_count = like_count + #{increment} WHERE id = #{postId}
+    </update>
+
+    <!-- 更新评论数 -->
+    <update id="updateCommentCount">
+        UPDATE posts SET comment_count = comment_count + #{increment} WHERE id = #{postId}
+    </update>
+
+    <!-- 按标题查询文章 -->
+    <select id="selectByTitle" resultType="com.example.blog.entity.Post">
+        SELECT * FROM posts WHERE title = #{title}
+    </select>
+
+    <!-- 搜索文章（按关键词） -->
+    <select id="searchPosts" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.status = 'PUBLISHED'
+        <if test="keyword != null and keyword != ''">
+            AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR p.content LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="categoryId != null">
+            AND p.category_id = #{categoryId}
+        </if>
+        ORDER BY p.created_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 统计搜索结果数量 -->
+    <select id="countSearchPosts" resultType="int">
+        SELECT COUNT(*) FROM posts p
+        WHERE p.status = 'PUBLISHED'
+        <if test="keyword != null and keyword != ''">
+            AND (p.title LIKE CONCAT('%', #{keyword}, '%') OR p.content LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="categoryId != null">
+            AND p.category_id = #{categoryId}
+        </if>
+    </select>
+
+    <!-- 查询热门文章（按浏览量） -->
+    <select id="findHotPosts" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.status = 'PUBLISHED'
+        ORDER BY p.view_count DESC, p.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 按年月归档统计 -->
+    <select id="getArchiveStats" resultType="map">
+        SELECT
+            DATE_FORMAT(created_at, '%Y') as year,
+            DATE_FORMAT(created_at, '%m') as month,
+            COUNT(*) as count
+        FROM posts
+        WHERE status = 'PUBLISHED'
+        GROUP BY DATE_FORMAT(created_at, '%Y-%m')
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 按标签查询文章 -->
+    <select id="findPostsByTag" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        INNER JOIN post_tags pt ON p.id = pt.post_id
+        WHERE p.status = 'PUBLISHED' AND pt.tag_id = #{tagId}
+        ORDER BY p.created_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 统计标签下的文章数量 -->
+    <select id="countPostsByTag" resultType="int">
+        SELECT COUNT(*) FROM posts p
+        INNER JOIN post_tags pt ON p.id = pt.post_id
+        WHERE p.status = 'PUBLISHED' AND pt.tag_id = #{tagId}
+    </select>
+
+</mapper>

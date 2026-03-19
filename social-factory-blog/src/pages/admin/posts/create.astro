@@ -1,8 +1,8 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 
-const title = 'Create Post - Admin';
-const description = 'Create a new blog post';
+const title = '创建文章 - 管理员';
+const description = '创建新文章';
 ---
 
 <AdminLayout title={title} description={description}>
@@ -13,20 +13,20 @@ const description = 'Create a new blog post';
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
-          Back to Posts
+          返回文章列表
         </a>
       </div>
 
       <form id="createPostForm" class="bg-white dark:bg-zinc-900 shadow rounded-lg">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800">
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create New Post</h2>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">创建新文章</h2>
         </div>
 
         <div class="px-6 py-6 space-y-6">
           <!-- Title -->
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Title <span class="text-red-600">*</span>
+              标题 <span class="text-red-600">*</span>
             </label>
             <input
               type="text"
@@ -35,28 +35,28 @@ const description = 'Create a new blog post';
               required
               maxlength="200"
               class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Enter post title"
+              placeholder="输入文章标题"
             />
           </div>
 
           <!-- Category -->
           <div>
             <label for="categoryId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Category
+              分类
             </label>
             <select
               id="categoryId"
               name="categoryId"
               class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
-              <option value="">Select a category</option>
+              <option value="">选择分类</option>
             </select>
           </div>
 
           <!-- Featured Image -->
           <div>
             <label for="featuredImage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Featured Image URL
+              精选图片 URL
             </label>
             <input
               type="url"
@@ -70,7 +70,7 @@ const description = 'Create a new blog post';
           <!-- Summary -->
           <div>
             <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Summary
+              摘要
             </label>
             <textarea
               id="summary"
@@ -78,15 +78,15 @@ const description = 'Create a new blog post';
               rows="3"
               maxlength="500"
               class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="Brief summary of the post (optional)"
+              placeholder="文章简短摘要（可选）"
             ></textarea>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Max 500 characters</p>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">最多 500 个字符</p>
           </div>
 
           <!-- Content -->
           <div>
             <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Content <span class="text-red-600">*</span>
+              内容 <span class="text-red-600">*</span>
             </label>
             <div class="border border-gray-300 dark:border-zinc-700 rounded-lg overflow-hidden">
               <div class="flex border-b border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 px-2 py-1 gap-1">
@@ -106,18 +106,18 @@ const description = 'Create a new blog post';
                 required
                 rows="20"
                 class="w-full px-4 py-2 border-0 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-0 font-mono text-sm"
-                placeholder="Write your content in Markdown..."
+                placeholder="使用 Markdown 编写内容..."
               ></textarea>
             </div>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Markdown supported</p>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">支持 Markdown 格式</p>
           </div>
         </div>
 
         <div class="px-6 py-4 border-t border-gray-200 dark:border-zinc-800 flex items-center justify-between">
           <div class="flex items-center gap-4">
             <label class="flex items-center">
-              <input type="checkbox" id="publishImmediately" class="rounded border-gray-300 dark:border-zinc-700 text-red-600 focus:ring-red-500" />
-              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Publish immediately</span>
+              <input type="checkbox" id="publishImmediately" checked class="rounded border-gray-300 dark:border-zinc-700 text-red-600 focus:ring-red-500" />
+              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">立即发布</span>
             </label>
           </div>
           <div class="flex items-center gap-3">
@@ -126,13 +126,13 @@ const description = 'Create a new blog post';
               onclick="window.history.back()"
               class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
             >
-              Cancel
+              取消
             </button>
             <button
               type="submit"
               class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
             >
-              Create Post
+              创建文章
             </button>
           </div>
         </div>
@@ -158,7 +158,7 @@ const description = 'Create a new blog post';
       const user = window.authManager.currentUser;
       if (user.role !== 'ADMIN') {
         window.location.href = '/dashboard';
-        showWarning('Access denied. Admin only.');
+        showWarning('访问受限，仅限管理员。');
         return;
       }
 
@@ -209,12 +209,12 @@ const description = 'Create a new blog post';
 
       // Validate
       if (!formData.title.trim()) {
-        showError('Please enter a title');
+        showError('请输入标题');
         return;
       }
 
       if (!formData.content.trim()) {
-        showError('Please enter content');
+        showError('请输入内容');
         return;
       }
 
@@ -222,7 +222,7 @@ const description = 'Create a new blog post';
         const response = await apiClient.createPost(formData);
 
         if (response.success) {
-          showSuccess('Post created successfully!');
+          showSuccess('文章创建成功！');
 
           // Publish if checked
           const publishImmediately = document.getElementById('publishImmediately').checked;
@@ -230,7 +230,7 @@ const description = 'Create a new blog post';
 
           if (publishImmediately) {
             await apiClient.request(`/posts/${postId}/publish`, { method: 'PUT' });
-            showSuccess('Post published!');
+            showSuccess('文章已发布！');
           }
 
           setTimeout(() => {
@@ -239,7 +239,7 @@ const description = 'Create a new blog post';
         }
       } catch (error) {
         console.error('Failed to create post:', error);
-        showError(error.message || 'Failed to create post');
+        showError(error.message || '创建文章失败');
       }
     });
 

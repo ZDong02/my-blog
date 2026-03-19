@@ -16,16 +16,16 @@ import HeroAnimation from "../components/HeroAnimation.astro";
           <div
             class="mt-12 text-[2.5rem] font-light tracking-[0.6em] text-zinc-400 dark:text-zinc-600 [writing-mode:vertical-rl] rotate-180"
           >
-            DOOFILIDOO
+            社会工厂博客
           </div>
         </div>
         <div
           class="max-w-xs text-sm leading-relaxed text-zinc-600 dark:text-zinc-400"
         >
-          You Have great compassion and seek to create a more humane society. you
-          are to those who suffer physically or are at the hand of injustice.
+          你拥有伟大的同情心，并致力于创造更人道的社会。你
+          支持那些遭受身体痛苦或不公正对待的人。
           <div class="mt-8 text-xs uppercase tracking-widest text-red-600">
-            DISPOSITION / SOCIAL FACTORY
+            性格 / 社会工厂
           </div>
         </div>
       </div>
@@ -47,33 +47,33 @@ import HeroAnimation from "../components/HeroAnimation.astro";
       >
         <div class="flex-1 flex items-center justify-center">
           <div class="-mt-12 text-center">
-            <p class="text-3xl font-medium tracking-[0.5em]">NO FAVOURITISM</p>
+            <p class="text-3xl font-medium tracking-[0.5em]">不偏不倚</p>
             <div
               class="text-[8rem] leading-none font-black text-red-600 mt-20 text-center"
             >
               ZDong
             </div>
 
-            <!-- Auth Buttons -->
+            <!-- Auth Buttons (shown when not logged in) -->
             <div id="home-auth-buttons" class="mt-12 flex flex-col gap-4 items-center">
-              <a href="/login" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">LOGIN</a>
-              <a href="/register" class="px-8 py-3 border border-red-600 text-red-600 dark:text-red-400 uppercase tracking-widest hover:bg-red-600 hover:text-white transition">REGISTER</a>
+              <a href="/admin" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">仪表盘</a>
+              <a href="/register" class="px-8 py-3 border border-red-600 text-red-600 dark:text-red-400 uppercase tracking-widest hover:bg-red-600 hover:text-white transition">注册</a>
             </div>
 
             <!-- User Info (shown when logged in) -->
             <div id="home-user-info" class="hidden mt-12 flex flex-col gap-4 items-center">
               <span id="home-username" class="text-lg font-medium text-red-600"></span>
-              <a href="/dashboard" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">DASHBOARD</a>
-              <a href="/blog" class="px-8 py-3 border border-zinc-300 dark:border-zinc-700 uppercase tracking-widest hover:border-red-600 transition">BROWSE BLOG</a>
-              <button id="home-logout-btn" class="text-sm uppercase tracking-widest text-zinc-500 hover:text-red-600 transition">LOGOUT</button>
+              <a href="/admin" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">仪表盘</a>
+              <a href="/blog" class="px-8 py-3 border border-zinc-300 dark:border-zinc-700 uppercase tracking-widest hover:border-red-600 transition">浏览博客</a>
+              <button id="home-logout-btn" class="text-sm uppercase tracking-widest text-zinc-500 hover:text-red-600 transition">退出登录</button>
             </div>
           </div>
         </div>
         <div class="flex justify-between text-xs uppercase tracking-widest text-zinc-400">
-          <a href="#" class="hover:text-red-600">FB</a>
-          <a href="#" class="hover:text-red-600">TW</a>
-          <a href="#" class="hover:text-red-600">IN</a>
-          <a href="#" class="hover:text-red-600">YT</a>
+          <a href="#" class="hover:text-red-600">脸书</a>
+          <a href="#" class="hover:text-red-600">推特</a>
+          <a href="#" class="hover:text-red-600">INS</a>
+          <a href="#" class="hover:text-red-600">油管</a>
         </div>
       </div>
     </div>
@@ -82,8 +82,8 @@ import HeroAnimation from "../components/HeroAnimation.astro";
     <div class="bg-gray-50 dark:bg-zinc-950 py-16 px-4">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-12">
-          <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">LATEST POSTS</h2>
-          <p class="text-gray-600 dark:text-gray-400">Recent thoughts and stories</p>
+          <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">最新文章</h2>
+          <p class="text-gray-600 dark:text-gray-400">最近的想法和故事</p>
         </div>
 
         <div id="loading" class="text-center py-8">
@@ -95,7 +95,7 @@ import HeroAnimation from "../components/HeroAnimation.astro";
         </div>
 
         <div class="text-center mt-12">
-          <a href="/blog" class="inline-block px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">View All Posts</a>
+          <a href="/blog" class="inline-block px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">查看全部文章</a>
         </div>
       </div>
     </div>
@@ -105,13 +105,14 @@ import HeroAnimation from "../components/HeroAnimation.astro";
     import { apiClient } from '../lib/api.js';
 
     // Home page auth state management
-    function updateHomeAuthUI(user, isAuthenticated) {
+    function updateHomeAuthUI(user: { nickname: any; username: any; }, isAuthenticated: any) {
       const authButtons = document.getElementById('home-auth-buttons');
       const userInfo = document.getElementById('home-user-info');
       const username = document.getElementById('home-username');
       const logoutBtn = document.getElementById('home-logout-btn');
 
       if (isAuthenticated && user) {
+        // User is logged in - show user info
         authButtons.classList.add('hidden');
         userInfo.classList.remove('hidden');
 
@@ -125,6 +126,7 @@ import HeroAnimation from "../components/HeroAnimation.astro";
           }
         };
       } else {
+        // User is not logged in - show dashboard button (redirects to login)
         authButtons.classList.remove('hidden');
         userInfo.classList.add('hidden');
       }
@@ -159,7 +161,7 @@ import HeroAnimation from "../components/HeroAnimation.astro";
                   </div>
                 `}
                 <div class="p-6">
-                  <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || 'Uncategorized'}</div>
+                  <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || '未分类'}</div>
                   <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-red-600 transition line-clamp-2">${post.title}</h3>
                   <p class="text-gray-600 dark:text-gray-400 mt-3 line-clamp-3 text-sm">${post.summary || post.content?.substring(0, 150) || ''}</p>
                   <div class="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400">

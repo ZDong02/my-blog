@@ -1,0 +1,332 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+const title = '分类管理 - 管理员';
+const description = '管理文章分类';
+---
+
+<AdminLayout title={title} description={description}>
+  <div class="py-8">
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">分类管理</h1>
+        <button onclick="openCreateModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          新建分类
+        </button>
+      </div>
+    </div>
+
+    <!-- Categories Table -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div class="bg-white dark:bg-zinc-900 shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800">
+          <div class="flex items-center gap-4">
+            <div class="flex-1">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="搜索分类..."
+                class="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="loading" class="text-center py-12">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+          <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载分类...</p>
+        </div>
+
+        <table id="categoriesTable" class="hidden min-w-full divide-y divide-gray-200 dark:divide-zinc-800">
+          <thead class="bg-gray-50 dark:bg-zinc-800">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">描述</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">创建时间</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody id="categoriesTableBody" class="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-zinc-800">
+            <!-- Categories will be loaded here -->
+          </tbody>
+        </table>
+
+        <div id="noCategories" class="hidden text-center py-12">
+          <p class="text-gray-600 dark:text-gray-400">暂无分类，创建您的第一个分类吧！</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div id="categoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+        <h3 id="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">新建分类</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <form id="categoryForm" onsubmit="handleSubmit(event)">
+        <input type="hidden" id="categoryId" />
+        <div class="px-6 py-4 space-y-4">
+          <div>
+            <label for="categoryName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              分类名称 <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="categoryName"
+              required
+              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="输入分类名称"
+            />
+          </div>
+          <div>
+            <label for="categoryDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              分类描述
+            </label>
+            <textarea
+              id="categoryDescription"
+              rows="3"
+              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="输入分类描述（可选）"
+            ></textarea>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-zinc-800 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition">
+            取消
+          </button>
+          <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+            <span id="submitBtnText">创建</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    import { apiClient } from '../../../lib/api.js';
+
+    let allCategories = [];
+
+    // Check admin access
+    const checkAdminAccess = async () => {
+      if (window.authManager.isLoading) {
+        setTimeout(checkAdminAccess, 100);
+        return;
+      }
+
+      if (!window.authManager.isAuthenticated) {
+        window.location.href = '/login';
+        return;
+      }
+
+      const user = window.authManager.currentUser;
+      if (user.role !== 'ADMIN') {
+        window.location.href = '/dashboard';
+        showWarning('Access denied. Admin only.');
+        return;
+      }
+
+      await loadCategories();
+    };
+
+    const loadCategories = async () => {
+      const loading = document.getElementById('loading');
+      const table = document.getElementById('categoriesTable');
+      const noCategories = document.getElementById('noCategories');
+
+      try {
+        loading.classList.remove('hidden');
+        table.classList.add('hidden');
+        noCategories.classList.add('hidden');
+
+        const response = await apiClient.getCategories();
+
+        if (response.success && response.data) {
+          allCategories = response.data;
+          renderCategories(allCategories);
+        }
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+        showError('Failed to load categories');
+      } finally {
+        loading.classList.add('hidden');
+      }
+    };
+
+    const renderCategories = (categories) => {
+      const table = document.getElementById('categoriesTable');
+      const tbody = document.getElementById('categoriesTableBody');
+      const loading = document.getElementById('loading');
+      const noCategories = document.getElementById('noCategories');
+
+      loading.classList.add('hidden');
+
+      if (categories.length === 0) {
+        noCategories.classList.remove('hidden');
+        table.classList.add('hidden');
+        return;
+      }
+
+      noCategories.classList.add('hidden');
+      table.classList.remove('hidden');
+
+      let html = '';
+      categories.forEach(category => {
+        const isDefault = ['技术', '生活', '旅行', '美食', '其他'].includes(category.name);
+
+        html += `
+          <tr class="hover:bg-gray-50 dark:hover:bg-zinc-800 transition">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center">
+                  <span class="text-white font-bold text-lg">${category.name.charAt(0)}</span>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">${category.name}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-600 dark:text-gray-400 max-w-md truncate">${category.description || '暂无描述'}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+              ${new Date(category.createdAt).toLocaleDateString('zh-CN')}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button onclick="openEditModal(${category.id}, '${category.name.replace(/'/g, "\\'")}', '${category.description ? category.description.replace(/'/g, "\\'") : ''}')" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3">
+                编辑
+              </button>
+              ${!isDefault ? `<button onclick="deleteCategory(${category.id})" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">删除</button>` : '<span class="text-gray-400 text-xs">默认分类不可删除</span>'}
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    };
+
+    const openCreateModal = () => {
+      document.getElementById('modalTitle').textContent = '新建分类';
+      document.getElementById('submitBtnText').textContent = '创建';
+      document.getElementById('categoryId').value = '';
+      document.getElementById('categoryName').value = '';
+      document.getElementById('categoryDescription').value = '';
+      document.getElementById('categoryModal').classList.remove('hidden');
+    };
+
+    const openEditModal = (id, name, description) => {
+      document.getElementById('modalTitle').textContent = '编辑分类';
+      document.getElementById('submitBtnText').textContent = '保存';
+      document.getElementById('categoryId').value = id;
+      document.getElementById('categoryName').value = name;
+      document.getElementById('categoryDescription').value = description;
+      document.getElementById('categoryModal').classList.remove('hidden');
+    };
+
+    const closeModal = () => {
+      document.getElementById('categoryModal').classList.add('hidden');
+    };
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      const id = document.getElementById('categoryId').value;
+      const name = document.getElementById('categoryName').value.trim();
+      const description = document.getElementById('categoryDescription').value.trim();
+
+      if (!name) {
+        showError('分类名称不能为空');
+        return;
+      }
+
+      try {
+        const categoryData = { name, description };
+
+        if (id) {
+          // Update existing category
+          const response = await apiClient.updateCategory(parseInt(id), categoryData);
+          if (response.success) {
+            showSuccess('分类已更新');
+            closeModal();
+            loadCategories();
+          } else {
+            showError(response.message || '更新失败');
+          }
+        } else {
+          // Create new category
+          const response = await apiClient.createCategory(categoryData);
+          if (response.success) {
+            showSuccess('分类创建成功');
+            closeModal();
+            loadCategories();
+          } else {
+            showError(response.message || '创建失败');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to save category:', error);
+        showError(error.message || '操作失败');
+      }
+    };
+
+    const deleteCategory = async (categoryId) => {
+      if (!confirm('确定要删除这个分类吗？此操作不可恢复。')) {
+        return;
+      }
+
+      try {
+        const response = await apiClient.deleteCategory(categoryId);
+        if (response.success) {
+          if (response.data && response.data.hasPosts) {
+            showError(`无法删除分类：该分类下有 ${response.data.postCount} 篇文章`);
+          } else {
+            showSuccess('分类已删除');
+            loadCategories();
+          }
+        } else {
+          showError(response.message || '删除失败');
+        }
+      } catch (error) {
+        console.error('Failed to delete category:', error);
+        showError('删除分类失败');
+      }
+    };
+
+    // Search functionality
+    const filterCategories = () => {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      if (searchTerm) {
+        const filtered = allCategories.filter(cat =>
+          cat.name.toLowerCase().includes(searchTerm) ||
+          (cat.description && cat.description.toLowerCase().includes(searchTerm))
+        );
+        renderCategories(filtered);
+      } else {
+        renderCategories(allCategories);
+      }
+    };
+
+    document.getElementById('searchInput')?.addEventListener('input', filterCategories);
+
+    // Close modal when clicking outside
+    document.getElementById('categoryModal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'categoryModal') {
+        closeModal();
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', checkAdminAccess);
+  </script>
+</AdminLayout>
