@@ -65,9 +65,14 @@ public class AuthService {
         }
 
         // Authenticate the user
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword())
-        );
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword())
+            );
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            throw new BusinessException("Invalid username/email or password");
+        }
 
         if (authentication.isAuthenticated()) {
             String token = tokenProvider.generateToken(user);

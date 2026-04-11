@@ -12,7 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -31,6 +33,19 @@ public class FileUploadService {
     private static final List<String> ALLOWED_IMAGE_EXTENSIONS = Arrays.asList(
             ".jpg", ".jpeg", ".png", ".gif", ".webp"
     );
+
+    // 文件头签名验证
+    private static final Map<String, byte[]> IMAGE_SIGNATURES = new HashMap<>();
+    static {
+        // JPEG
+        IMAGE_SIGNATURES.put("jpg", new byte[]{(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+        // PNG
+        IMAGE_SIGNATURES.put("png", new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A});
+        // GIF
+        IMAGE_SIGNATURES.put("gif", new byte[]{0x47, 0x49, 0x46, 0x38});
+        // WebP
+        IMAGE_SIGNATURES.put("webp", new byte[]{0x52, 0x49, 0x46, 0x46});
+    }
 
     /**
      * 上传单个文件
@@ -55,8 +70,8 @@ public class FileUploadService {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
 
-        // 返回访问 URL
-        return "/uploads/" + filename;
+        // 返回访问 URL（包含API上下文路径）
+        return "/api/uploads/" + filename;
     }
 
     /**
@@ -83,8 +98,13 @@ public class FileUploadService {
         }
 
         try {
-            // 移除 /uploads/ 前缀
-            String filename = filePath.replace("/uploads/", "");
+            // 移除开头的 /uploads/ 或 /api/uploads/ 前缀
+            String filename = filePath;
+            if (filename.startsWith("/api/uploads/")) {
+                filename = filename.replace("/api/uploads/", "");
+            } else if (filename.startsWith("/uploads/")) {
+                filename = filename.replace("/uploads/", "");
+            }
             Path path = Paths.get(uploadDir).resolve(filename);
 
             if (Files.exists(path)) {
@@ -120,6 +140,9 @@ public class FileUploadService {
         if (!ALLOWED_IMAGE_EXTENSIONS.contains(extension.toLowerCase())) {
             throw new BusinessException("Invalid file extension. Allowed extensions: " + String.join(", ", ALLOWED_IMAGE_EXTENSIONS));
         }
+
+        // 验证文件内容签名
+        validateFileSignature(file, extension);
     }
 
     /**
@@ -130,5 +153,39 @@ public class FileUploadService {
             return "";
         }
         return filename.substring(filename.lastIndexOf('.')).toLowerCase();
+    }
+
+    /**
+     * 验证文件签名
+     */
+    private void validateFileSignature(MultipartFile file, String extension) {
+        try {
+            byte[] fileHeader = new byte[10];
+            try (InputStream is = file.getInputStream()) {
+                int bytesRead = is.read(fileHeader);
+                if (bytesRead < 3) {
+                    throw new BusinessException("File is too small to validate");
+                }
+            }
+
+            String ext = extension.substring(1); // 移除点号
+            byte[] expectedSignature = IMAGE_SIGNATURES.get(ext);
+
+            if (expectedSignature != null) {
+                boolean isValid = true;
+                for (int i = 0; i < Math.min(expectedSignature.length, fileHeader.length); i++) {
+                    if (fileHeader[i] != expectedSignature[i]) {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (!isValid) {
+                    throw new BusinessException("File content does not match expected image format");
+                }
+            }
+        } catch (IOException e) {
+            throw new BusinessException("Failed to validate file: " + e.getMessage());
+        }
     }
 }

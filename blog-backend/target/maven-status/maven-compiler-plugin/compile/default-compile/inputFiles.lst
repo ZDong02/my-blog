@@ -15,8 +15,10 @@ D:\my-blog\blog-backend\src\main\java\com\example\blog\entity\Bookmark.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\service\CommentService.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\controller\AuthController.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\config\DataInitializer.java
+D:\my-blog\blog-backend\src\main\java\com\example\blog\service\CaptchaService.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\mapper\PostMapper.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\BlogApplication.java
+D:\my-blog\blog-backend\src\main\java\com\example\blog\controller\CaptchaController.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\config\CacheConfig.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\config\SecurityConfig.java
 D:\my-blog\blog-backend\src\main\java\com\example\blog\security\JwtAuthenticationFilter.java

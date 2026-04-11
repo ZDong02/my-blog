@@ -94,6 +94,12 @@ public class Post {
     @TableField("published_at")
     private LocalDateTime publishedAt;
 
+    /**
+     * 封面图片URL
+     */
+    @TableField("featured_image")
+    private String featuredImage;
+
     // ========== 非数据库字段，用于关联查询 ==========
 
     /**

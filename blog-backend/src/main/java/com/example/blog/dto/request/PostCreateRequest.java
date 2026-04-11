@@ -45,4 +45,9 @@ public class PostCreateRequest {
      * 标签 ID 列表
      */
     private List<Long> tagIds;
+
+    /**
+     * 封面图片 URL
+     */
+    private String featuredImage;
 }

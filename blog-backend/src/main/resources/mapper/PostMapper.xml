@@ -188,4 +188,39 @@
         WHERE p.status = 'PUBLISHED' AND pt.tag_id = #{tagId}
     </select>
 
+    <!-- 查询回收站中的文章（已删除的文章） -->
+    <select id="findDeletedPosts" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.status = 'DELETED'
+        ORDER BY p.updated_at DESC
+    </select>
+
+    <!-- 按作者查询回收站中的文章 -->
+    <select id="findDeletedPostsByAuthor" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.status = 'DELETED' AND p.author_id = #{authorId}
+        ORDER BY p.updated_at DESC
+    </select>
+
+    <!-- 统计回收站中的文章数量 -->
+    <select id="countDeletedPosts" resultType="int">
+        SELECT COUNT(*) FROM posts WHERE status = 'DELETED'
+    </select>
+
 </mapper>

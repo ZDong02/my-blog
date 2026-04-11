@@ -66,7 +66,6 @@ public class PostController {
      * @return 创建的文章
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Post>> createPost(
             @AuthenticationPrincipal JwtUserDetails userDetails,
             @Valid @RequestBody PostCreateRequest request) {
@@ -83,7 +82,6 @@ public class PostController {
      * @return 更新后的文章
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Post>> updatePost(
             @PathVariable Long id,
             @AuthenticationPrincipal JwtUserDetails userDetails,
@@ -100,7 +98,6 @@ public class PostController {
      * @return 发布后的文章
      */
     @PutMapping("/{id}/publish")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Post>> publishPost(
             @PathVariable Long id,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
@@ -116,7 +113,6 @@ public class PostController {
      * @return 取消发布后的文章
      */
     @PutMapping("/{id}/unpublish")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Post>> unpublishPost(
             @PathVariable Long id,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
@@ -125,19 +121,74 @@ public class PostController {
     }
 
     /**
-     * 删除文章
+     * 删除文章（移至回收站）
      *
      * @param id        文章 ID
      * @param userDetails 当前用户
      * @return 响应
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deletePost(
             @PathVariable Long id,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         postService.deletePost(id, userDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("文章已删除", null));
+        return ResponseEntity.ok(ApiResponse.success("文章已移至回收站", null));
+    }
+
+    /**
+     * 获取回收站中的文章
+     *
+     * @return 回收站文章列表
+     */
+    @GetMapping("/recycle-bin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<List<Post>>> getDeletedPosts() {
+        List<Post> posts = postService.getDeletedPosts();
+        return ResponseEntity.ok(ApiResponse.success(posts));
+    }
+
+    /**
+     * 获取我的回收站文章
+     *
+     * @param userDetails 当前用户
+     * @return 回收站文章列表
+     */
+    @GetMapping("/my-recycle-bin")
+    public ResponseEntity<ApiResponse<List<Post>>> getMyDeletedPosts(
+            @AuthenticationPrincipal JwtUserDetails userDetails) {
+        List<Post> posts = postService.getDeletedPostsByAuthor(userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(posts));
+    }
+
+    /**
+     * 恢复已删除的文章
+     *
+     * @param id        文章 ID
+     * @param userDetails 当前用户
+     * @return 恢复后的文章
+     */
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<ApiResponse<Post>> restorePost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Post post = postService.restorePost(id, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success("文章已恢复", post));
+    }
+
+    /**
+     * 永久删除文章
+     *
+     * @param id        文章 ID
+     * @param userDetails 当前用户
+     * @return 响应
+     */
+    @DeleteMapping("/{id}/permanent")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> permanentlyDeletePost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal JwtUserDetails userDetails) {
+        postService.permanentlyDeletePost(id, userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success("文章已永久删除", null));
     }
 
     /**
@@ -147,7 +198,6 @@ public class PostController {
      * @return 文章列表
      */
     @GetMapping("/my-posts")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<Post>>> getMyPosts(
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         List<Post> posts = postService.getPostsByAuthor(userDetails.getId());

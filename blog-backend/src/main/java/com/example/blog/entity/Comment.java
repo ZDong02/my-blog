@@ -52,6 +52,7 @@ public class Comment {
     @TableField("status")
     private Integer status;
 
+
     /**
      * 创建时间
      */
@@ -71,6 +72,12 @@ public class Comment {
      */
     @TableField(exist = false)
     private User user;
+
+    /**
+     * 关联文章信息
+     */
+    @TableField(exist = false)
+    private Post post;
 
     /**
      * 子评论列表（回复列表）

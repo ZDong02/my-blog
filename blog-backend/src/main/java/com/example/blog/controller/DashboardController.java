@@ -1,5 +1,6 @@
 package com.example.blog.controller;
 
+import com.example.blog.constant.UserConstants;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.entity.Bookmark;
 import com.example.blog.entity.Comment;
@@ -55,22 +56,21 @@ public class DashboardController {
         Map<String, Object> stats = new HashMap<>();
 
         // 获取用户文章数（仅管理员）
-        if ("ADMIN".equals(userDetails.getRole())) {
+        if (UserConstants.ROLE_ADMIN.equals(userDetails.getRole())) {
             List<Post> userPosts = postService.getPostsByAuthor(userDetails.getId());
             stats.put("postsCount", userPosts.size());
+        } else {
+            stats.put("postsCount", 0);
         }
 
         // 获取用户点赞数
-        List<LikeRecord> userLikes = likeService.getUserLikes(userDetails.getId(), 1, Integer.MAX_VALUE);
-        stats.put("likesCount", userLikes.size());
+        stats.put("likesCount", likeService.countUserLikes(userDetails.getId()));
 
         // 获取用户收藏数
-        List<Bookmark> userBookmarks = bookmarkService.getUserBookmarks(userDetails.getId(), 1, Integer.MAX_VALUE);
-        stats.put("bookmarksCount", userBookmarks.size());
+        stats.put("bookmarksCount", bookmarkService.countUserBookmarks(userDetails.getId()));
 
         // 获取用户评论数
-        List<Comment> userComments = commentService.getUserComments(userDetails.getId(), 1, Integer.MAX_VALUE);
-        stats.put("commentsCount", userComments.size());
+        stats.put("commentsCount", commentService.countUserComments(userDetails.getId()));
 
         return ResponseEntity.ok(ApiResponse.success(stats));
     }
@@ -99,7 +99,7 @@ public class DashboardController {
         activity.put("recentComments", recentComments);
 
         // 获取用户的文章（仅管理员）
-        if ("ADMIN".equals(userDetails.getRole())) {
+        if (UserConstants.ROLE_ADMIN.equals(userDetails.getRole())) {
             List<Post> userPosts = postService.getPostsByAuthor(userDetails.getId());
             activity.put("myPosts", userPosts);
         }

@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 
 /**
  * 点赞实体类
- * 对应数据库表：likes
+ * 对应数据库表：like_records
  *
  * @author Blog Team
  * @date 2026-03-18
  */
 @Data
-@TableName("likes")
+@TableName("like_records")
 public class LikeRecord {
     /**
      * 主键 ID
@@ -37,4 +37,10 @@ public class LikeRecord {
      */
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
+
+    /**
+     * 关联文章信息
+     */
+    @TableField(exist = false)
+    private Post post;
 }

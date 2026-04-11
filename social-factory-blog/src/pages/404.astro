@@ -6,32 +6,40 @@ const description = '您查找的页面不存在';
 ---
 
 <Layout title={title} description={description}>
-  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 flex items-center justify-center px-4">
-    <div class="text-center max-w-md">
-      <!-- 404 Animation -->
-      <div class="relative mb-8">
-        <div class="text-[12rem] leading-none font-black text-red-600 opacity-20 select-none">404</div>
+  <main class="min-h-screen flex items-center justify-center py-20 relative overflow-hidden">
+
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none">
+      <div class="absolute inset-0" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 60px, currentColor 60px, currentColor 61px);"></div>
+    </div>
+
+    <div class="relative z-10 max-w-md w-full mx-4 text-center">
+      <!-- 404 Display -->
+      <div class="mb-8">
+        <div class="text-[12rem] leading-none font-black text-neutral-200 dark:text-neutral-800 select-none">404</div>
         <div class="absolute inset-0 flex items-center justify-center">
-          <svg class="h-32 w-32 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
+          <div class="w-32 h-32 bg-brand-red/10 flex items-center justify-center">
+            <svg class="h-16 w-16 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
         </div>
       </div>
 
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">页面未找到</h1>
-      <p class="text-gray-600 dark:text-gray-400 mb-8">
+      <h1 class="text-3xl font-black text-neutral-900 dark:text-white mb-4">页面未找到</h1>
+      <p class="text-neutral-600 dark:text-neutral-400 mb-8">
         您查找的页面不存在或已被移动。
       </p>
 
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/" class="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition font-medium">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <a href="/" class="btn-primary">
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
           返回首页
         </a>
-        <a href="/blog" class="inline-flex items-center justify-center gap-2 border border-gray-300 dark:border-zinc-700 hover:border-red-600 dark:hover:border-red-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg transition font-medium">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="/blog" class="btn-secondary">
+          <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
           </svg>
           浏览博客
@@ -39,18 +47,18 @@ const description = '您查找的页面不存在';
       </div>
 
       <!-- Quick search -->
-      <div class="mt-12 pt-8 border-t border-gray-200 dark:border-zinc-800">
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">或尝试搜索...</p>
+      <div class="pt-8 border-t border-neutral-200 dark:border-neutral-700">
+        <p class="text-sm text-neutral-500 mb-4">或尝试搜索...</p>
         <form action="/search" method="GET" class="flex gap-2">
           <input
             type="text"
             name="q"
             placeholder="搜索文章..."
-            class="flex-1 px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-red-500"
+            class="flex-1 px-4 py-3 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
           />
           <button
             type="submit"
-            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
+            class="btn-primary px-4"
           >
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -59,5 +67,6 @@ const description = '您查找的页面不存在';
         </form>
       </div>
     </div>
-  </div>
+
+  </main>
 </Layout>

@@ -53,7 +53,30 @@
       "Bash(node node_modules/.bin/astro build)",
       "mcp__ide__getDiagnostics",
       "Bash(mvn spring-boot:run)",
-      "Bash(findstr :4321)"
+      "Bash(findstr :4321)",
+      "Bash(lsof -ti:8080)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(./mvnw clean:*)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -h \"TableName\" ../blog-backend/src/main/java/com/example/blog/entity/*.java)",
+      "Bash(grep -E \"\\\\.\\(js|ts|astro|java\\)$\")",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "Bash(git checkout:*)",
+      "Bash(python3 C:/Users/A/.claude/skills/ui-ux-pro-max/scripts/search.py \"accessibility animation\" --domain ux)",
+      "Bash(python3 C:/Users/A/.claude/skills/ui-ux-pro-max/scripts/search.py \"layout responsive\" --stack html-tailwind)",
+      "Bash(size=5 2>&1)",
+      "Bash(mvn dependency:resolve -U)",
+      "Bash(where mysql:*)",
+      "Read(//c/Program Files/MySQL//**)",
+      "Read(//c/xampp/**)",
+      "Bash(/c/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe:*)",
+      "Bash(cd /d D:\\\\my-blog\\\\blog-admin-backend)",
+      "Bash(mvn spring-boot:run -q)",
+      "Bash(mvn -q exec:java -Dexec.mainClass=\"org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder\" -Dexec.args=\"admin123\")",
+      "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.GenPass\" -Dexec.args=\"admin123\")",
+      "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.UpdatePass\")"
     ]
   }
 }

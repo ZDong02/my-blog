@@ -1,6 +1,7 @@
 package com.example.blog.controller;
 
 import com.example.blog.dto.response.ApiResponse;
+import com.example.blog.dto.response.PageResult;
 import com.example.blog.entity.Bookmark;
 import com.example.blog.entity.LikeRecord;
 import com.example.blog.security.JwtUserDetails;
@@ -85,12 +86,13 @@ public class InteractionController {
      * @return 点赞列表
      */
     @GetMapping("/likes/my-likes")
-    public ResponseEntity<ApiResponse<List<LikeRecord>>> getMyLikes(
+    public ResponseEntity<ApiResponse<PageResult<LikeRecord>>> getMyLikes(
             @AuthenticationPrincipal JwtUserDetails userDetails,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         List<LikeRecord> likes = likeService.getUserLikes(userDetails.getId(), page, size);
-        return ResponseEntity.ok(ApiResponse.success(likes));
+        int total = likeService.countUserLikes(userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(PageResult.of(likes, total, page, size)));
     }
 
     /**
@@ -147,11 +149,12 @@ public class InteractionController {
      * @return 收藏列表
      */
     @GetMapping("/bookmarks/my-bookmarks")
-    public ResponseEntity<ApiResponse<List<Bookmark>>> getMyBookmarks(
+    public ResponseEntity<ApiResponse<PageResult<Bookmark>>> getMyBookmarks(
             @AuthenticationPrincipal JwtUserDetails userDetails,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         List<Bookmark> bookmarks = bookmarkService.getUserBookmarks(userDetails.getId(), page, size);
-        return ResponseEntity.ok(ApiResponse.success(bookmarks));
+        int total = bookmarkService.countUserBookmarks(userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(PageResult.of(bookmarks, total, page, size)));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.blog.dto.request;
 
+import com.example.blog.constant.UserConstants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -40,4 +41,26 @@ public class UserRegistrationRequest {
      */
     @Size(max = 50, message = "昵称长度不能超过 50 个字符")
     private String nickname;
+
+    /**
+     * 注册角色：USER-普通用户，ADMIN-管理员（需要管理员邀请码）
+     */
+    private String role = UserConstants.ROLE_USER;
+
+    /**
+     * 管理员邀请码（注册管理员时必填）
+     */
+    private String adminCode;
+
+    /**
+     * 图形验证码 ID
+     */
+    @NotBlank(message = "验证码不能为空")
+    private String captchaId;
+
+    /**
+     * 图形验证码
+     */
+    @NotBlank(message = "验证码不能为空")
+    private String captchaCode;
 }

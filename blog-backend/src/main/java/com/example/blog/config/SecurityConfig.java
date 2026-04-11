@@ -62,10 +62,14 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // 认证相关 - 完全公开
                 .requestMatchers("/auth/**").permitAll()
+                // 验证码 - 完全公开
+                .requestMatchers("/captcha/**").permitAll()
                 // 公开查询接口
                 .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/comments/post/*").permitAll()
+                // 静态资源 - 允许公开访问上传的文件
+                .requestMatchers("uploads/**").permitAll()
                 // 需要 ADMIN 角色的接口
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 // 其他所有请求需要认证

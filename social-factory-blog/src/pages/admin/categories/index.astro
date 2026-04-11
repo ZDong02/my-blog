@@ -10,8 +10,8 @@ const description = '管理文章分类';
     <!-- Header -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">分类管理</h1>
-        <button onclick="openCreateModal()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+        <h1 class="text-3xl font-black text-neutral-900 dark:text-white">分类管理</h1>
+        <button onclick="openCreateModal()" class="btn-primary flex items-center gap-2">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
@@ -22,52 +22,52 @@ const description = '管理文章分类';
 
     <!-- Categories Table -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-      <div class="bg-white dark:bg-zinc-900 shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800">
+      <div class="card p-0 overflow-hidden">
+        <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700">
           <div class="flex items-center gap-4">
             <div class="flex-1">
               <input
                 type="text"
                 id="searchInput"
                 placeholder="搜索分类..."
-                class="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full max-w-md px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
               />
             </div>
           </div>
         </div>
 
         <div id="loading" class="text-center py-12">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-          <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载分类...</p>
+          <div class="spinner mx-auto mb-6"></div>
+          <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
         </div>
 
-        <table id="categoriesTable" class="hidden min-w-full divide-y divide-gray-200 dark:divide-zinc-800">
-          <thead class="bg-gray-50 dark:bg-zinc-800">
+        <table id="categoriesTable" class="hidden min-w-full">
+          <thead class="bg-neutral-50 dark:bg-neutral-800">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">名称</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">描述</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">创建时间</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">操作</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">名称</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">描述</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">创建时间</th>
+              <th class="px-6 py-4 text-right text-xs font-bold text-neutral-500 uppercase tracking-wider">操作</th>
             </tr>
           </thead>
-          <tbody id="categoriesTableBody" class="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-zinc-800">
+          <tbody id="categoriesTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-700">
             <!-- Categories will be loaded here -->
           </tbody>
         </table>
 
         <div id="noCategories" class="hidden text-center py-12">
-          <p class="text-gray-600 dark:text-gray-400">暂无分类，创建您的第一个分类吧！</p>
+          <p class="text-neutral-500">暂无分类，创建您的第一个分类吧！</p>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Create/Edit Modal -->
-  <div id="categoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-md w-full mx-4">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between">
-        <h3 id="modalTitle" class="text-lg font-semibold text-gray-900 dark:text-white">新建分类</h3>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+  <div id="categoryModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="card max-w-md w-full mx-4 p-0">
+      <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+        <h3 id="modalTitle" class="text-lg font-bold text-neutral-900 dark:text-white">新建分类</h3>
+        <button onclick="closeModal()" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -75,36 +75,36 @@ const description = '管理文章分类';
       </div>
       <form id="categoryForm" onsubmit="handleSubmit(event)">
         <input type="hidden" id="categoryId" />
-        <div class="px-6 py-4 space-y-4">
+        <div class="px-6 py-6 space-y-4">
           <div>
-            <label for="categoryName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              分类名称 <span class="text-red-500">*</span>
+            <label for="categoryName" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
+              分类名称 <span class="text-brand-red">*</span>
             </label>
             <input
               type="text"
               id="categoryName"
               required
-              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
               placeholder="输入分类名称"
             />
           </div>
           <div>
-            <label for="categoryDescription" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label for="categoryDescription" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
               分类描述
             </label>
             <textarea
               id="categoryDescription"
               rows="3"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition resize-none rounded-none"
               placeholder="输入分类描述（可选）"
             ></textarea>
           </div>
         </div>
-        <div class="px-6 py-4 border-t border-gray-200 dark:border-zinc-800 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition">
+        <div class="px-6 py-5 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal()" class="btn-secondary px-6 py-3">
             取消
           </button>
-          <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">
+          <button type="submit" class="btn-primary px-6 py-3">
             <span id="submitBtnText">创建</span>
           </button>
         </div>
@@ -117,7 +117,6 @@ const description = '管理文章分类';
 
     let allCategories = [];
 
-    // Check admin access
     const checkAdminAccess = async () => {
       if (window.authManager.isLoading) {
         setTimeout(checkAdminAccess, 100);
@@ -132,7 +131,6 @@ const description = '管理文章分类';
       const user = window.authManager.currentUser;
       if (user.role !== 'ADMIN') {
         window.location.href = '/dashboard';
-        showWarning('Access denied. Admin only.');
         return;
       }
 
@@ -157,7 +155,6 @@ const description = '管理文章分类';
         }
       } catch (error) {
         console.error('Failed to load categories:', error);
-        showError('Failed to load categories');
       } finally {
         loading.classList.add('hidden');
       }
@@ -185,28 +182,26 @@ const description = '管理文章分类';
         const isDefault = ['技术', '生活', '旅行', '美食', '其他'].includes(category.name);
 
         html += `
-          <tr class="hover:bg-gray-50 dark:hover:bg-zinc-800 transition">
+          <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition">
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center">
-                  <span class="text-white font-bold text-lg">${category.name.charAt(0)}</span>
+                <div class="flex-shrink-0 h-10 w-10 bg-brand-red flex items-center justify-center">
+                  <span class="text-white font-black text-lg">${category.name.charAt(0)}</span>
                 </div>
                 <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900 dark:text-white">${category.name}</div>
+                  <div class="text-sm font-bold text-neutral-900 dark:text-white">${category.name}</div>
                 </div>
               </div>
             </td>
             <td class="px-6 py-4">
-              <div class="text-sm text-gray-600 dark:text-gray-400 max-w-md truncate">${category.description || '暂无描述'}</div>
+              <div class="text-sm text-neutral-600 dark:text-neutral-400 max-w-md truncate">${category.description || '暂无描述'}</div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
               ${new Date(category.createdAt).toLocaleDateString('zh-CN')}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <button onclick="openEditModal(${category.id}, '${category.name.replace(/'/g, "\\'")}', '${category.description ? category.description.replace(/'/g, "\\'") : ''}')" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3">
-                编辑
-              </button>
-              ${!isDefault ? `<button onclick="deleteCategory(${category.id})" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">删除</button>` : '<span class="text-gray-400 text-xs">默认分类不可删除</span>'}
+              <button onclick="openEditModal(${category.id}, '${category.name.replace(/'/g, "\\'")}', '${category.description ? category.description.replace(/'/g, "\\'") : ''}')" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3 font-bold">编辑</button>
+              ${!isDefault ? `<button onclick="deleteCategory(${category.id})" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-bold">删除</button>` : '<span class="text-neutral-400 text-xs">默认分类不可删除</span>'}
             </td>
           </tr>
         `;
@@ -245,7 +240,6 @@ const description = '管理文章分类';
       const description = document.getElementById('categoryDescription').value.trim();
 
       if (!name) {
-        showError('分类名称不能为空');
         return;
       }
 
@@ -253,29 +247,20 @@ const description = '管理文章分类';
         const categoryData = { name, description };
 
         if (id) {
-          // Update existing category
           const response = await apiClient.updateCategory(parseInt(id), categoryData);
           if (response.success) {
-            showSuccess('分类已更新');
             closeModal();
             loadCategories();
-          } else {
-            showError(response.message || '更新失败');
           }
         } else {
-          // Create new category
           const response = await apiClient.createCategory(categoryData);
           if (response.success) {
-            showSuccess('分类创建成功');
             closeModal();
             loadCategories();
-          } else {
-            showError(response.message || '创建失败');
           }
         }
       } catch (error) {
         console.error('Failed to save category:', error);
-        showError(error.message || '操作失败');
       }
     };
 
@@ -287,22 +272,13 @@ const description = '管理文章分类';
       try {
         const response = await apiClient.deleteCategory(categoryId);
         if (response.success) {
-          if (response.data && response.data.hasPosts) {
-            showError(`无法删除分类：该分类下有 ${response.data.postCount} 篇文章`);
-          } else {
-            showSuccess('分类已删除');
-            loadCategories();
-          }
-        } else {
-          showError(response.message || '删除失败');
+          loadCategories();
         }
       } catch (error) {
         console.error('Failed to delete category:', error);
-        showError('删除分类失败');
       }
     };
 
-    // Search functionality
     const filterCategories = () => {
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
 
@@ -319,14 +295,12 @@ const description = '管理文章分类';
 
     document.getElementById('searchInput')?.addEventListener('input', filterCategories);
 
-    // Close modal when clicking outside
     document.getElementById('categoryModal')?.addEventListener('click', (e) => {
       if (e.target.id === 'categoryModal') {
         closeModal();
       }
     });
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', checkAdminAccess);
   </script>
 </AdminLayout>

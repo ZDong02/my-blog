@@ -7,6 +7,8 @@ class ApiClient {
   constructor() {
     this.token = null;
     this.refreshToken = null;
+    this.refreshPromise = null;
+    this.requestTimeoutMs = 15000;
   }
 
   setTokens(token, refreshToken) {
@@ -31,22 +33,70 @@ class ApiClient {
     }
   }
 
+  resolveMediaUrl(url) {
+    if (!url) return '';
+
+    if (
+      /^(https?:)?\/\//i.test(url) ||
+      url.startsWith('data:') ||
+      url.startsWith('blob:')
+    ) {
+      return url;
+    }
+
+    const apiRoot = API_BASE_URL.replace(/\/+$/, '');
+    const originMatch = apiRoot.match(/^(https?:\/\/[^/]+)/i);
+    const apiOrigin = originMatch ? originMatch[1] : '';
+
+    if (url.startsWith('/api/uploads/')) {
+      return apiOrigin ? `${apiOrigin}${url}` : url;
+    }
+
+    if (url.startsWith('/uploads/')) {
+      return apiOrigin ? `${apiOrigin}${url}` : url;
+    }
+
+    if (url.startsWith('uploads/')) {
+      return `${apiRoot}/${url}`;
+    }
+
+    return url;
+  }
+
   async request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
+    const method = (options.method || 'GET').toUpperCase();
+    const hasBody = options.body !== undefined && options.body !== null;
+    const isFormData =
+      typeof FormData !== 'undefined' && options.body instanceof FormData;
     const headers = {
-      'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options.headers || {}),
     };
+
+    if (!isFormData && hasBody && method !== 'GET' && method !== 'HEAD' && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     // Add authorization header if token exists
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
     }
 
+    const { timeoutMs, ...requestOptions } = options;
+    const resolvedTimeoutMs =
+      Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : this.requestTimeoutMs;
+    const abortController =
+      typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId =
+      abortController && resolvedTimeoutMs > 0
+        ? setTimeout(() => abortController.abort(), resolvedTimeoutMs)
+        : null;
+
     const config = {
-      ...options,
+      ...requestOptions,
       headers,
       credentials: 'include', // Include credentials for CORS requests
+      ...(abortController ? { signal: abortController.signal } : {}),
     };
 
     try {
@@ -54,7 +104,7 @@ class ApiClient {
 
       if (response.status === 401 && this.refreshToken) {
         // Token expired, try to refresh
-        const refreshed = await this.refreshAuthToken();
+        const refreshed = await this.refreshAuthTokenWithLock();
         if (refreshed) {
           // Retry the original request with new token
           headers['Authorization'] = `Bearer ${this.token}`;
@@ -71,12 +121,31 @@ class ApiClient {
 
       return this.handleResponse(response);
     } catch (error) {
+      if (error?.name === 'AbortError') {
+        error = new Error('Request timeout. Please try again.');
+      }
+
       console.error('API request failed:', error);
-      // Show error toast
+      // Show error toast with better error message
       if (typeof window !== 'undefined' && window.showToast) {
-        window.showToast(error.message || 'Request failed. Please try again.', 'error');
+        let errorMessage = 'Request failed. Please try again.';
+        if (error.message) {
+          // Don't expose internal error details to users
+          if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+            errorMessage = 'Network error. Please check your connection.';
+          } else if (error.message.includes('Authentication failed')) {
+            errorMessage = 'Authentication failed. Please login again.';
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        window.showToast(errorMessage, 'error');
       }
       throw error;
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     }
   }
 
@@ -103,12 +172,32 @@ class ApiClient {
       return { success: true, data: null };
     }
 
-    const data = JSON.parse(text);
+    if (contentType && contentType.includes('application/json')) {
+      return JSON.parse(text);
+    }
 
-    return data;
+    return { success: true, data: text };
+  }
+
+  async refreshAuthTokenWithLock() {
+    if (this.refreshPromise) {
+      return this.refreshPromise;
+    }
+
+    this.refreshPromise = this.refreshAuthToken().finally(() => {
+      this.refreshPromise = null;
+    });
+
+    return this.refreshPromise;
   }
 
   async refreshAuthToken() {
+    const abortController =
+      typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = abortController
+      ? setTimeout(() => abortController.abort(), 10000)
+      : null;
+
     try {
       const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
@@ -116,6 +205,8 @@ class ApiClient {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.refreshToken}`,
         },
+        credentials: 'include',
+        ...(abortController ? { signal: abortController.signal } : {}),
       });
 
       if (response.ok) {
@@ -128,8 +219,17 @@ class ApiClient {
 
       return false;
     } catch (error) {
+      if (error?.name === 'AbortError') {
+        console.error('Token refresh timed out');
+        return false;
+      }
+
       console.error('Token refresh failed:', error);
       return false;
+    } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     }
   }
 
@@ -337,11 +437,16 @@ class ApiClient {
   async uploadFile(file) {
     const formData = new FormData();
     formData.append('file', file);
-    return this.request('/upload', {
+    const response = await this.request('/upload', {
       method: 'POST',
       body: formData,
-      headers: {},
     });
+
+    if (response?.success && response?.data?.url) {
+      response.data.url = this.resolveMediaUrl(response.data.url);
+    }
+
+    return response;
   }
 
   // Tags

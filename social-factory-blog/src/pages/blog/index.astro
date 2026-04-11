@@ -6,115 +6,176 @@ const description = '浏览所有文章';
 ---
 
 <Layout title={title} description={description}>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-    <!-- Page Header -->
-    <div class="text-center mb-16">
-      <h1 class="text-4xl sm:text-5xl font-black text-zinc-900 dark:text-white mb-4">博客</h1>
-      <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
-        探索最新的技术文章、教程和思考
-      </p>
-    </div>
+  <main class="min-h-screen">
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
-      <!-- Posts List -->
-      <div class="lg:col-span-3">
-        <!-- Loading State -->
-        <div id="loading" class="text-center py-16">
-          <div class="spinner mx-auto mb-4"></div>
-          <p class="text-zinc-500 dark:text-zinc-400">正在加载文章...</p>
-        </div>
-
-        <!-- Empty State -->
-        <div id="noPosts" class="hidden text-center py-16">
-          <div class="w-20 h-20 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-            </svg>
-          </div>
-          <p class="text-xl font-medium text-zinc-900 dark:text-white mb-2">暂无文章</p>
-          <p class="text-zinc-500 dark:text-zinc-400">请稍后再来查看新内容！</p>
-        </div>
-
-        <!-- Posts Grid -->
-        <div id="posts" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
-          <!-- Posts will be loaded here -->
-        </div>
-
-        <!-- Pagination -->
-        <div id="pagination" class="hidden mt-12 flex items-center justify-center gap-4">
-          <button
-            id="prevBtn"
-            class="btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            上一页
-          </button>
-          <span id="pageInfo" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 px-4">
-            第 1 页
-          </span>
-          <button
-            id="nextBtn"
-            class="btn-secondary flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            下一页
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
-          </button>
-        </div>
+    <!-- Hero Header -->
+    <section class="relative py-20 lg:py-32 overflow-hidden">
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 opacity-5 pointer-events-none">
+        <div class="absolute inset-0" style="background-image: repeating-linear-gradient(90deg, transparent, transparent 80px, currentColor 80px, currentColor 81px);"></div>
       </div>
 
-      <!-- Sidebar -->
-      <div class="lg:col-span-1 space-y-8">
-        <!-- Categories -->
-        <div class="card p-6">
-          <h3 class="text-sm uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold mb-4">
-            分类
-          </h3>
-          <div class="flex flex-wrap gap-2" id="categories">
-            <!-- Categories will be loaded here -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="grid grid-cols-12 gap-8">
+          <!-- Main Title -->
+          <div class="col-span-12 lg:col-span-8">
+            <p class="section-subtitle mb-4">探索与发现</p>
+            <h1 class="text-display text-neutral-900 dark:text-white mb-8">
+              技术<br/><span class="gradient-text">博客</span>
+            </h1>
+            <p class="text-subtitle text-neutral-600 dark:text-neutral-400 max-w-2xl">
+              探索最新的技术文章、实用教程和深度思考，与社区一起成长
+            </p>
           </div>
-        </div>
 
-        <!-- Recent Posts -->
-        <div class="card p-6">
-          <h3 class="text-sm uppercase tracking-widest text-zinc-500 dark:text-zinc-400 font-semibold mb-4">
-            最新文章
-          </h3>
-          <div id="recentPosts" class="space-y-4">
-            <!-- Recent posts will be loaded here -->
-          </div>
-        </div>
-
-        <!-- Newsletter / Subscribe -->
-        <div class="card p-6 bg-gradient-to-br from-red-600 to-red-700 border-none">
-          <h3 class="text-white font-bold text-lg mb-2">订阅更新</h3>
-          <p class="text-red-100 text-sm mb-4">获取最新文章通知</p>
-          <div class="space-y-3">
-            <input
-              type="email"
-              placeholder="您的邮箱"
-              class="w-full px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white placeholder:text-red-200 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"
-            />
-            <button class="w-full px-3 py-2 bg-white text-red-600 font-medium rounded-lg text-sm hover:bg-red-50 transition">
-              订阅
-            </button>
+          <!-- Category Filter Indicator -->
+          <div class="col-span-12 lg:col-span-4 flex items-end">
+            <p id="categorySubtitle" class="hidden text-lg font-bold text-brand-red uppercase tracking-widest"></p>
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- Magazine Divider -->
+    <div class="relative h-2 bg-brand-red">
+      <div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, currentColor 20px, currentColor 21px);"></div>
     </div>
-  </div>
+
+    <!-- Main Content -->
+    <section class="py-16 lg:py-24 bg-neutral-50 dark:bg-neutral-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-12 gap-8 lg:gap-12">
+
+          <!-- Posts List -->
+          <div class="col-span-12 lg:col-span-8">
+
+            <!-- Loading State -->
+            <div id="loading" class="text-center py-20">
+              <div class="spinner mx-auto mb-6"></div>
+              <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">加载中...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="noPosts" class="hidden text-center py-20">
+              <div class="w-32 h-32 mx-auto mb-8 flex items-center justify-center border-4 border-neutral-900 dark:border-white">
+                <svg class="w-16 h-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                </svg>
+              </div>
+              <h3 class="text-3xl font-black text-neutral-900 dark:text-white mb-4">暂无文章</h3>
+              <p class="text-neutral-500 mb-8 max-w-md mx-auto">精彩内容即将上线，敬请期待</p>
+              <a href="/admin/posts/create" class="btn-primary">立即创建第一篇</a>
+            </div>
+
+            <!-- Posts Container -->
+            <div id="posts" class="hidden space-y-8">
+              <!-- Posts will be loaded here -->
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="hidden mt-16 flex items-center justify-between border-t-2 border-neutral-900 dark:border-white pt-8">
+              <button
+                id="prevBtn"
+                class="flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-neutral-900 dark:text-white hover:text-brand-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-red"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                上一页
+              </button>
+              <span id="pageInfo" class="text-sm font-bold text-neutral-500">第 1 页</span>
+              <button
+                id="nextBtn"
+                class="flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-neutral-900 dark:text-white hover:text-brand-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-red"
+              >
+                下一页
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="col-span-12 lg:col-span-4 space-y-8">
+
+            <!-- Categories -->
+            <div class="card p-8">
+              <h3 class="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 mb-6">分类</h3>
+              <div class="flex flex-wrap gap-3" id="categories">
+                <!-- Categories will be loaded here -->
+              </div>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="card p-8">
+              <h3 class="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 mb-6">最新文章</h3>
+              <div id="recentPosts" class="space-y-6">
+                <!-- Recent posts will be loaded here -->
+              </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="card p-8 bg-brand-red text-white">
+              <h3 class="text-xl font-black mb-2">订阅更新</h3>
+              <p class="text-red-100 text-sm mb-6">获取最新文章通知</p>
+              <div class="space-y-4">
+                <input
+                  type="email"
+                  id="newsletterEmail"
+                  placeholder="输入邮箱地址"
+                  class="w-full px-4 py-3 bg-white/20 border-2 border-white/30 text-white placeholder:text-red-200 focus:outline-none focus:border-white transition-colors"
+                />
+                <button
+                  id="subscribeBtn"
+                  onclick="handleSubscribe()"
+                  class="w-full py-3 bg-neutral-900 text-white font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  立即订阅
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
 
   <script>
     import { apiClient } from '../../lib/api.js';
 
     let currentPage = 1;
     let totalPages = 1;
-    let allCategories = new Set();
+    let currentCategory = null;
+    let allCategories = [];
 
-    const loadPosts = async (page = 1) => {
+    // Get URL parameters
+    const getUrlParams = () => {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        category: params.get('category'),
+        page: parseInt(params.get('page')) || 1
+      };
+    };
+
+    // Load all categories from API
+    const loadCategories = async () => {
+      try {
+        const response = await apiClient.getCategories();
+        if (response?.success && response?.data) {
+          allCategories = Array.isArray(response.data)
+            ? response.data
+            : response.data.content || [];
+        }
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+        allCategories = [];
+      }
+    };
+
+    const loadPosts = async (page = 1, categoryName = null) => {
       const loading = document.getElementById('loading');
       const postsContainer = document.getElementById('posts');
       const noPosts = document.getElementById('noPosts');
@@ -126,68 +187,96 @@ const description = '浏览所有文章';
         noPosts.classList.add('hidden');
         pagination.classList.add('hidden');
 
-        const response = await apiClient.getPosts(page, 10);
+        let response;
+        if (categoryName) {
+          const category = allCategories.find(c => c.name === categoryName);
+          const categoryId = category?.id;
+          if (categoryId) {
+            response = await apiClient.searchPosts(null, categoryId, page, 10);
+          } else {
+            response = await apiClient.getPosts(page, 10);
+          }
+        } else {
+          response = await apiClient.getPosts(page, 10);
+        }
 
-        if (response.success && response.data) {
-          const { content, total, size, number } = response.data;
+        if (response?.success && response?.data) {
+          const pageData = response.data;
+          const content = Array.isArray(pageData.content)
+            ? pageData.content
+            : Array.isArray(pageData.list)
+              ? pageData.list
+              : [];
+          const total = Number(pageData.total ?? content.length) || 0;
+          const size = Number(pageData.size ?? (content.length || 10)) || 10;
+          const pageNumber = Number(pageData.page ?? pageData.number ?? page) || page;
 
-          currentPage = number;
-          totalPages = Math.ceil(total / size);
+          currentPage = pageNumber;
+          totalPages = Math.max(1, Math.ceil(total / size));
+          currentCategory = categoryName;
 
           if (content.length === 0) {
             loading.classList.add('hidden');
             noPosts.classList.remove('hidden');
+            if (categoryName) {
+              noPosts.querySelector('p').textContent = `分类「${categoryName}」下暂无文章`;
+            }
             return;
           }
 
-          // Render posts
+          // Render posts - Magazine card style
           let html = '';
-          content.forEach(post => {
+          content.forEach((post, index) => {
             const postDate = new Date(post.createdAt).toLocaleDateString('zh-TW');
             const readingTime = Math.ceil((post.content?.length || 0) / 200);
-            const excerpt = post.summary || post.content?.substring(0, 120) || '';
-
-            if (post.category?.name) {
-              allCategories.add(post.category.name);
-            }
+            const excerpt = post.summary || post.content?.substring(0, 150) || '';
 
             html += `
-              <a href="/blog/${post.id}" class="card-hover group block overflow-hidden">
-                <div class="flex flex-col sm:flex-row gap-4 p-4">
-                  <div class="w-full sm:w-40 h-40 bg-zinc-200 dark:bg-zinc-800 rounded-xl overflow-hidden flex-shrink-0">
-                    ${post.featuredImage ? `<img src="${post.featuredImage}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />` : `
-                      <div class="w-full h-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
-                        <svg class="w-10 h-10 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                        </svg>
+              <article class="card group overflow-hidden reveal" style="animation-delay: ${index * 0.1}s">
+                <a href="/blog/${post.id}" class="block cursor-pointer">
+                  <div class="grid grid-cols-12 gap-0">
+                    <!-- Image -->
+                    <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto relative overflow-hidden">
+                      ${post.featuredImage ? `
+                        <img src="${apiClient.resolveMediaUrl(post.featuredImage)}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      ` : `
+                        <div class="w-full h-full bg-gradient-to-br from-brand-red via-brand-red-dark to-neutral-900 flex items-center justify-center">
+                          <span class="text-white/20 text-6xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
+                        </div>
+                      `}
+                      <!-- Category badge -->
+                      <div class="absolute top-4 left-4">
+                        <span class="badge-red">${post.category?.name || '未分类'}</span>
                       </div>
-                    `}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-2">
-                      <span class="badge-red">${post.category?.name || '未分类'}</span>
                     </div>
-                    <h2 class="text-xl font-bold text-zinc-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition line-clamp-2">
-                      ${post.title}
-                    </h2>
-                    <p class="text-zinc-600 dark:text-zinc-400 mt-2 line-clamp-2 text-sm">
-                      ${excerpt}
-                    </p>
-                    <div class="flex items-center gap-4 mt-4 text-xs text-zinc-500 dark:text-zinc-400">
-                      <span>${postDate}</span>
-                      <span>·</span>
-                      <span>${readingTime} 分钟阅读</span>
-                      <span>·</span>
-                      <span class="flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                        </svg>
-                        ${post.likeCount || 0}
-                      </span>
+
+                    <!-- Content -->
+                    <div class="col-span-12 md:col-span-8 p-6 lg:p-8 flex flex-col justify-between">
+                      <div>
+                        <h2 class="text-2xl lg:text-3xl font-black text-neutral-900 dark:text-white group-hover:text-brand-red transition-colors mb-4 leading-tight">
+                          ${post.title}
+                        </h2>
+                        <p class="text-neutral-600 dark:text-neutral-400 line-clamp-3 mb-6">
+                          ${excerpt}
+                        </p>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4 text-sm text-neutral-500">
+                          <span>${postDate}</span>
+                          <span class="w-1 h-1 bg-neutral-400 rounded-full"></span>
+                          <span>${readingTime} 分钟</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-brand-red">
+                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                          </svg>
+                          <span class="text-sm font-bold">${post.likeCount || 0}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </article>
             `;
           });
 
@@ -202,34 +291,74 @@ const description = '浏览所有文章';
           document.getElementById('prevBtn').disabled = currentPage <= 1;
           document.getElementById('nextBtn').disabled = currentPage >= totalPages;
 
-          // Render categories
-          renderCategories();
+          // Only render recent posts, not categories (to keep button state)
           renderRecentPosts(content.slice(0, 5));
+          updatePageHeader(categoryName);
+
+          // Trigger animations
+          setTimeout(() => {
+            document.querySelectorAll('.reveal').forEach(el => {
+              el.classList.add('visible');
+            });
+          }, 100);
+
+        } else {
+          loading.classList.add('hidden');
+          noPosts.classList.remove('hidden');
         }
       } catch (error) {
         console.error('Failed to load posts:', error);
         loading.classList.add('hidden');
         noPosts.classList.remove('hidden');
-        noPosts.querySelector('p').textContent = '加载文章失败，请稍后再试。';
+      }
+    };
+
+    const updatePageHeader = (categoryName) => {
+      const subtitle = document.getElementById('categorySubtitle');
+      if (subtitle) {
+        if (categoryName) {
+          subtitle.textContent = `当前分类：${categoryName}`;
+          subtitle.classList.remove('hidden');
+        } else {
+          subtitle.classList.add('hidden');
+        }
       }
     };
 
     const renderCategories = () => {
       const container = document.getElementById('categories');
-      if (allCategories.size === 0) {
-        container.innerHTML = '<p class="text-sm text-zinc-500 dark:text-zinc-400">暂无分类</p>';
+      if (allCategories.length === 0) {
+        container.innerHTML = '<p class="text-sm text-neutral-500">暂无分类</p>';
         return;
       }
-      let html = '';
+      let html = `
+        <button
+          data-category=""
+          class="badge ${!currentCategory ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : ''} hover:bg-neutral-900 hover:text-white dark:hover:bg-white dark:hover:text-neutral-900 transition-colors cursor-pointer"
+        >
+          全部
+        </button>
+      `;
       allCategories.forEach(cat => {
+        const isActive = cat.name === currentCategory;
         html += `
-          <button onclick="filterByCategory('${cat.replace(/'/g, "\\'")}')"
-                  class="badge hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 transition cursor-pointer">
-            ${cat}
+          <button
+            data-category="${cat.name.replace(/"/g, '&quot;')}"
+            class="badge ${isActive ? 'bg-brand-red text-white' : ''} hover:bg-brand-red hover:text-white transition-colors cursor-pointer"
+          >
+            ${cat.name}
           </button>
         `;
       });
       container.innerHTML = html;
+
+      // Add click event listeners to category buttons
+      container.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const category = btn.dataset.category || null;
+          filterByCategory(category);
+        });
+      });
     };
 
     const renderRecentPosts = (posts) => {
@@ -237,23 +366,21 @@ const description = '浏览所有文章';
       let html = '';
       posts.forEach(post => {
         html += `
-          <a href="/blog/${post.id}" class="group flex gap-3 items-start">
-            <div class="w-16 h-16 bg-zinc-200 dark:bg-zinc-800 rounded-lg overflow-hidden flex-shrink-0">
-              ${post.featuredImage ? `<img src="${post.featuredImage}" class="w-full h-full object-cover" />` : `
-                <div class="w-full h-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
-                  <svg class="w-6 h-6 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                  </svg>
+          <a href="/blog/${post.id}" class="group flex gap-4 cursor-pointer">
+            <div class="w-20 h-20 flex-shrink-0 overflow-hidden">
+              ${post.featuredImage ? `
+                <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              ` : `
+                <div class="w-full h-full bg-gradient-to-br from-brand-red to-brand-red-dark flex items-center justify-center">
+                  <span class="text-white/30 text-xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
                 </div>
               `}
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-medium text-zinc-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition line-clamp-2">
+              <h4 class="text-sm font-bold text-neutral-900 dark:text-white group-hover:text-brand-red transition-colors line-clamp-2 mb-2">
                 ${post.title}
               </h4>
-              <span class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 block">
-                ${new Date(post.createdAt).toLocaleDateString('zh-TW')}
-              </span>
+              <span class="text-xs text-neutral-500">${new Date(post.createdAt).toLocaleDateString('zh-TW')}</span>
             </div>
           </a>
         `;
@@ -261,31 +388,80 @@ const description = '浏览所有文章';
       container.innerHTML = html;
     };
 
+    // Filter by category - no page reload, just AJAX
     const filterByCategory = (category) => {
-      // For now, just highlight the category
-      // In production, you would fetch posts by category
-      showToast(`筛选分类：${category}`, 'info');
+      // Toggle: if clicking the same category, deselect it
+      if (category && currentCategory === category) {
+        category = null;
+      }
+
+      currentCategory = category;
+      currentPage = 1;
+
+      // Update URL without reloading
+      const url = new URL(window.location.href);
+      if (category) {
+        url.searchParams.set('category', category);
+      } else {
+        url.searchParams.delete('category');
+      }
+      url.searchParams.delete('page');
+      window.history.replaceState({}, '', url);
+
+      // Update category button styles
+      updateCategoryButtonStyles();
+
+      // Reload posts with new category
+      loadPosts(1, currentCategory);
+    };
+    window.filterByCategory = filterByCategory;
+
+    const updateCategoryButtonStyles = () => {
+      const container = document.getElementById('categories');
+      if (!container) return;
+
+      container.querySelectorAll('button').forEach(btn => {
+        const btnCategory = btn.dataset.category || null;
+        const isActive = btnCategory === currentCategory;
+        const isAll = !currentCategory && !btnCategory;
+
+        btn.classList.remove('bg-neutral-900', 'text-white', 'dark:bg-white', 'dark:text-neutral-900', 'bg-brand-red', 'text-white');
+
+        if (isActive) {
+          btn.classList.add('bg-brand-red', 'text-white');
+        } else if (isAll) {
+          btn.classList.add('bg-neutral-900', 'text-white', 'dark:bg-white', 'dark:text-neutral-900');
+        }
+      });
     };
 
     // Pagination handlers
     document.getElementById('prevBtn')?.addEventListener('click', () => {
       if (currentPage > 1) {
-        loadPosts(currentPage - 1);
+        loadPosts(currentPage - 1, currentCategory);
+        // Update URL
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', String(currentPage - 1));
+        window.history.replaceState({}, '', url);
       }
     });
 
     document.getElementById('nextBtn')?.addEventListener('click', () => {
       if (currentPage < totalPages) {
-        loadPosts(currentPage + 1);
+        loadPosts(currentPage + 1, currentCategory);
+        // Update URL
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', String(currentPage + 1));
+        window.history.replaceState({}, '', url);
       }
     });
 
     const showToast = (message, type = 'info') => {
       const toast = document.createElement('div');
-      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 transition-all ${
+      toast.className = `fixed bottom-24 left-1/2 -translate-x-1/2 px-8 py-4 shadow-elevated text-sm font-bold uppercase tracking-widest z-50 transition-all ${
         type === 'success' ? 'bg-green-600 text-white' :
         type === 'error' ? 'bg-red-600 text-white' :
-        'bg-zinc-800 text-white'
+        'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900'
       }`;
       toast.textContent = message;
       document.body.appendChild(toast);
@@ -296,9 +472,24 @@ const description = '浏览所有文章';
       }, 2500);
     };
 
+    window.handleSubscribe = () => {
+      const emailInput = document.getElementById('newsletterEmail');
+      const email = emailInput?.value;
+      if (email && email.includes('@')) {
+        showToast('订阅成功！', 'success');
+        if (emailInput) emailInput.value = '';
+      } else {
+        showToast('请输入有效邮箱', 'error');
+      }
+    };
+
     // Initialize
-    document.addEventListener('DOMContentLoaded', () => {
-      loadPosts(1);
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadCategories();
+      const params = getUrlParams();
+      currentCategory = params.category;
+      renderCategories(); // Render categories once
+      loadPosts(params.page, params.category);
     });
   </script>
 </Layout>

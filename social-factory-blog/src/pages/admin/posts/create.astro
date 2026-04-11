@@ -9,7 +9,7 @@ const description = '创建新文章';
   <div class="py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="mb-6">
-        <a href="/admin/posts" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-2">
+        <a href="/admin/posts" class="text-neutral-600 dark:text-neutral-400 hover:text-brand-red flex items-center gap-2 font-bold">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
@@ -17,16 +17,16 @@ const description = '创建新文章';
         </a>
       </div>
 
-      <form id="createPostForm" class="bg-white dark:bg-zinc-900 shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800">
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">创建新文章</h2>
+      <form id="createPostForm" class="card p-0">
+        <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700">
+          <h2 class="text-xl font-bold text-neutral-900 dark:text-white">创建新文章</h2>
         </div>
 
         <div class="px-6 py-6 space-y-6">
           <!-- Title -->
           <div>
-            <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              标题 <span class="text-red-600">*</span>
+            <label for="title" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
+              标题 <span class="text-brand-red">*</span>
             </label>
             <input
               type="text"
@@ -34,20 +34,20 @@ const description = '创建新文章';
               name="title"
               required
               maxlength="200"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
               placeholder="输入文章标题"
             />
           </div>
 
           <!-- Category -->
           <div>
-            <label for="categoryId" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label for="categoryId" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
               分类
             </label>
             <select
               id="categoryId"
               name="categoryId"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
             >
               <option value="">选择分类</option>
             </select>
@@ -55,21 +55,34 @@ const description = '创建新文章';
 
           <!-- Featured Image -->
           <div>
-            <label for="featuredImage" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              精选图片 URL
+            <label for="featuredImageFile" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
+              文章封面
             </label>
-            <input
-              type="url"
-              id="featuredImage"
-              name="featuredImage"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-              placeholder="https://example.com/image.jpg"
-            />
+            <div class="space-y-3">
+              <input
+                type="file"
+                id="featuredImageFile"
+                accept="image/*"
+                class="block w-full text-sm text-neutral-700 dark:text-neutral-300 file:mr-4 file:py-2 file:px-4 file:rounded-none file:border-0 file:bg-neutral-100 dark:file:bg-neutral-700 file:text-neutral-700 dark:file:text-neutral-200 hover:file:bg-neutral-200 dark:hover:file:bg-neutral-600"
+              />
+              <div class="flex items-center gap-3">
+                <button
+                  type="button"
+                  id="uploadFeaturedImageBtn"
+                  class="px-4 py-2 text-sm bg-neutral-800 dark:bg-neutral-700 text-white hover:bg-neutral-900 dark:hover:bg-neutral-600 transition rounded-none font-bold"
+                >
+                  上传图片
+                </button>
+                <span id="featuredImageUploadStatus" class="text-xs text-neutral-500">未上传封面图</span>
+              </div>
+              <img id="featuredImagePreview" class="hidden max-h-48 border border-neutral-200 dark:border-neutral-700" alt="Featured image preview" />
+              <input type="hidden" id="featuredImage" name="featuredImage" />
+            </div>
           </div>
 
           <!-- Summary -->
           <div>
-            <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label for="summary" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
               摘要
             </label>
             <textarea
@@ -77,60 +90,59 @@ const description = '创建新文章';
               name="summary"
               rows="3"
               maxlength="500"
-              class="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
+              class="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition resize-none rounded-none"
               placeholder="文章简短摘要（可选）"
             ></textarea>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">最多 500 个字符</p>
+            <p class="mt-1 text-xs text-neutral-500">最多 500 个字符</p>
           </div>
 
           <!-- Content -->
           <div>
-            <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              内容 <span class="text-red-600">*</span>
+            <label for="content" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
+              内容 <span class="text-brand-red">*</span>
             </label>
-            <div class="border border-gray-300 dark:border-zinc-700 rounded-lg overflow-hidden">
-              <div class="flex border-b border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 px-2 py-1 gap-1">
-                <button type="button" onclick="insertMarkdown('**', '**')" class="px-2 py-1 text-xs font-bold hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Bold">B</button>
-                <button type="button" onclick="insertMarkdown('*', '*')" class="px-2 py-1 text-xs italic hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Italic">I</button>
-                <button type="button" onclick="insertMarkdown('# ', '')" class="px-2 py-1 text-xs font-bold hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Heading">H</button>
-                <button type="button" onclick="insertMarkdown('## ', '')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Subheading">H2</button>
-                <button type="button" onclick="insertMarkdown('- ', '')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="List">• List</button>
-                <button type="button" onclick="insertMarkdown('1. ', '')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Numbered List">1. List</button>
-                <button type="button" onclick="insertMarkdown('> ', '')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Quote">"</button>
-                <button type="button" onclick="insertMarkdown('`', '`')" class="px-2 py-1 text-xs font-mono hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Code">`</button>
-                <button type="button" onclick="insertMarkdown('[', '](url)')" class="px-2 py-1 text-xs hover:bg-gray-200 dark:hover:bg-zinc-700 rounded" title="Link">🔗</button>
+            <div class="border border-neutral-200 dark:border-neutral-700">
+              <div class="flex border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 px-2 py-1 gap-1">
+                <button type="button" onclick="insertMarkdown('**', '**')" class="px-3 py-1 text-xs font-bold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Bold">B</button>
+                <button type="button" onclick="insertMarkdown('*', '*')" class="px-3 py-1 text-xs italic hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Italic">I</button>
+                <button type="button" onclick="insertMarkdown('# ', '')" class="px-3 py-1 text-xs font-bold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Heading">H</button>
+                <button type="button" onclick="insertMarkdown('## ', '')" class="px-3 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Subheading">H2</button>
+                <button type="button" onclick="insertMarkdown('- ', '')" class="px-3 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="List">List</button>
+                <button type="button" onclick="insertMarkdown('1. ', '')" class="px-3 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Numbered List">1.</button>
+                <button type="button" onclick="insertMarkdown('> ', '')" class="px-3 py-1 text-xs hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Quote">Quote</button>
+                <button type="button" onclick="insertMarkdown('`', '`')" class="px-3 py-1 text-xs font-mono hover:bg-neutral-200 dark:hover:bg-neutral-700 transition" title="Code">Code</button>
               </div>
               <textarea
                 id="content"
                 name="content"
                 required
                 rows="20"
-                class="w-full px-4 py-2 border-0 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-0 font-mono text-sm"
+                class="w-full px-4 py-3 border-0 bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-0 font-mono text-sm text-neutral-900 dark:text-white rounded-none"
                 placeholder="使用 Markdown 编写内容..."
               ></textarea>
             </div>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">支持 Markdown 格式</p>
+            <p class="mt-1 text-xs text-neutral-500">支持 Markdown 格式</p>
           </div>
         </div>
 
-        <div class="px-6 py-4 border-t border-gray-200 dark:border-zinc-800 flex items-center justify-between">
+        <div class="px-6 py-5 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <label class="flex items-center">
-              <input type="checkbox" id="publishImmediately" checked class="rounded border-gray-300 dark:border-zinc-700 text-red-600 focus:ring-red-500" />
-              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">立即发布</span>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" id="publishImmediately" checked class="rounded-none border-neutral-300 dark:border-neutral-600 text-brand-red focus:ring-brand-red" />
+              <span class="ml-2 text-sm font-bold text-neutral-700 dark:text-neutral-300">立即发布</span>
             </label>
           </div>
           <div class="flex items-center gap-3">
             <button
               type="button"
               onclick="window.history.back()"
-              class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
+              class="btn-secondary px-6 py-3"
             >
               取消
             </button>
             <button
               type="submit"
-              class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+              class="btn-primary px-6 py-3"
             >
               创建文章
             </button>
@@ -143,7 +155,6 @@ const description = '创建新文章';
   <script>
     import { apiClient } from '../../../lib/api.js';
 
-    // Check admin access
     const checkAdminAccess = async () => {
       if (window.authManager.isLoading) {
         setTimeout(checkAdminAccess, 100);
@@ -158,7 +169,6 @@ const description = '创建新文章';
       const user = window.authManager.currentUser;
       if (user.role !== 'ADMIN') {
         window.location.href = '/dashboard';
-        showWarning('访问受限，仅限管理员。');
         return;
       }
 
@@ -182,7 +192,55 @@ const description = '创建新文章';
       }
     };
 
-    // Markdown insertion helper
+    const setFeaturedImage = (url = '', filename = '') => {
+      const hiddenInput = document.getElementById('featuredImage');
+      const preview = document.getElementById('featuredImagePreview');
+      const status = document.getElementById('featuredImageUploadStatus');
+
+      hiddenInput.value = url;
+
+      if (url) {
+        preview.src = url;
+        preview.classList.remove('hidden');
+        status.textContent = filename ? `已上传: ${filename}` : '已上传封面图';
+        return;
+      }
+
+      preview.removeAttribute('src');
+      preview.classList.add('hidden');
+      status.textContent = '未上传封面图';
+    };
+
+    const uploadFeaturedImage = async () => {
+      const fileInput = document.getElementById('featuredImageFile');
+      const uploadButton = document.getElementById('uploadFeaturedImageBtn');
+      const status = document.getElementById('featuredImageUploadStatus');
+      const file = fileInput.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      uploadButton.disabled = true;
+      uploadButton.textContent = '上传中...';
+      status.textContent = `正在上传: ${file.name}`;
+
+      try {
+        const response = await apiClient.uploadFile(file);
+        if (!response.success || !response.data?.url) {
+          throw new Error(response.message || '上传失败');
+        }
+
+        setFeaturedImage(response.data.url, response.data.filename || file.name);
+      } catch (error) {
+        console.error('Failed to upload featured image:', error);
+        status.textContent = '上传失败，请重试';
+      } finally {
+        uploadButton.disabled = false;
+        uploadButton.textContent = '上传图片';
+      }
+    };
+
     const insertMarkdown = (prefix, suffix) => {
       const textarea = document.getElementById('content');
       const start = textarea.selectionStart;
@@ -195,7 +253,6 @@ const description = '创建新文章';
       textarea.selectionEnd = start + prefix.length + selectedText.length;
     };
 
-    // Form submission
     document.getElementById('createPostForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -207,14 +264,7 @@ const description = '创建新文章';
         featuredImage: document.getElementById('featuredImage').value
       };
 
-      // Validate
-      if (!formData.title.trim()) {
-        showError('请输入标题');
-        return;
-      }
-
-      if (!formData.content.trim()) {
-        showError('请输入内容');
+      if (!formData.title.trim() || !formData.content.trim()) {
         return;
       }
 
@@ -222,15 +272,11 @@ const description = '创建新文章';
         const response = await apiClient.createPost(formData);
 
         if (response.success) {
-          showSuccess('文章创建成功！');
-
-          // Publish if checked
           const publishImmediately = document.getElementById('publishImmediately').checked;
           const postId = response.data.id;
 
           if (publishImmediately) {
             await apiClient.request(`/posts/${postId}/publish`, { method: 'PUT' });
-            showSuccess('文章已发布！');
           }
 
           setTimeout(() => {
@@ -239,11 +285,25 @@ const description = '创建新文章';
         }
       } catch (error) {
         console.error('Failed to create post:', error);
-        showError(error.message || '创建文章失败');
       }
     });
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', checkAdminAccess);
+    document.getElementById('uploadFeaturedImageBtn')?.addEventListener('click', uploadFeaturedImage);
+
+    document.getElementById('featuredImageFile')?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      const status = document.getElementById('featuredImageUploadStatus');
+
+      if (file) {
+        status.textContent = `已选择: ${file.name}，点击上传`;
+      } else if (!document.getElementById('featuredImage').value) {
+        status.textContent = '未上传封面图';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setFeaturedImage('');
+      checkAdminAccess();
+    });
   </script>
 </AdminLayout>

@@ -67,4 +67,18 @@ public class PageResult<T> {
                 .hasPrev(hasPrev)
                 .build();
     }
+
+    /**
+     * 前端兼容字段：Spring Data 风格 content
+     */
+    public List<T> getContent() {
+        return list;
+    }
+
+    /**
+     * 前端兼容字段：Spring Data 风格 number
+     */
+    public int getNumber() {
+        return page;
+    }
 }

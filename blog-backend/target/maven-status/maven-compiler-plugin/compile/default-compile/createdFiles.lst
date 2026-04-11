@@ -21,6 +21,7 @@ com\example\blog\mapper\PostTagMapper.class
 com\example\blog\service\BaseService.class
 com\example\blog\config\SecurityConfig.class
 com\example\blog\service\CommentService.class
+com\example\blog\security\JwtTokenProvider$JwtClaims.class
 com\example\blog\mapper\BookmarkMapper.class
 com\example\blog\service\FileUploadService.class
 com\example\blog\security\JwtTokenProvider.class

@@ -2,269 +2,178 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="常见问题 - Social Factory">
-  <div class="min-h-screen bg-white dark:bg-zinc-950 pt-24 pb-16">
-    <div class="max-w-4xl mx-auto px-4 sm:px-8 py-16">
-      <!-- Hero Section -->
-      <div class="text-center mb-16">
-        <h1 class="text-5xl md:text-7xl font-black text-zinc-900 dark:text-white mb-6 tracking-tight">
-          常见问题
+<Layout title="常见问题 - 社会工厂">
+  <main class="min-h-screen">
+
+    <!-- Hero Section -->
+    <section class="py-20 lg:py-32 bg-neutral-50 dark:bg-neutral-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="section-subtitle mb-4">FAQ</p>
+        <h1 class="text-display text-neutral-900 dark:text-white mb-8">
+          常见<br/><span class="gradient-text">问题</span>
         </h1>
-        <div class="w-24 h-1 bg-red-600 mx-auto mb-8"></div>
-        <p class="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed">
-          关于 Social Factory 的常见问题。
-          找不到您想要的内容？<a href="/contact" class="text-red-600 hover:underline">联系我们</a>。
+        <div class="w-16 h-1 bg-brand-red mx-auto mb-8"></div>
+        <p class="text-subtitle text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+          关于 Social Factory 的常见问题。找不到您想要的内容？
+          <a href="/contact" class="text-brand-red hover:underline">联系我们</a>。
         </p>
       </div>
+    </section>
 
-      <!-- FAQ Categories -->
-      <div class="space-y-12">
-        <!-- General Questions -->
-        <div>
-          <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-            <span class="w-8 h-8 bg-red-600 text-white rounded flex items-center justify-center text-sm font-bold">一</span>
-            一般问题
-          </h2>
-          <div class="space-y-4">
-            <!-- FAQ Item 1 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
+    <!-- FAQ Section -->
+    <section class="py-20 lg:py-32 bg-neutral-900 dark:bg-neutral-50">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="space-y-8">
+
+          <!-- FAQ Item 1 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
                   什么是 Social Factory？
                 </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
               </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
                 Social Factory 是一个致力于提高社会意识和同情心的博客平台。
-                我们为个人提供分享故事、提高社会问题意识、
-                与其他关心为世界带来积极影响的人联系的空间。
+                我们为个人提供分享故事、提高社会问题意识的空间，
+                与其他关心为世界带来积极影响的人联系。
               </div>
             </details>
+          </div>
 
-            <!-- FAQ Item 2 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
+          <!-- FAQ Item 2 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
                   "不偏不倚"是什么意思？
                 </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
               </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
                 "不偏不倚"是我们的核心原则。这意味着我们平等对待所有声音，
                 不论背景、地位或受欢迎程度。每个故事都值得被倾听，
-                每个人都应享有分享其观点的公平机会。我们相信
-                根据内容的价值和影响力来判断，而不是由谁创建它。
-              </div>
-            </details>
-
-            <!-- FAQ Item 3 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  Social Factory 是免费使用的吗？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                是的！Social Factory 完全免费使用。任何人都可以创建账户、
-                阅读文章并与社区互动，无需任何费用。我们相信
-                获取信息和分享思想的权利应该对每个人开放。
-              </div>
-            </details>
-
-            <!-- FAQ Item 4 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  谁可以创建账户？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                任何人都可以创建账户！只需点击"注册"按钮，
-                填写您的详细信息，即可加入我们的社区。
-                我们欢迎所有背景、分享我们同情心和平等价值观的个人。
+                每个人都应享有分享其观点的公平机会。
               </div>
             </details>
           </div>
-        </div>
 
-        <!-- Account & Profile -->
-        <div>
-          <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-            <span class="w-8 h-8 bg-red-600 text-white rounded flex items-center justify-center text-sm font-bold">账</span>
-            账户与资料
-          </h2>
-          <div class="space-y-4">
-            <!-- FAQ Item 5 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  如何重置密码？
+          <!-- FAQ Item 3 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
+                  如何联系你们？
                 </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
               </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                如果您忘记了密码，请点击登录页面上的"忘记密码"。
-                输入您的电子邮件地址，我们将向您发送重置密码的链接。
-                如果您继续遇到问题，请联系我们的支持团队。
-              </div>
-            </details>
-
-            <!-- FAQ Item 6 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  我可以更改用户名吗？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                用户名是永久性的，创建账户后无法更改。
-                但是，您可以随时在个人设置中更改显示名称（昵称）。
-                显示名称是其他用户在您的帖子和评论中看到的内容。
-              </div>
-            </details>
-
-            <!-- FAQ Item 7 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  如何删除我的账户？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                要删除您的账户，请前往个人设置并滚动到"删除账户"部分。
-                请注意，此操作是永久性的，将删除您所有的帖子、
-                评论和个人数据。如果您需要帮助，请联系我们的支持团队。
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
+                您可以通过 <a href="/contact" class="text-brand-red hover:underline">联系页面</a> 与我们取得联系。
+                我们欢迎所有问题、建议或合作机会。
               </div>
             </details>
           </div>
-        </div>
 
-        <!-- Content & Posting -->
-        <div>
-          <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-            <span class="w-8 h-8 bg-red-600 text-white rounded flex items-center justify-center text-sm font-bold">内</span>
-            内容与发布
-          </h2>
-          <div class="space-y-4">
-            <!-- FAQ Item 8 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  如何发布文章？
+          <!-- FAQ Item 4 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
+                  可以订阅更新通知吗？
                 </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
               </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                登录后，导航至您的仪表盘并点击"创建新文章"。
-                填写标题、内容，并可选择添加精选图片。
-                为您的文章选择一个类别，然后点击"发布"。您的文章将
-                立即对其他用户可见。
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
+                可以！浏览博客时，您可以在侧边栏找到订阅表单。
+                输入您的邮箱，即可收到最新文章的更新通知。
               </div>
             </details>
+          </div>
 
-            <!-- FAQ Item 9 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  允许什么内容？
+          <!-- FAQ Item 5 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
+                  如何搜索特定主题？
                 </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
               </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
+                使用导航菜单中的搜索栏按关键词搜索文章。
+                您也可以按分类浏览文章，或在首页查看最新文章。
+              </div>
+            </details>
+          </div>
+
+          <!-- FAQ Item 6 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
+                  文章允许什么内容？
+                </h3>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
+              </summary>
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
                 我们鼓励多样化的观点和创意表达。但是，我们不允许
                 宣传仇恨言论、骚扰、暴力或虚假信息的内容。
                 帖子应该尊重并为社区做出积极贡献。
-                违规行为可能导致内容删除或账户暂停。
-              </div>
-            </details>
-
-            <!-- FAQ Item 10 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  我可以编辑或删除我的文章吗？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                可以！您可以随时编辑或删除自己的文章。前往您的仪表盘，
-                找到您想要修改的文章，然后点击"编辑"或"删除"。
-                已删除的文章无法恢复，所以在确认之前请务必确定。
               </div>
             </details>
           </div>
-        </div>
 
-        <!-- Features & Interaction -->
-        <div>
-          <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-            <span class="w-8 h-8 bg-red-600 text-white rounded flex items-center justify-center text-sm font-bold">功</span>
-            功能与互动
-          </h2>
-          <div class="space-y-4">
-            <!-- FAQ Item 11 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
+          <!-- FAQ Item 7 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
                   如何点赞或收藏文章？
                 </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
               </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                阅读文章时，您会看到一个心形图标 (♡) 用于点赞，
-                一个书签图标 (📑) 用于稍后保存。点击心形表示赞赏，
-                点击书签将其添加到您的"我的收藏"页面以便轻松访问。
-              </div>
-            </details>
-
-            <!-- FAQ Item 12 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  评论如何工作？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                在每篇文章的底部，您会找到一个评论区。登录用户可以
-                发表评论、回复他人并参与讨论。
-                评论应该尊重且相关。使用旗帜图标举报不当评论。
-              </div>
-            </details>
-
-            <!-- FAQ Item 13 -->
-            <details class="group bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-              <summary class="flex items-center justify-between cursor-pointer p-6 select-none">
-                <h3 class="text-lg font-semibold text-zinc-900 dark:text-white pr-4">
-                  我可以搜索特定主题吗？
-                </h3>
-                <span class="text-red-600 transform group-open:rotate-45 transition-transform duration-200 text-2xl font-bold">+</span>
-              </summary>
-              <div class="px-6 pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                可以！使用导航菜单中的搜索栏按关键词、
-                作者或类别查找文章。您也可以按类别浏览文章或在主页上查看最新文章。
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
+                阅读文章时，您会看到心形图标用于点赞，
+                书签图标用于收藏。点击心形表示赞赏，
+                点击书签将其添加到您的收藏页面以便轻松访问。
               </div>
             </details>
           </div>
+
+          <!-- FAQ Item 8 -->
+          <div class="card p-0 overflow-hidden">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer p-6 lg:p-8 select-none">
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-white pr-4">
+                  评论如何工作？
+                </h3>
+                <span class="text-brand-red transform group-open:rotate-45 transition-transform duration-300 text-2xl font-bold">+</span>
+              </summary>
+              <div class="px-6 lg:px-8 pb-6 lg:pb-8 text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-neutral-200 dark:border-neutral-700 pt-6">
+                在每篇文章的底部，您会找到一个评论区。
+                登录后可以发表评论、回复他人并参与讨论。
+                评论应该尊重且相关。
+              </div>
+            </details>
+          </div>
+
         </div>
       </div>
+    </section>
 
-      <!-- Still Have Questions CTA -->
-      <div class="mt-16 text-center py-12 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800">
-        <h2 class="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white mb-4">
-          还有问题？
-        </h2>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-8 max-w-2xl mx-auto">
-          找不到您想要的答案？我们的团队随时为您提供帮助。
-        </p>
-        <a href="/contact" class="inline-block px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition font-semibold">
-          联系支持
-        </a>
+    <!-- CTA Section -->
+    <section class="py-20 lg:py-32 bg-neutral-50 dark:bg-neutral-900">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="card p-12 lg:p-16">
+          <h2 class="text-title text-neutral-900 dark:text-white mb-6">还有问题？</h2>
+          <p class="text-body text-neutral-600 dark:text-neutral-400 mb-8 max-w-xl mx-auto">
+            找不到您想要的答案？我们随时为您提供帮助。
+          </p>
+          <a href="/contact" class="btn-primary">联系支持</a>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
+
+  </main>
 </Layout>

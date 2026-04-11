@@ -10,8 +10,8 @@ const description = '管理所有文章';
     <!-- Header -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">文章管理</h1>
-        <a href="/admin/posts/create" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition">
+        <h1 class="text-3xl font-black text-neutral-900 dark:text-white">文章管理</h1>
+        <a href="/admin/posts/create" class="btn-primary flex items-center gap-2">
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
@@ -22,18 +22,24 @@ const description = '管理所有文章';
 
     <!-- Posts Table -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-      <div class="bg-white dark:bg-zinc-900 shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-zinc-800">
+      <div class="card overflow-hidden p-0">
+        <!-- Tabs -->
+        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <div class="flex-1">
-              <input
-                type="text"
-                id="searchInput"
-                placeholder="搜索文章..."
-                class="w-full max-w-md px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-            <select id="statusFilter" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-red-500">
+            <button id="tab-all" class="tab-btn active px-4 py-2 text-sm font-bold border-b-2 border-brand-red text-brand-red" data-tab="all">全部文章</button>
+            <button id="tab-recycle" class="tab-btn px-4 py-2 text-sm font-bold border-b-2 border-transparent text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300" data-tab="recycle">
+              回收站
+              <span id="recycleCount" class="ml-1 px-2 py-0.5 text-xs bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 rounded-full hidden">0</span>
+            </button>
+          </div>
+          <div id="tab-actions" class="flex items-center gap-4">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="搜索文章..."
+              class="w-full max-w-md px-4 py-2 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
+            />
+            <select id="statusFilter" class="px-4 py-2 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none">
               <option value="">全部状态</option>
               <option value="PUBLISHED">已发布</option>
               <option value="DRAFT">草稿</option>
@@ -42,44 +48,64 @@ const description = '管理所有文章';
         </div>
 
         <div id="loading" class="text-center py-12">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-          <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载文章...</p>
+          <div class="spinner mx-auto mb-6"></div>
+          <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
         </div>
 
-        <table id="postsTable" class="hidden min-w-full divide-y divide-gray-200 dark:divide-zinc-800">
-          <thead class="bg-gray-50 dark:bg-zinc-800">
+        <!-- All Posts Table -->
+        <table id="postsTable" class="hidden min-w-full">
+          <thead class="bg-neutral-50 dark:bg-neutral-800">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">标题</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">分类</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">状态</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">统计</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">创建时间</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">操作</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">标题</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">分类</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">状态</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">统计</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">创建时间</th>
+              <th class="px-6 py-4 text-right text-xs font-bold text-neutral-500 uppercase tracking-wider">操作</th>
             </tr>
           </thead>
-          <tbody id="postsTableBody" class="bg-white dark:bg-zinc-900 divide-y divide-gray-200 dark:divide-zinc-800">
+          <tbody id="postsTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-700">
             <!-- Posts will be loaded here -->
           </tbody>
         </table>
 
+        <!-- Recycle Bin Table -->
+        <table id="recycleTable" class="hidden min-w-full">
+          <thead class="bg-neutral-50 dark:bg-neutral-800">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">标题</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">分类</th>
+              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">删除时间</th>
+              <th class="px-6 py-4 text-right text-xs font-bold text-neutral-500 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody id="recycleTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-700">
+            <!-- Deleted posts will be loaded here -->
+          </tbody>
+        </table>
+
         <div id="noPosts" class="hidden text-center py-12">
-          <p class="text-gray-600 dark:text-gray-400">暂无文章，创建您的第一篇文章吧！</p>
+          <p class="text-neutral-500">暂无文章，创建您的第一篇文章吧！</p>
+        </div>
+
+        <div id="noRecyclePosts" class="hidden text-center py-12">
+          <p class="text-neutral-500">回收站为空</p>
         </div>
 
         <!-- Pagination -->
-        <div id="pagination" class="hidden px-6 py-4 border-t border-gray-200 dark:border-zinc-800 flex items-center justify-between">
-          <div class="text-sm text-gray-600 dark:text-gray-400">
+        <div id="pagination" class="hidden px-6 py-4 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+          <div class="text-sm text-neutral-500">
             共 <span id="totalPosts">0</span> 篇文章
           </div>
           <div class="flex items-center gap-2">
-            <button id="prevBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+            <button id="prevBtn" class="btn-secondary px-4 py-2 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
               </svg>
               上一页
             </button>
-            <span id="pageInfo" class="text-sm text-gray-600 dark:text-gray-400 px-2">第 1 页</span>
-            <button id="nextBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+            <span id="pageInfo" class="text-sm font-bold text-neutral-500 px-2">第 1 页</span>
+            <button id="nextBtn" class="btn-secondary px-4 py-2 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed">
               下一页
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -97,9 +123,10 @@ const description = '管理所有文章';
     let currentPage = 1;
     let totalPages = 1;
     let allPosts = [];
+    let deletedPosts = [];
     let categories = [];
+    let currentTab = 'all';
 
-    // Check admin access
     const checkAdminAccess = async () => {
       if (window.authManager.isLoading) {
         setTimeout(checkAdminAccess, 100);
@@ -114,14 +141,12 @@ const description = '管理所有文章';
       const user = window.authManager.currentUser;
       if (user.role !== 'ADMIN') {
         window.location.href = '/dashboard';
-        if (typeof window.showWarning === 'function') {
-          window.showWarning('Access denied. Admin only.');
-        }
         return;
       }
 
       await loadCategories();
       await loadPosts();
+      await loadDeletedPosts();
     };
 
     const loadCategories = async () => {
@@ -147,7 +172,6 @@ const description = '管理所有文章';
         noPosts.classList.add('hidden');
         pagination.classList.add('hidden');
 
-        // Get all posts via my-posts endpoint
         const response = await apiClient.request('/posts/my-posts');
 
         if (response.success && response.data) {
@@ -156,11 +180,74 @@ const description = '管理所有文章';
         }
       } catch (error) {
         console.error('Failed to load posts:', error);
-        if (typeof window.showError === 'function') {
-          window.showError('Failed to load posts');
-        }
       } finally {
         loading.classList.add('hidden');
+      }
+    };
+
+    const loadDeletedPosts = async () => {
+      try {
+        const response = await apiClient.request('/posts/recycle-bin');
+        if (response.success && response.data) {
+          deletedPosts = response.data;
+          updateRecycleCount();
+          if (currentTab === 'recycle') {
+            renderRecyclePosts();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load deleted posts:', error);
+      }
+    };
+
+    const updateRecycleCount = () => {
+      const badge = document.getElementById('recycleCount');
+      if (deletedPosts.length > 0) {
+        badge.textContent = String(deletedPosts.length);
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    };
+
+    const switchTab = (tab) => {
+      currentTab = tab;
+      const allTab = document.getElementById('tab-all');
+      const recycleTab = document.getElementById('tab-recycle');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilter = document.getElementById('statusFilter');
+      const postsTable = document.getElementById('postsTable');
+      const recycleTable = document.getElementById('recycleTable');
+      const noPosts = document.getElementById('noPosts');
+      const noRecyclePosts = document.getElementById('noRecyclePosts');
+      const pagination = document.getElementById('pagination');
+
+      if (tab === 'all') {
+        allTab.classList.add('active', 'border-brand-red', 'text-brand-red');
+        allTab.classList.remove('border-transparent', 'text-neutral-500');
+        recycleTab.classList.remove('active', 'border-brand-red', 'text-brand-red');
+        recycleTab.classList.add('border-transparent', 'text-neutral-500');
+        searchInput.classList.remove('hidden');
+        statusFilter.classList.remove('hidden');
+        postsTable.classList.remove('hidden');
+        recycleTable.classList.add('hidden');
+        noPosts.classList.add('hidden');
+        noRecyclePosts.classList.add('hidden');
+        pagination.classList.remove('hidden');
+        renderPosts(allPosts);
+      } else {
+        recycleTab.classList.add('active', 'border-brand-red', 'text-brand-red');
+        recycleTab.classList.remove('border-transparent', 'text-neutral-500');
+        allTab.classList.remove('active', 'border-brand-red', 'text-brand-red');
+        allTab.classList.add('border-transparent', 'text-neutral-500');
+        searchInput.classList.add('hidden');
+        statusFilter.classList.add('hidden');
+        postsTable.classList.add('hidden');
+        recycleTable.classList.remove('hidden');
+        noPosts.classList.add('hidden');
+        noRecyclePosts.classList.add('hidden');
+        pagination.classList.add('hidden');
+        renderRecyclePosts();
       }
     };
 
@@ -189,44 +276,44 @@ const description = '管理所有文章';
       let html = '';
       posts.forEach(post => {
         const statusClass = post.status === 'PUBLISHED'
-          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+          ? 'bg-green-500/10 text-green-600 border-green-500/20'
+          : 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20';
 
         const categoryName = categories.find(c => c.id === post.categoryId)?.name || post.category?.name || '未分类';
 
         html += `
-          <tr class="hover:bg-gray-50 dark:hover:bg-zinc-800 transition">
+          <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition">
             <td class="px-6 py-4">
               <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-16 bg-gray-200 dark:bg-zinc-700 rounded overflow-hidden">
+                <div class="flex-shrink-0 h-12 w-16 bg-neutral-200 dark:bg-neutral-700 rounded overflow-hidden">
                   ${post.featuredImage ? `<img src="${post.featuredImage}" class="h-full w-full object-cover" />` : ''}
                 </div>
                 <div class="ml-4">
-                  <div class="text-sm font-medium text-gray-900 dark:text-white">${post.title}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">作者：${post.author?.username || 'admin'}</div>
+                  <div class="text-sm font-bold text-neutral-900 dark:text-white">${post.title}</div>
+                  <div class="text-xs text-neutral-500">作者：${post.author?.username || 'admin'}</div>
                 </div>
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="text-sm text-gray-600 dark:text-gray-400">${categoryName}</span>
+              <span class="text-sm text-neutral-600 dark:text-neutral-400">${categoryName}</span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">${post.status === 'PUBLISHED' ? '已发布' : '草稿'}</span>
+              <span class="px-3 py-1 text-xs font-bold border ${statusClass}">${post.status === 'PUBLISHED' ? '已发布' : '草稿'}</span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
               <span title="浏览数">👁 ${post.viewCount || 0}</span>
               <span title="点赞数" class="ml-2">❤️ ${post.likeCount || 0}</span>
               <span title="评论数" class="ml-2">💬 ${post.commentCount || 0}</span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
               ${new Date(post.createdAt).toLocaleDateString('zh-CN')}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <a href="/blog/${post.id}" target="_blank" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-2">查看</a>
-              <a href="/admin/posts/edit/${post.id}" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-2">编辑</a>
+              <a href="/blog/${post.id}" target="_blank" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">查看</a>
+              <a href="/admin/posts/edit/${post.id}" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3">编辑</a>
               ${post.status === 'PUBLISHED'
-                ? `<button data-action="toggle-publish" data-id="${post.id}" data-publish="false" class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 mr-2">撤销发布</button>`
-                : `<button data-action="toggle-publish" data-id="${post.id}" data-publish="true" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-2">发布</button>`
+                ? `<button data-action="toggle-publish" data-id="${post.id}" data-publish="false" class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 mr-3">撤销发布</button>`
+                : `<button data-action="toggle-publish" data-id="${post.id}" data-publish="true" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3">发布</button>`
               }
               <button data-action="delete" data-id="${post.id}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">删除</button>
             </td>
@@ -235,9 +322,59 @@ const description = '管理所有文章';
       });
 
       tbody.innerHTML = html;
-
-      // Bind event listeners after rendering
       bindTableEvents();
+    };
+
+    const renderRecyclePosts = () => {
+      const table = document.getElementById('recycleTable');
+      const tbody = document.getElementById('recycleTableBody');
+      const loading = document.getElementById('loading');
+      const noRecyclePosts = document.getElementById('noRecyclePosts');
+
+      loading.classList.add('hidden');
+
+      if (deletedPosts.length === 0) {
+        noRecyclePosts.classList.remove('hidden');
+        table.classList.add('hidden');
+        return;
+      }
+
+      noRecyclePosts.classList.add('hidden');
+      table.classList.remove('hidden');
+
+      let html = '';
+      deletedPosts.forEach(post => {
+        const categoryName = categories.find(c => c.id === post.categoryId)?.name || post.category?.name || '未分类';
+
+        html += `
+          <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition">
+            <td class="px-6 py-4">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-12 w-16 bg-neutral-200 dark:bg-neutral-700 rounded overflow-hidden">
+                  ${post.featuredImage ? `<img src="${post.featuredImage}" class="h-full w-full object-cover" />` : ''}
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-bold text-neutral-900 dark:text-white">${post.title}</div>
+                  <div class="text-xs text-neutral-500">作者：${post.author?.username || 'admin'}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="text-sm text-neutral-600 dark:text-neutral-400">${categoryName}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+              ${new Date(post.updatedAt).toLocaleDateString('zh-CN')}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button data-action="restore" data-id="${post.id}" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3">恢复</button>
+              <button data-action="permanent-delete" data-id="${post.id}" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">永久删除</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+      bindRecycleTableEvents();
     };
 
     const togglePublish = async (postId, publish) => {
@@ -250,45 +387,72 @@ const description = '管理所有文章';
         const response = await apiClient.request(endpoint, { method: 'PUT' });
 
         if (response.success) {
-          if (typeof window.showSuccess === 'function') {
-            window.showSuccess(publish ? '文章已发布' : '已撤销发布');
-          }
           loadPosts();
         }
       } catch (error) {
         console.error('Failed to toggle publish:', error);
-        if (typeof window.showError === 'function') {
-          window.showError(error.message || '操作失败');
-        }
       }
     };
 
     const deletePost = async (postId) => {
-      if (!confirm('确定要删除这篇文章吗？此操作不可恢复。')) {
+      if (!confirm('确定要删除这篇文章吗？删除后可在回收站中恢复。')) {
         return;
       }
 
       try {
         const response = await apiClient.deletePost(postId);
         if (response.success) {
-          if (typeof window.showSuccess === 'function') {
-            window.showSuccess('文章已删除');
-          }
           loadPosts();
+          loadDeletedPosts();
         }
       } catch (error) {
         console.error('Failed to delete post:', error);
-        if (typeof window.showError === 'function') {
-          window.showError(error.message || '操作失败');
-        }
       }
     };
 
-    // Expose functions to window for onclick handlers
+    const restorePost = async (postId) => {
+      if (!confirm('确定要恢复这篇文章吗？')) {
+        return;
+      }
+
+      try {
+        const response = await apiClient.request(`/posts/${postId}/restore`, { method: 'PUT' });
+        if (response.success) {
+          if (currentTab === 'all') {
+            loadPosts();
+          } else {
+            loadDeletedPosts();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to restore post:', error);
+      }
+    };
+
+    const permanentlyDeletePost = async (postId) => {
+      if (!confirm('确定要永久删除这篇文章吗？此操作不可恢复！')) {
+        return;
+      }
+
+      try {
+        const response = await apiClient.request(`/posts/${postId}/permanent`, { method: 'DELETE' });
+        if (response.success) {
+          if (currentTab === 'all') {
+            loadPosts();
+          } else {
+            loadDeletedPosts();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to permanently delete post:', error);
+      }
+    };
+
     window.deletePost = deletePost;
     window.togglePublish = togglePublish;
+    window.restorePost = restorePost;
+    window.permanentlyDeletePost = permanentlyDeletePost;
 
-    // Event delegation for action buttons - bind after DOM is ready
     const bindTableEvents = () => {
       const tbody = document.getElementById('postsTableBody');
       if (!tbody) return;
@@ -309,7 +473,25 @@ const description = '管理所有文章';
       });
     };
 
-    // Search and filter
+    const bindRecycleTableEvents = () => {
+      const tbody = document.getElementById('recycleTableBody');
+      if (!tbody) return;
+
+      tbody.addEventListener('click', (e) => {
+        const button = e.target.closest('button[data-action]');
+        if (!button) return;
+
+        const action = button.dataset.action;
+        const id = parseInt(button.dataset.id);
+
+        if (action === 'restore') {
+          restorePost(id);
+        } else if (action === 'permanent-delete') {
+          permanentlyDeletePost(id);
+        }
+      });
+    };
+
     const filterPosts = () => {
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       const statusFilter = document.getElementById('statusFilter').value;
@@ -333,7 +515,10 @@ const description = '管理所有文章';
     document.getElementById('searchInput')?.addEventListener('input', filterPosts);
     document.getElementById('statusFilter')?.addEventListener('change', filterPosts);
 
-    // Initialize
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
     document.addEventListener('DOMContentLoaded', checkAdminAccess);
   </script>
 </AdminLayout>

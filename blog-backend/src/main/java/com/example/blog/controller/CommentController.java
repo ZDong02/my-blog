@@ -2,6 +2,7 @@ package com.example.blog.controller;
 
 import com.example.blog.dto.request.CommentRequest;
 import com.example.blog.dto.response.ApiResponse;
+import com.example.blog.dto.response.PageResult;
 import com.example.blog.entity.Comment;
 import com.example.blog.security.JwtUserDetails;
 import com.example.blog.service.CommentService;
@@ -33,7 +34,7 @@ public class CommentController {
             @AuthenticationPrincipal JwtUserDetails userDetails,
             @Valid @RequestBody CommentRequest request) {
         Comment comment = commentService.addComment(postId, userDetails.getId(), request);
-        return ResponseEntity.ok(ApiResponse.success("Comment added successfully", comment));
+        return ResponseEntity.ok(ApiResponse.success("评论添加成功", comment));
     }
 
     @DeleteMapping("/{commentId}")
@@ -41,15 +42,16 @@ public class CommentController {
             @PathVariable Long commentId,
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         commentService.deleteComment(commentId, userDetails.getId());
-        return ResponseEntity.ok(ApiResponse.success("Comment deleted successfully", null));
+        return ResponseEntity.ok(ApiResponse.success("评论删除成功", null));
     }
 
     @GetMapping("/my-comments")
-    public ResponseEntity<ApiResponse<List<Comment>>> getMyComments(
+    public ResponseEntity<ApiResponse<PageResult<Comment>>> getMyComments(
             @AuthenticationPrincipal JwtUserDetails userDetails,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         List<Comment> comments = commentService.getUserComments(userDetails.getId(), page, size);
-        return ResponseEntity.ok(ApiResponse.success(comments));
+        int total = commentService.countUserComments(userDetails.getId());
+        return ResponseEntity.ok(ApiResponse.success(PageResult.of(comments, total, page, size)));
     }
 }

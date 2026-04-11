@@ -17,7 +17,6 @@ import java.util.List;
  * @date 2026-03-18
  */
 @Service
-@Transactional
 public class LikeService {
 
     @Autowired
@@ -32,6 +31,7 @@ public class LikeService {
      * @param postId 文章 ID
      * @param userId 用户 ID
      */
+    @Transactional
     public void likePost(Long postId, Long userId) {
         // 检查文章是否存在
         if (postMapper.selectById(postId) == null) {
@@ -60,6 +60,7 @@ public class LikeService {
      * @param postId 文章 ID
      * @param userId 用户 ID
      */
+    @Transactional
     public void unlikePost(Long postId, Long userId) {
         LikeRecord existingLike = likeMapper.findByUserIdAndPostId(userId, postId);
         if (existingLike == null) {
@@ -80,6 +81,10 @@ public class LikeService {
      * @return 是否点赞
      */
     public boolean isPostLikedByUser(Long postId, Long userId) {
+        // Check if post exists first
+        if (postMapper.selectById(postId) == null) {
+            return false;
+        }
         return likeMapper.findByUserIdAndPostId(userId, postId) != null;
     }
 
@@ -104,5 +109,12 @@ public class LikeService {
     public List<LikeRecord> getUserLikes(Long userId, int page, int size) {
         int offset = (page - 1) * size;
         return likeMapper.findLikesByUserId(userId, offset, size);
+    }
+
+    /**
+     * 统计用户点赞总数
+     */
+    public int countUserLikes(Long userId) {
+        return likeMapper.countByUserId(userId);
     }
 }

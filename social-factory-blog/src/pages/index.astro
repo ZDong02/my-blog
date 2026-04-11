@@ -1,104 +1,232 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import HeroAnimation from "../components/HeroAnimation.astro";
 ---
 
 <Layout title="Social Factory | No Favouritism">
-  <main class="min-h-screen pt-20">
-    <!-- Hero Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3">
-      <!-- 左侧竖排 -->
-      <div
-        class="bg-white dark:bg-zinc-950 p-12 flex flex-col justify-between border-r border-zinc-200 dark:border-zinc-800"
-      >
-        <div>
-          <div class="text-red-600 text-7xl font-black">XXX</div>
-          <div
-            class="mt-12 text-[2.5rem] font-light tracking-[0.6em] text-zinc-400 dark:text-zinc-600 [writing-mode:vertical-rl] rotate-180"
-          >
-            社会工厂博客
+  <main class="min-h-screen">
+
+    <!-- Hero Section - Split Screen Magazine Style -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 min-h-[90vh]">
+      <!-- Left Panel -->
+      <div class="lg:col-span-4 xl:col-span-3 bg-neutral-900 text-white p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
+        <!-- Issue Number (Magazine Style) -->
+        <div class="absolute -left-8 -top-8 text-[200px] font-black text-neutral-800/50 leading-none select-none pointer-events-none">
+          01
+        </div>
+
+        <!-- Top Section -->
+        <div class="relative z-10">
+          <div class="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 mb-4">Issue 2026</div>
+          <h1 class="text-5xl lg:text-6xl font-black tracking-tighter leading-[0.9]">
+            社会<br/>工厂
+          </h1>
+        </div>
+
+        <!-- Middle Section - Rotated Text -->
+        <div class="relative z-10">
+          <div class="text-sm font-bold uppercase tracking-[0.2em] text-neutral-400 [writing-mode:vertical-rl] rotate-180 h-40">
+            No Favouritism · 不偏不倚
           </div>
         </div>
-        <div
-          class="max-w-xs text-sm leading-relaxed text-zinc-600 dark:text-zinc-400"
-        >
-          你拥有伟大的同情心，并致力于创造更人道的社会。你
-          支持那些遭受身体痛苦或不公正对待的人。
-          <div class="mt-8 text-xs uppercase tracking-widest text-red-600">
-            性格 / 社会工厂
+
+        <!-- Bottom Section -->
+        <div class="relative z-10 space-y-6">
+          <p class="text-neutral-400 text-sm leading-relaxed max-w-xs">
+            你拥有伟大的同情心，并致力于创造更人道的社会。你支持那些遭受身体痛苦或不公正对待的人。
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-[2px] bg-brand-red"></div>
+            <span class="text-xs font-bold uppercase tracking-widest text-brand-red">性格 / 社会工厂</span>
           </div>
         </div>
       </div>
 
-      <!-- 中间 Hero -->
-      <div class="relative bg-[#9C0000] overflow-hidden">
-        <HeroAnimation />
+      <!-- Center Panel - Featured Image -->
+      <div class="lg:col-span-5 xl:col-span-6 relative bg-brand-red overflow-hidden group">
+        <!-- Film grain overlay -->
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+          <svg class="w-full h-full">
+            <filter id="grain2">
+              <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3"/>
+              <feColorMatrix type="saturate" values="0"/>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#grain2)"/>
+          </svg>
+        </div>
+
+        <!-- Image -->
         <img
           src="/images/hero.jpg"
           alt="Hero"
-          class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+          class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out"
         />
-        <div class="absolute top-0 left-0 w-24 h-40 bg-red-600"></div>
+
+        <!-- Overlay Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/60 via-transparent to-transparent"></div>
       </div>
 
-      <!-- 右侧 -->
-      <div
-        class="bg-white dark:bg-zinc-950 p-12 flex flex-col justify-between border-l border-zinc-200 dark:border-zinc-800"
-      >
-        <div class="flex-1 flex items-center justify-center">
-          <div class="-mt-12 text-center">
-            <p class="text-3xl font-medium tracking-[0.5em]">不偏不倚</p>
-            <div
-              class="text-[8rem] leading-none font-black text-red-600 mt-20 text-center"
-            >
-              ZDong
-            </div>
+      <!-- Right Panel -->
+      <div class="lg:col-span-3 xl:col-span-3 bg-neutral-50 dark:bg-neutral-900 p-8 lg:p-12 flex flex-col justify-between relative">
+        <!-- Issue Number -->
+        <div class="absolute -right-4 -bottom-8 text-[180px] font-black text-neutral-200 dark:text-neutral-800/30 leading-none select-none pointer-events-none">
+          ZDong
+        </div>
 
-            <!-- Auth Buttons (shown when not logged in) -->
-            <div id="home-auth-buttons" class="mt-12 flex flex-col gap-4 items-center">
-              <a href="/admin" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">仪表盘</a>
-              <a href="/register" class="px-8 py-3 border border-red-600 text-red-600 dark:text-red-400 uppercase tracking-widest hover:bg-red-600 hover:text-white transition">注册</a>
-            </div>
+        <!-- Auth Section (shown when not logged in) -->
+        <div id="home-auth-buttons" class="relative z-10 space-y-6 mt-auto">
+          <div class="space-y-2">
+            <p class="text-xs font-bold uppercase tracking-widest text-neutral-500">Welcome</p>
+            <p class="text-3xl font-black text-neutral-900 dark:text-white tracking-tight">探索无限可能</p>
+          </div>
+          <a href="/blog" class="btn-primary block text-center">开始探索</a>
+          <a href="/register" class="btn-secondary block text-center">加入我们</a>
+        </div>
 
-            <!-- User Info (shown when logged in) -->
-            <div id="home-user-info" class="hidden mt-12 flex flex-col gap-4 items-center">
-              <span id="home-username" class="text-lg font-medium text-red-600"></span>
-              <a href="/admin" class="px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">仪表盘</a>
-              <a href="/blog" class="px-8 py-3 border border-zinc-300 dark:border-zinc-700 uppercase tracking-widest hover:border-red-600 transition">浏览博客</a>
-              <button id="home-logout-btn" class="text-sm uppercase tracking-widest text-zinc-500 hover:text-red-600 transition">退出登录</button>
-            </div>
+        <!-- User Info (shown when logged in) -->
+        <div id="home-user-info" class="hidden relative z-10 space-y-6 mt-auto">
+          <div class="space-y-2">
+            <p class="text-xs font-bold uppercase tracking-widest text-neutral-500">Welcome Back</p>
+            <p id="home-username" class="text-2xl font-black text-brand-red tracking-tight"></p>
+          </div>
+          <a href="/dashboard" class="btn-primary block text-center">进入仪表盘</a>
+          <a href="/blog" class="btn-secondary block text-center">浏览博客</a>
+          <button id="home-logout-btn" class="w-full py-3 text-sm font-bold uppercase tracking-widest text-neutral-500 hover:text-brand-red transition-colors">退出登录</button>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="relative z-10 space-y-4">
+          <div class="border-t-2 border-neutral-900 dark:border-white pt-6">
+            <nav class="space-y-3">
+              <a href="/about" class="block text-sm font-bold uppercase tracking-widest text-neutral-900 dark:text-white hover:text-brand-red transition-colors hover:translate-x-2">关于 →</a>
+              <a href="/roadmap" class="block text-sm font-bold uppercase tracking-widest text-neutral-900 dark:text-white hover:text-brand-red transition-colors hover:translate-x-2">路线 →</a>
+              <a href="/faq" class="block text-sm font-bold uppercase tracking-widest text-neutral-900 dark:text-white hover:text-brand-red transition-colors hover:translate-x-2">问答 →</a>
+            </nav>
           </div>
         </div>
-        <div class="flex justify-between text-xs uppercase tracking-widest text-zinc-400">
-          <a href="#" class="hover:text-red-600">脸书</a>
-          <a href="#" class="hover:text-red-600">推特</a>
-          <a href="#" class="hover:text-red-600">INS</a>
-          <a href="#" class="hover:text-red-600">油管</a>
+      </div>
+    </section>
+
+    <!-- Magazine Rule -->
+    <div class="h-1 bg-neutral-900 dark:bg-white"></div>
+
+    <!-- Latest Posts Section - Magazine Grid -->
+    <section class="py-20 lg:py-32 bg-neutral-50 dark:bg-neutral-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="grid grid-cols-12 gap-8 mb-16 items-end">
+          <div class="col-span-12 lg:col-span-6">
+            <p class="section-subtitle mb-4">探索与发现</p>
+            <h2 class="section-title">
+              最新<br/><span class="gradient-text">文章</span>
+            </h2>
+          </div>
+          <div class="col-span-12 lg:col-span-6 lg:text-right">
+            <a href="/blog" class="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-neutral-900 dark:text-white hover:text-brand-red transition-colors group">
+              查看全部
+              <svg class="w-5 h-5 transition-transform group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-20">
+          <div class="spinner mx-auto mb-6"></div>
+          <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">加载中...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="noPosts" class="hidden text-center py-20">
+          <div class="w-32 h-32 bg-neutral-200 dark:bg-neutral-800 mx-auto mb-8 flex items-center justify-center">
+            <svg class="w-16 h-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-black text-neutral-900 dark:text-white mb-4">暂无文章</h3>
+          <p class="text-neutral-500 mb-8">精彩内容即将上线，敬请期待</p>
+          <a href="/admin/posts/create" class="btn-primary">立即创建</a>
+        </div>
+
+        <!-- Posts Grid - Asymmetric Magazine Layout -->
+        <div id="postsContainer" class="hidden">
+          <div class="grid grid-cols-12 gap-6 lg:gap-8" id="postsGrid">
+            <!-- Posts will be loaded here -->
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-16">
+          <a href="/blog" class="btn-primary text-sm py-4 px-12">探索更多内容</a>
         </div>
       </div>
+    </section>
+
+    <!-- Magazine Rule Double -->
+    <div class="relative h-16 bg-neutral-900 dark:bg-white overflow-hidden">
+      <div class="absolute inset-0 flex items-center justify-center">
+        <span class="text-white dark:text-neutral-900 text-xs font-bold uppercase tracking-[0.5em]">Social Factory Blog</span>
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 h-1 bg-brand-red"></div>
     </div>
 
-    <!-- Latest Posts Section -->
-    <div class="bg-gray-50 dark:bg-zinc-950 py-16 px-4">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">最新文章</h2>
-          <p class="text-gray-600 dark:text-gray-400">最近的想法和故事</p>
-        </div>
-
-        <div id="loading" class="text-center py-8">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-        </div>
-
-        <div id="postsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
-          <!-- Posts will be loaded here -->
-        </div>
-
-        <div class="text-center mt-12">
-          <a href="/blog" class="inline-block px-8 py-3 bg-red-600 text-white uppercase tracking-widest hover:bg-red-700 transition">查看全部文章</a>
+    <!-- Features Section -->
+    <section class="py-20 lg:py-32 bg-neutral-900 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-12 gap-8">
+          <div class="col-span-12 lg:col-span-4 reveal">
+            <div class="text-[120px] font-black leading-none text-neutral-800 select-none mb-4">01</div>
+            <h3 class="text-2xl font-black mb-4">真实的声音</h3>
+            <p class="text-neutral-400 leading-relaxed">每一篇文章都经过深思熟虑，为您呈现最有价值的内容。</p>
+          </div>
+          <div class="col-span-12 lg:col-span-4 reveal" style="animation-delay: 0.1s">
+            <div class="text-[120px] font-black leading-none text-neutral-800 select-none mb-4">02</div>
+            <h3 class="text-2xl font-black mb-4">深度思考</h3>
+            <p class="text-neutral-400 leading-relaxed">不偏不倚，我们关注社会问题的每一个角度。</p>
+          </div>
+          <div class="col-span-12 lg:col-span-4 reveal" style="animation-delay: 0.2s">
+            <div class="text-[120px] font-black leading-none text-neutral-800 select-none mb-4">03</div>
+            <h3 class="text-2xl font-black mb-4">共同成长</h3>
+            <p class="text-neutral-400 leading-relaxed">与社区一起，探索无限可能。</p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-20 lg:py-32 bg-brand-red relative overflow-hidden">
+      <!-- Film grain -->
+      <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <svg class="w-full h-full">
+          <filter id="grain3">
+            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3"/>
+            <feColorMatrix type="saturate" values="0"/>
+          </filter>
+          <rect width="100%" height="100%" filter="url(#grain3)"/>
+        </svg>
+      </div>
+
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="text-4xl lg:text-5xl font-black text-white mb-6 tracking-tight">
+          加入我们
+        </h2>
+        <p class="text-red-100 text-lg mb-12 max-w-2xl mx-auto">
+          订阅更新，获取最新文章和深度思考，与我们一起成长。
+        </p>
+
+        <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+          <input
+            type="email"
+            placeholder="输入您的邮箱"
+            class="flex-1 px-6 py-4 bg-white/20 border-2 border-white/30 text-white placeholder:text-red-200 focus:outline-none focus:border-white rounded-none transition-colors"
+          />
+          <button type="submit" class="px-8 py-4 bg-neutral-900 text-white font-bold uppercase tracking-widest hover:bg-neutral-800 transition-colors rounded-none">
+            订阅
+          </button>
+        </form>
+      </div>
+    </section>
+
   </main>
 
   <script>
@@ -112,7 +240,6 @@ import HeroAnimation from "../components/HeroAnimation.astro";
       const logoutBtn = document.getElementById('home-logout-btn');
 
       if (isAuthenticated && user) {
-        // User is logged in - show user info
         authButtons.classList.add('hidden');
         userInfo.classList.remove('hidden');
 
@@ -126,13 +253,12 @@ import HeroAnimation from "../components/HeroAnimation.astro";
           }
         };
       } else {
-        // User is not logged in - show dashboard button (redirects to login)
         authButtons.classList.remove('hidden');
         userInfo.classList.add('hidden');
       }
     }
 
-    // Load latest posts
+    // Load latest posts with magazine layout
     const loadPosts = async () => {
       try {
         const response = await apiClient.getPosts(1, 6);
@@ -141,58 +267,116 @@ import HeroAnimation from "../components/HeroAnimation.astro";
           const posts = response.data.content;
           const container = document.getElementById('postsContainer');
           const loading = document.getElementById('loading');
+          const grid = document.getElementById('postsGrid');
 
           loading.classList.add('hidden');
           container.classList.remove('hidden');
 
           let html = '';
-          posts.forEach(post => {
-            html += `
-              <a href="/blog/${post.id}" class="group bg-white dark:bg-zinc-900 rounded-lg shadow overflow-hidden hover:shadow-xl transition">
-                ${post.featuredImage ? `
-                  <div class="h-48 overflow-hidden">
-                    <img src="${post.featuredImage}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                  </div>
-                ` : `
-                  <div class="h-48 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
-                    <svg class="h-20 w-20 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                    </svg>
-                  </div>
-                `}
-                <div class="p-6">
-                  <div class="text-red-600 text-xs uppercase mb-2">${post.category?.name || '未分类'}</div>
-                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-red-600 transition line-clamp-2">${post.title}</h3>
-                  <p class="text-gray-600 dark:text-gray-400 mt-3 line-clamp-3 text-sm">${post.summary || post.content?.substring(0, 150) || ''}</p>
-                  <div class="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400">
-                    <span>${new Date(post.createdAt).toLocaleDateString()}</span>
-                    <span class="flex items-center gap-1">
-                      <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                      </svg>
-                      ${post.likeCount || 0}
-                    </span>
-                  </div>
+
+          // Magazine-style layout: First post is large, then alternating
+          posts.forEach((post: any, index: number) => {
+            const postDate = new Date(post.createdAt).toLocaleDateString('zh-TW');
+            const readingTime = Math.ceil((post.content?.length || 0) / 200);
+
+            if (index === 0) {
+              // Featured post - large
+              html += `
+                <div class="col-span-12 lg:col-span-8 reveal" style="animation-delay: ${index * 0.1}s">
+                  <a href="/blog/${post.id}" class="group block relative overflow-hidden">
+                    <div class="aspect-[16/9] bg-gradient-to-br from-neutral-200 to-neutral-300 dark:from-neutral-800 dark:to-neutral-900 relative">
+                      ${post.featuredImage ? `
+                        <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      ` : `
+                        <div class="w-full h-full bg-gradient-to-br from-brand-red to-brand-red-dark flex items-center justify-center">
+                          <span class="text-white/30 text-6xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
+                        </div>
+                      `}
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent opacity-80 group-hover:opacity-70 transition-opacity"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8">
+                      <span class="badge-red mb-4 inline-block">${post.category?.name || '未分类'}</span>
+                      <h3 class="text-3xl lg:text-4xl font-black text-white mb-3 group-hover:text-brand-red transition-colors leading-tight">
+                        ${post.title}
+                      </h3>
+                      <p class="text-neutral-300 line-clamp-2 mb-4 max-w-2xl">${post.summary || post.content?.substring(0, 200) || ''}</p>
+                      <div class="flex items-center gap-4 text-sm text-neutral-400">
+                        <span>${postDate}</span>
+                        <span>·</span>
+                        <span>${readingTime} 分钟阅读</span>
+                      </div>
+                    </div>
+                  </a>
                 </div>
-              </a>
-            `;
+              `;
+            } else if (index < 4) {
+              // Secondary posts
+              html += `
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4 reveal" style="animation-delay: ${index * 0.1}s">
+                  <a href="/blog/${post.id}" class="group block">
+                    <div class="aspect-[4/3] bg-gradient-to-br from-neutral-200 to-neutral-300 dark:from-neutral-800 dark:to-neutral-900 relative overflow-hidden mb-4">
+                      ${post.featuredImage ? `
+                        <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      ` : `
+                        <div class="w-full h-full bg-gradient-to-br from-brand-red to-brand-red-dark flex items-center justify-center">
+                          <span class="text-white/30 text-4xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
+                        </div>
+                      `}
+                    </div>
+                    <span class="badge-outline mb-2 inline-block">${post.category?.name || '未分类'}</span>
+                    <h3 class="text-xl font-bold text-neutral-900 dark:text-white group-hover:text-brand-red transition-colors line-clamp-2 mb-2">
+                      ${post.title}
+                    </h3>
+                    <p class="text-sm text-neutral-500 line-clamp-2">${post.summary || ''}</p>
+                  </a>
+                </div>
+              `;
+            } else {
+              // Tertiary posts - smaller cards
+              html += `
+                <div class="col-span-12 sm:col-span-6 lg:col-span-3 reveal" style="animation-delay: ${index * 0.1}s">
+                  <a href="/blog/${post.id}" class="group flex gap-4">
+                    <div class="w-24 h-24 bg-gradient-to-br from-neutral-200 to-neutral-300 dark:from-neutral-800 dark:to-neutral-900 flex-shrink-0 overflow-hidden">
+                      ${post.featuredImage ? `
+                        <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      ` : `
+                        <div class="w-full h-full bg-gradient-to-br from-brand-red to-brand-red-dark flex items-center justify-center">
+                          <span class="text-white/30 text-2xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
+                        </div>
+                      `}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-sm font-bold text-neutral-900 dark:text-white group-hover:text-brand-red transition-colors line-clamp-2 mb-1">
+                        ${post.title}
+                      </h3>
+                      <span class="text-xs text-neutral-500">${postDate}</span>
+                    </div>
+                  </a>
+                </div>
+              `;
+            }
           });
 
-          container.innerHTML = html;
+          grid.innerHTML = html;
+
+          // Trigger reveal animations
+          setTimeout(() => {
+            document.querySelectorAll('.reveal').forEach(el => {
+              el.classList.add('visible');
+            });
+          }, 100);
         }
       } catch (error) {
         console.error('Failed to load posts:', error);
       }
     };
 
-    // Initialize auth state on page load
+    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       if (window.authManager) {
         window.authManager.addListener(({ user, isAuthenticated }) => {
           updateHomeAuthUI(user, isAuthenticated);
         });
-
-        // Initial state
         const authState = window.authManager.getAuthState();
         updateHomeAuthUI(authState.user, authState.isAuthenticated);
       }
@@ -200,7 +384,6 @@ import HeroAnimation from "../components/HeroAnimation.astro";
       loadPosts();
     });
 
-    // Also update immediately if auth is already loaded
     if (window.authManager) {
       const authState = window.authManager.getAuthState();
       if (!authState.isLoading) {

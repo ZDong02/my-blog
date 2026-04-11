@@ -7,7 +7,6 @@ const description = '标签下的文章';
 
 // 预构建常见标签页面
 export async function getStaticPaths() {
-  // 这些是默认标签，实际项目中可以从 API 获取
   const defaultTags = [
     { slug: 'java', params: { slug: 'java' } },
     { slug: 'spring-boot', params: { slug: 'spring-boot' } },
@@ -27,51 +26,68 @@ export async function getStaticPaths() {
 ---
 
 <Layout title={title} description={description}>
-  <div class="min-h-screen bg-gray-50 dark:bg-zinc-950 py-12 px-4">
-    <div class="max-w-4xl mx-auto">
-      <!-- Header -->
-      <div class="mb-8">
-        <a href="/tags" class="text-red-600 hover:text-red-700 text-sm mb-4 inline-block">&larr; 返回标签列表</a>
-        <h1 id="tagName" class="text-4xl font-bold text-gray-900 dark:text-white mb-2"></h1>
-        <p id="tagDescription" class="text-gray-600 dark:text-gray-400"></p>
-      </div>
+  <main class="min-h-screen">
 
-      <!-- Articles -->
-      <div id="articles" class="space-y-6">
-        <!-- Articles will be loaded here -->
+    <!-- Hero Section -->
+    <section class="py-20 lg:py-32 bg-neutral-50 dark:bg-neutral-900">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <a href="/tags" class="inline-flex items-center gap-2 text-sm font-bold text-brand-red hover:text-brand-red-dark mb-6 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          返回标签列表
+        </a>
+        <p class="section-subtitle mb-4">Tag</p>
+        <h1 id="tagName" class="text-display text-neutral-900 dark:text-white mb-4">
+          <span class="gradient-text">标签</span>
+        </h1>
+        <p id="tagDescription" class="text-subtitle text-neutral-600 dark:text-neutral-400"></p>
       </div>
+    </section>
 
-      <!-- Loading state -->
-      <div id="loading" class="text-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">正在加载...</p>
-      </div>
+    <!-- Articles Section -->
+    <section class="py-20 lg:py-32 bg-neutral-900 dark:bg-neutral-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- No articles -->
-      <div id="noArticles" class="hidden text-center py-12">
-        <svg class="h-24 w-24 mx-auto text-gray-300 dark:text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-        </svg>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">该标签下暂无文章</p>
-      </div>
+        <!-- Loading state -->
+        <div id="loading" class="text-center py-20">
+          <div class="spinner mx-auto mb-6"></div>
+          <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
+        </div>
 
-      <!-- Pagination -->
-      <div id="pagination" class="hidden mt-8 flex items-center justify-center gap-4">
-        <button id="prevBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
-          上一页
-        </button>
-        <span id="pageInfo" class="text-sm text-gray-600 dark:text-gray-400">第 1 页</span>
-        <button id="nextBtn" class="px-4 py-2 border border-gray-300 dark:border-zinc-700 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition disabled:opacity-50 disabled:cursor-not-allowed">
-          下一页
-        </button>
+        <!-- No articles -->
+        <div id="noArticles" class="hidden text-center py-20">
+          <div class="w-32 h-32 bg-neutral-200 dark:bg-neutral-800 mx-auto mb-8 flex items-center justify-center">
+            <svg class="w-16 h-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-black text-neutral-900 dark:text-white mb-4">该标签下暂无文章</h3>
+          <p class="text-neutral-500 mb-8">标签将在文章发布后自动生成</p>
+          <a href="/blog" class="btn-primary">浏览博客</a>
+        </div>
+
+        <!-- Articles -->
+        <div id="articles" class="hidden space-y-6"></div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="hidden mt-12 flex items-center justify-center gap-4">
+          <button id="prevBtn" class="btn-secondary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed">
+            上一页
+          </button>
+          <span id="pageInfo" class="text-sm font-bold text-neutral-500 px-4">第 1 页</span>
+          <button id="nextBtn" class="btn-secondary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed">
+            下一页
+          </button>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
+
+  </main>
 
   <script>
     import { apiClient } from '../../lib/api.js';
 
-    // 从 URL 获取 slug
     const pathParts = window.location.pathname.split('/');
     const currentSlug = pathParts[pathParts.length - 2] || pathParts[pathParts.length - 1];
     let currentPage = 1;
@@ -90,16 +106,14 @@ export async function getStaticPaths() {
       pagination.classList.add('hidden');
 
       try {
-        // Load tag info
         const tagResponse = await apiClient.getTagBySlug(currentSlug);
         if (tagResponse.success && tagResponse.data) {
           currentTag = tagResponse.data;
-          document.getElementById('tagName').textContent = currentTag.name;
+          document.getElementById('tagName').textContent = `#${currentTag.name}`;
           document.getElementById('tagDescription').textContent = currentTag.description || `查看 "${currentTag.name}" 标签下的所有文章`;
         }
 
-        // Load posts
-        const postsResponse = await apiClient.getPostsByTag(currentTag.id, page, 10);
+        const postsResponse = await apiClient.getPostsByTag(currentTag?.id || currentSlug, page, 10);
         if (postsResponse.success && postsResponse.data) {
           const { content, total, size, number } = postsResponse.data;
           currentPage = number;
@@ -107,7 +121,7 @@ export async function getStaticPaths() {
 
           loading.classList.add('hidden');
 
-          if (content.length === 0) {
+          if (!content || content.length === 0) {
             noArticles.classList.remove('hidden');
             return;
           }
@@ -131,36 +145,34 @@ export async function getStaticPaths() {
       let html = '';
 
       posts.forEach(post => {
-        const date = new Date(post.createdAt).toLocaleDateString('zh-CN', {
+        const date = new Date(post.createdAt).toLocaleDateString('zh-TW', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'
         });
 
         html += `
-          <a href="/blog/${post.id}" class="block bg-white dark:bg-zinc-900 shadow rounded-lg p-6 hover:shadow-lg transition">
-            <div class="flex items-center gap-3 mb-3">
-              <span class="text-xs uppercase px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded">
-                ${post.category?.name || '未分类'}
-              </span>
-              <span class="text-xs text-gray-500 dark:text-gray-400">${date}</span>
+          <a href="/blog/${post.id}" class="group block card p-6 hover:border-brand-red transition cursor-pointer">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="badge-red">${post.category?.name || '未分类'}</span>
+              <span class="text-xs text-neutral-500">${date}</span>
             </div>
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">${post.title}</h2>
-            <p class="text-gray-600 dark:text-gray-400 line-clamp-2 mb-4">${post.summary || post.content?.substring(0, 150) || ''}${(post.summary || post.content)?.length > 150 ? '...' : ''}</p>
-            <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-              <span class="flex items-center gap-1">
+            <h2 class="text-2xl font-black text-neutral-900 dark:text-white mb-3 line-clamp-1 group-hover:text-brand-red transition">${post.title}</h2>
+            <p class="text-neutral-600 dark:text-neutral-400 line-clamp-2 mb-4">${post.summary || post.content?.substring(0, 150) || ''}</p>
+            <div class="flex items-center gap-6 text-sm text-neutral-500">
+              <span class="flex items-center gap-1.5">
                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
                 ${post.likeCount || 0}
               </span>
-              <span class="flex items-center gap-1">
+              <span class="flex items-center gap-1.5">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
                 ${post.commentCount || 0}
               </span>
-              <span class="flex items-center gap-1">
+              <span class="flex items-center gap-1.5">
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -175,7 +187,6 @@ export async function getStaticPaths() {
       container.innerHTML = html;
     };
 
-    // Pagination handlers
     document.getElementById('prevBtn')?.addEventListener('click', () => {
       if (currentPage > 1) {
         loadTagAndPosts(currentPage - 1);
@@ -188,7 +199,6 @@ export async function getStaticPaths() {
       }
     });
 
-    // Initialize
     loadTagAndPosts();
   </script>
 </Layout>

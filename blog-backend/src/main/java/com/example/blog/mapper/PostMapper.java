@@ -56,4 +56,13 @@ public interface PostMapper extends BaseMapper<Post> {
 
     // 统计标签下的文章数量
     int countPostsByTag(@Param("tagId") Long tagId);
+
+    // 查询回收站中的文章（已删除的文章）
+    List<Post> findDeletedPosts();
+
+    // 按作者查询回收站中的文章
+    List<Post> findDeletedPostsByAuthor(@Param("authorId") Long authorId);
+
+    // 统计回收站中的文章数量
+    int countDeletedPosts();
 }

@@ -160,6 +160,13 @@ public class TagService {
     }
 
     /**
+     * 移除文章的所有标签关联
+     */
+    public void removeTagsFromPost(Long postId) {
+        postTagMapper.deleteByPostId(postId);
+    }
+
+    /**
      * 获取文章的标签列表
      */
     public List<Tag> getTagsByPostId(Long postId) {

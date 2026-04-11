@@ -1,5 +1,6 @@
 package com.example.blog.service;
 
+import com.example.blog.constant.PostConstants;
 import com.example.blog.dto.request.PostCreateRequest;
 import com.example.blog.dto.response.PageResult;
 import com.example.blog.entity.Post;
@@ -33,6 +34,15 @@ public class PostService {
     private TagService tagService;
 
     /**
+     * 验证文章所有权
+     */
+    private void validatePostOwnership(Post post, Long authorId) {
+        if (!post.getAuthorId().equals(authorId)) {
+            throw new BusinessException("无权操作该文章");
+        }
+    }
+
+    /**
      * 创建文章
      *
      * @param authorId 作者 ID
@@ -47,7 +57,8 @@ public class PostService {
         post.setSummary(request.getSummary());
         post.setCategoryId(request.getCategoryId());
         post.setAuthorId(authorId);
-        post.setStatus("DRAFT");
+        post.setStatus(PostConstants.STATUS_DRAFT);
+        post.setFeaturedImage(request.getFeaturedImage());
 
         postMapper.insert(post);
 
@@ -67,21 +78,20 @@ public class PostService {
      * @param request  更新请求
      * @return 更新后的文章
      */
-    @CacheEvict(value = {"posts"}, key = "#postId")
+    @CacheEvict(value = {"posts"}, allEntries = true)
     public Post updatePost(Long postId, Long authorId, PostCreateRequest request) {
         Post post = postMapper.selectById(postId);
         if (post == null) {
             throw new BusinessException("文章不存在");
         }
 
-        if (!post.getAuthorId().equals(authorId)) {
-            throw new BusinessException("无权更新该文章");
-        }
+        validatePostOwnership(post, authorId);
 
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         post.setSummary(request.getSummary());
         post.setCategoryId(request.getCategoryId());
+        post.setFeaturedImage(request.getFeaturedImage());
 
         postMapper.updateById(post);
 
@@ -100,18 +110,16 @@ public class PostService {
      * @param authorId 作者 ID
      * @return 发布后的文章
      */
-    @CacheEvict(value = {"posts"}, key = "#postId")
+    @CacheEvict(value = {"posts", "hotPosts", "archiveStats"}, allEntries = true)
     public Post publishPost(Long postId, Long authorId) {
         Post post = postMapper.selectById(postId);
         if (post == null) {
             throw new BusinessException("文章不存在");
         }
 
-        if (!post.getAuthorId().equals(authorId)) {
-            throw new BusinessException("无权发布该文章");
-        }
+        validatePostOwnership(post, authorId);
 
-        post.setStatus("PUBLISHED");
+        post.setStatus(PostConstants.STATUS_PUBLISHED);
         post.setPublishedAt(LocalDateTime.now());
         postMapper.updateById(post);
         return post;
@@ -124,42 +132,110 @@ public class PostService {
      * @param authorId 作者 ID
      * @return 取消发布后的文章
      */
-    @CacheEvict(value = {"posts"}, key = "#postId")
+    @CacheEvict(value = {"posts", "hotPosts", "archiveStats"}, allEntries = true)
     public Post unpublishPost(Long postId, Long authorId) {
         Post post = postMapper.selectById(postId);
         if (post == null) {
             throw new BusinessException("文章不存在");
         }
 
-        if (!post.getAuthorId().equals(authorId)) {
-            throw new BusinessException("无权取消发布该文章");
-        }
+        validatePostOwnership(post, authorId);
 
-        post.setStatus("DRAFT");
+        post.setStatus(PostConstants.STATUS_DRAFT);
         post.setPublishedAt(null);
         postMapper.updateById(post);
         return post;
     }
 
     /**
-     * 删除文章（软删除）
+     * 删除文章（移至回收站）
      *
      * @param postId   文章 ID
      * @param authorId 作者 ID
      */
-    @CacheEvict(value = {"posts"}, allEntries = true)
+    @CacheEvict(value = {"posts", "hotPosts", "archiveStats"}, allEntries = true)
     public void deletePost(Long postId, Long authorId) {
         Post post = postMapper.selectById(postId);
         if (post == null) {
             throw new BusinessException("文章不存在");
         }
 
-        if (!post.getAuthorId().equals(authorId)) {
-            throw new BusinessException("无权删除该文章");
+        validatePostOwnership(post, authorId);
+
+        post.setStatus(PostConstants.STATUS_DELETED);
+        postMapper.updateById(post);
+    }
+
+    /**
+     * 获取回收站中的文章
+     *
+     * @return 回收站文章列表
+     */
+    public List<Post> getDeletedPosts() {
+        return postMapper.findDeletedPosts();
+    }
+
+    /**
+     * 获取指定作者的回收站文章
+     *
+     * @param authorId 作者 ID
+     * @return 回收站文章列表
+     */
+    public List<Post> getDeletedPostsByAuthor(Long authorId) {
+        return postMapper.findDeletedPostsByAuthor(authorId);
+    }
+
+    /**
+     * 恢复已删除的文章
+     *
+     * @param postId   文章 ID
+     * @param authorId 作者 ID
+     * @return 恢复后的文章
+     */
+    @CacheEvict(value = {"posts"}, allEntries = true)
+    public Post restorePost(Long postId, Long authorId) {
+        Post post = postMapper.selectById(postId);
+        if (post == null) {
+            throw new BusinessException("文章不存在");
         }
 
-        post.setStatus("DELETED");
+        validatePostOwnership(post, authorId);
+
+        if (!PostConstants.STATUS_DELETED.equals(post.getStatus())) {
+            throw new BusinessException("该文章不在回收站中");
+        }
+
+        // 恢复到草稿状态
+        post.setStatus(PostConstants.STATUS_DRAFT);
+        post.setPublishedAt(null);
         postMapper.updateById(post);
+        return post;
+    }
+
+    /**
+     * 永久删除文章
+     *
+     * @param postId   文章 ID
+     * @param authorId 作者 ID
+     */
+    @CacheEvict(value = {"posts", "hotPosts", "archiveStats"}, allEntries = true)
+    public void permanentlyDeletePost(Long postId, Long authorId) {
+        Post post = postMapper.selectById(postId);
+        if (post == null) {
+            throw new BusinessException("文章不存在");
+        }
+
+        validatePostOwnership(post, authorId);
+
+        if (!PostConstants.STATUS_DELETED.equals(post.getStatus())) {
+            throw new BusinessException("只能永久删除回收站中的文章");
+        }
+
+        // 删除标签关联
+        tagService.removeTagsFromPost(postId);
+
+        // 永久删除文章
+        postMapper.deleteById(postId);
     }
 
     /**

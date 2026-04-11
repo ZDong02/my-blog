@@ -1,31 +1,38 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-// This page uses client-side rendering to fetch data from API
-// getStaticPaths returns a single path for build - actual data is loaded via JS
 export async function getStaticPaths() {
-  // Return a default path for build - the actual post is loaded client-side
-  return [{ params: { slug: '1' } }];
+  return Array.from({ length: 300 }, (_, index) => ({
+    params: { slug: String(index + 1) }
+  }));
 }
 ---
 
 <Layout title="文章 - Social Factory" description="阅读文章详情">
-  <article class="max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20">
+  <main class="min-h-screen pt-24 pb-20">
+    <article class="max-w-4xl mx-auto px-4 sm:px-8">
+
     <!-- Loading State -->
     <div id="loading" class="text-center py-16">
-      <div class="spinner mx-auto mb-4"></div>
-      <p class="text-zinc-500 dark:text-zinc-400">正在加载文章...</p>
+      <div class="spinner mx-auto mb-6"></div>
+      <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
     </div>
 
     <!-- Article Content (loaded via JS) -->
     <div id="articleContent" class="hidden">
       <!-- Article Header -->
-      <div class="mb-8">
-        <div class="flex items-center gap-3 mb-4">
-          <span id="category" class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs uppercase font-medium rounded-full"></span>
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-6">
+          <button onclick="window.history.back()" class="flex items-center gap-2 text-neutral-600 dark:text-neutral-400 hover:text-brand-red transition group">
+            <svg class="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span class="text-sm font-bold">返回</span>
+          </button>
+          <span id="category" class="badge-red"></span>
         </div>
-        <h1 id="title" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight"></h1>
-        <div class="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400 mt-6">
+        <h1 id="title" class="text-3xl sm:text-4xl lg:text-5xl font-black text-neutral-900 dark:text-white leading-tight mb-6"></h1>
+        <div class="flex items-center gap-4 text-sm text-neutral-500">
           <span id="pubDate"></span>
           <span>·</span>
           <span id="readingTime"></span>
@@ -33,59 +40,59 @@ export async function getStaticPaths() {
       </div>
 
       <!-- Featured Image -->
-      <div class="mb-10 overflow-hidden rounded-2xl shadow-lg">
-        <img id="featuredImage" src="" alt="" class="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" />
+      <div class="mb-12 overflow-hidden">
+        <img id="featuredImage" src="" alt="" class="w-full h-auto object-cover" />
       </div>
 
       <!-- Article Content -->
       <div id="content" class="prose prose-lg dark:prose-invert max-w-none
-                    prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
-                    prose-a:text-red-600 dark:prose-a:text-red-400 prose-a:no-underline hover:prose-a:underline
+                    prose-headings:font-bold prose-headings:text-neutral-900 dark:prose-headings:text-white
+                    prose-a:text-brand-red prose-a:no-underline hover:prose-a:underline
                     prose-img:rounded-xl prose-img:shadow-md
-                    prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-800
-                    prose-blockquote:border-red-500 prose-blockquote:bg-red-50 dark:prose-blockquote:bg-red-900/20
-                    prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-zinc-100 dark:prose-code:bg-zinc-800 prose-code:px-1.5 prose-code:rounded">
+                    prose-pre:bg-neutral-900 prose-pre:border prose-pre:border-neutral-800
+                    prose-blockquote:border-brand-red prose-blockquote:bg-brand-red/5
+                    prose-code:text-brand-red prose-code:bg-neutral-100 dark:prose-code:bg-neutral-800 prose-code:px-1.5 prose-code:rounded">
       </div>
 
       <!-- Article Footer - Interactions -->
-      <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
+      <div class="mt-16 pt-8 border-t-2 border-neutral-200 dark:border-neutral-700">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-3">
             <!-- Like Button -->
-            <button id="likeBtn" class="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
-              <svg id="likeIcon" class="h-5 w-5 text-gray-400 group-hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button id="likeBtn" class="group flex items-center gap-2 px-5 py-3 border border-neutral-200 dark:border-neutral-700 hover:border-brand-red dark:hover:border-brand-red transition cursor-pointer rounded-none">
+              <svg id="likeIcon" class="h-5 w-5 text-neutral-500 group-hover:text-brand-red transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
-              <span id="likeCount" class="text-sm font-medium text-gray-700 dark:text-gray-300">0</span>
+              <span id="likeCount" class="text-sm font-bold text-neutral-700 dark:text-neutral-300">0</span>
             </button>
 
             <!-- Bookmark Button -->
-            <button id="bookmarkBtn" class="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition">
-              <svg id="bookmarkIcon" class="h-5 w-5 text-gray-400 group-hover:text-yellow-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button id="bookmarkBtn" class="group flex items-center gap-2 px-5 py-3 border border-neutral-200 dark:border-neutral-700 hover:border-brand-red dark:hover:border-brand-red transition cursor-pointer rounded-none">
+              <svg id="bookmarkIcon" class="h-5 w-5 text-neutral-500 group-hover:text-brand-red transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
               </svg>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">收藏</span>
+              <span class="text-sm font-bold text-neutral-700 dark:text-neutral-300">收藏</span>
             </button>
 
             <!-- Share Button -->
-            <button onclick="shareArticle()" class="group flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition">
-              <svg class="h-5 w-5 text-gray-400 group-hover:text-blue-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="shareArticle()" class="group flex items-center gap-2 px-5 py-3 border border-neutral-200 dark:border-neutral-700 hover:border-brand-red dark:hover:border-brand-red transition cursor-pointer rounded-none">
+              <svg class="h-5 w-5 text-neutral-500 group-hover:text-brand-red transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
               </svg>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">分享</span>
+              <span class="text-sm font-bold text-neutral-700 dark:text-neutral-300">分享</span>
             </button>
           </div>
 
           <!-- Stats -->
-          <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-6 text-sm text-neutral-500">
+            <div class="flex items-center gap-2">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
               <span id="viewCount">0</span>
             </div>
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-2">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
@@ -96,37 +103,37 @@ export async function getStaticPaths() {
       </div>
 
       <!-- Comments Section -->
-      <div class="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+      <div class="mt-16 pt-10 border-t-2 border-neutral-200 dark:border-neutral-700">
+        <h3 class="text-2xl font-black text-neutral-900 dark:text-white mb-8 flex items-center gap-3">
           <span>评论</span>
-          <span id="commentsCount" class="px-2.5 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-full">0</span>
+          <span id="commentsCount" class="badge-red">0</span>
         </h3>
 
         <!-- Comment Form (for logged in users) -->
         <div id="commentForm" class="hidden mb-10">
           <form id="addCommentForm" class="space-y-4">
             <div>
-              <label for="commentContent" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">发表评论</label>
+              <label for="commentContent" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">发表评论</label>
               <textarea
                 id="commentContent"
                 rows="4"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-zinc-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-zinc-800 dark:text-white resize-none"
+                class="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition resize-none rounded-none"
                 placeholder="分享你的想法..."
               ></textarea>
             </div>
             <div class="flex justify-end">
               <button
                 type="submit"
-                class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-full transition shadow-md hover:shadow-lg"
+                class="btn-primary"
               >发表评论</button>
             </div>
           </form>
         </div>
 
         <!-- Login Prompt -->
-        <div id="loginToComment" class="hidden mb-10 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl text-center">
-          <p class="text-gray-600 dark:text-gray-400">
-            请 <a href="/login" class="text-red-600 dark:text-red-400 font-medium hover:underline">登录</a> 后发表评论
+        <div id="loginToComment" class="hidden mb-10 p-6 bg-neutral-50 dark:bg-neutral-800 text-center border border-neutral-200 dark:border-neutral-700">
+          <p class="text-neutral-600 dark:text-neutral-400">
+            请 <a href="/login" class="text-brand-red hover:underline font-bold">登录</a> 后发表评论
           </p>
         </div>
 
@@ -137,6 +144,7 @@ export async function getStaticPaths() {
       </div>
     </div>
   </article>
+  </main>
 
   <script>
     import { apiClient } from '../../lib/api.js';
@@ -147,7 +155,6 @@ export async function getStaticPaths() {
     let postTitle = '';
     let postDescription = '';
 
-    // Extract post ID from URL path
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     postId = pathParts[pathParts.length - 1] || '1';
 
@@ -161,36 +168,32 @@ export async function getStaticPaths() {
         if (response.success && response.data) {
           const post = response.data;
 
-          // Set page title and description
           postTitle = post.title || '文章';
           postDescription = post.summary || post.content?.substring(0, 160) || '';
           document.title = `${postTitle} - Social Factory`;
 
-          // Update article header
           document.getElementById('title').textContent = post.title;
-          document.getElementById('category').textContent = post.category?.name || '未分类';
+          document.getElementById('category').textContent = post.category?.name || 'Uncategorized';
 
-          // Format date
           const pubDate = new Date(post.publishedAt || post.createdAt);
           document.getElementById('pubDate').textContent = pubDate.toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' });
 
-          // Calculate reading time
           const readingTime = Math.ceil((post.content?.length || 0) / 200);
           document.getElementById('readingTime').textContent = `${readingTime} 分钟阅读`;
 
-          // Set featured image
           const featuredImage = document.getElementById('featuredImage');
           if (post.featuredImage) {
-            featuredImage.src = post.featuredImage;
+            featuredImage.onerror = () => {
+              featuredImage.style.display = 'none';
+            };
+            featuredImage.src = apiClient.resolveMediaUrl(post.featuredImage);
             featuredImage.alt = post.title;
           } else {
             featuredImage.style.display = 'none';
           }
 
-          // Render content (handle markdown-like formatting)
           const contentDiv = document.getElementById('content');
           if (post.content) {
-            // Convert newlines to <br> and wrap in paragraphs
             const formattedContent = post.content
               .split('\n\n')
               .map(p => `<p>${p.trim()}</p>`)
@@ -198,19 +201,16 @@ export async function getStaticPaths() {
             contentDiv.innerHTML = formattedContent;
           }
 
-          // Update stats
           document.getElementById('viewCount').textContent = post.viewCount || 0;
           document.getElementById('likeCount').textContent = post.likeCount || 0;
           document.getElementById('commentCount').textContent = post.commentCount || 0;
 
-          // Show article content, hide loading
           document.getElementById('loading').classList.add('hidden');
           document.getElementById('articleContent').classList.remove('hidden');
         } else {
-          // Show error state
           document.getElementById('loading').innerHTML = `
             <div class="text-center py-16">
-              <p class="text-zinc-500 dark:text-zinc-400">文章未找到</p>
+              <p class="text-neutral-500">文章未找到</p>
             </div>
           `;
         }
@@ -218,16 +218,22 @@ export async function getStaticPaths() {
         console.error('Failed to load post data:', error);
         document.getElementById('loading').innerHTML = `
           <div class="text-center py-16">
-            <p class="text-zinc-500 dark:text-zinc-400">加载文章失败，请稍后再试</p>
+            <p class="text-neutral-500">加载文章失败，请稍后再试</p>
           </div>
         `;
       }
     };
 
-    const checkAuthAndSetup = async () => {
-      if (window.authManager.isLoading) {
-        setTimeout(checkAuthAndSetup, 100);
+    const checkAuthAndSetup = async (retryCount = 0) => {
+      const MAX_RETRIES = 10;
+
+      if (window.authManager.isLoading && retryCount < MAX_RETRIES) {
+        setTimeout(() => checkAuthAndSetup(retryCount + 1), 100);
         return;
+      }
+
+      if (retryCount >= MAX_RETRIES) {
+        console.warn('Auth check timed out, proceeding without auth state');
       }
 
       if (window.authManager.isAuthenticated) {
@@ -269,25 +275,30 @@ export async function getStaticPaths() {
 
       if (isLiked) {
         likeIcon.setAttribute('fill', 'currentColor');
-        likeIcon.classList.add('text-red-500');
-        likeCount.classList.add('text-red-600', 'dark:text-red-400');
+        likeIcon.classList.add('text-brand-red');
+        likeIcon.classList.remove('text-neutral-500');
+        likeCount.classList.add('text-brand-red');
+        likeCount.classList.remove('text-neutral-700');
       } else {
         likeIcon.setAttribute('fill', 'none');
-        likeIcon.classList.remove('text-red-500');
-        likeCount.classList.remove('text-red-600', 'dark:text-red-400');
+        likeIcon.classList.remove('text-brand-red');
+        likeIcon.classList.add('text-neutral-500');
+        likeCount.classList.remove('text-brand-red');
+        likeCount.classList.add('text-neutral-700');
       }
     };
 
     const updateBookmarkButton = () => {
-      const bookmarkBtn = document.getElementById('bookmarkBtn');
       const bookmarkIcon = document.getElementById('bookmarkIcon');
 
       if (isBookmarked) {
         bookmarkIcon.setAttribute('fill', 'currentColor');
-        bookmarkIcon.classList.add('text-yellow-500');
+        bookmarkIcon.classList.add('text-brand-red');
+        bookmarkIcon.classList.remove('text-neutral-500');
       } else {
         bookmarkIcon.setAttribute('fill', 'none');
-        bookmarkIcon.classList.remove('text-yellow-500');
+        bookmarkIcon.classList.remove('text-brand-red');
+        bookmarkIcon.classList.add('text-neutral-500');
       }
     };
 
@@ -303,12 +314,12 @@ export async function getStaticPaths() {
             await apiClient.unlikePost(postId);
             isLiked = false;
             const count = parseInt(document.getElementById('likeCount').textContent) - 1;
-            document.getElementById('likeCount').textContent = count;
+            document.getElementById('likeCount').textContent = String(count);
           } else {
             await apiClient.likePost(postId);
             isLiked = true;
             const count = parseInt(document.getElementById('likeCount').textContent) + 1;
-            document.getElementById('likeCount').textContent = count;
+            document.getElementById('likeCount').textContent = String(count);
           }
           updateLikeButton();
         } catch (error) {
@@ -346,15 +357,58 @@ export async function getStaticPaths() {
           if (response.success) {
             document.getElementById('commentContent').value = '';
             await loadComments();
-            const count = parseInt(document.getElementById('commentCount').textContent) + 1;
-            document.getElementById('commentCount').textContent = count;
-            showToast('评论成功！', 'success');
           }
         } catch (error) {
           console.error('Failed to add comment:', error);
-          showToast('评论失败：' + error.message, 'error');
         }
       });
+    };
+
+    const countAllComments = (comments = []) => comments.reduce((total, comment) => {
+      const replyCount = Array.isArray(comment.replies) ? comment.replies.length : 0;
+      return total + 1 + replyCount;
+    }, 0);
+
+    const escapeHtml = (value = '') => String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+    const formatCommentDate = (value) => {
+      if (!value) return '';
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('zh-TW');
+    };
+
+    const renderReplies = (replies = []) => {
+      if (!Array.isArray(replies) || replies.length === 0) {
+        return '';
+      }
+
+      return `
+        <div class="mt-4 pl-4 border-l-2 border-neutral-200 dark:border-neutral-700 space-y-3">
+          ${replies.map((reply) => `
+            <div class="flex gap-3 p-4 bg-neutral-50 dark:bg-neutral-800">
+              <img
+                src="${apiClient.resolveMediaUrl(reply.user?.avatar) || '/images/default-avatar.png'}"
+                alt="${escapeHtml(reply.user?.nickname || reply.user?.username || 'User')}"
+                class="h-8 w-8 rounded-full object-cover flex-shrink-0"
+              />
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h5 class="text-sm font-bold text-neutral-900 dark:text-white truncate">
+                    ${escapeHtml(reply.user?.nickname || reply.user?.username || 'User')}
+                  </h5>
+                  <span class="text-xs text-neutral-500">${formatCommentDate(reply.createdAt)}</span>
+                </div>
+                <p class="text-sm text-neutral-700 dark:text-neutral-300 break-words">${escapeHtml(reply.content || '')}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
     };
 
     const loadComments = async () => {
@@ -362,7 +416,9 @@ export async function getStaticPaths() {
         const response = await apiClient.getComments(postId);
         if (response.success && response.data) {
           renderComments(response.data);
-          document.getElementById('commentsCount').textContent = response.data.length;
+          const totalComments = countAllComments(response.data);
+          document.getElementById('commentsCount').textContent = totalComments;
+          document.getElementById('commentCount').textContent = totalComments;
         }
       } catch (error) {
         console.error('Failed to load comments:', error);
@@ -373,45 +429,45 @@ export async function getStaticPaths() {
       const container = document.getElementById('commentsList');
 
       if (!comments || comments.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-10">暂无评论，快来发表第一条评论吧！</p>';
+        container.innerHTML = '<p class="text-neutral-500 text-center py-10">暂无评论，快来发表第一条评论吧</p>';
         return;
       }
 
       let html = '';
       comments.forEach(comment => {
         html += `
-          <div class="flex gap-4 p-5 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
-            <img src="${comment.user?.avatar || '/images/default-avatar.png'}" alt="${comment.user?.nickname || comment.user?.username}" class="h-10 w-10 rounded-full object-cover flex-shrink-0" />
+          <div class="flex gap-4 p-6 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+            <img
+              src="${apiClient.resolveMediaUrl(comment.user?.avatar) || '/images/default-avatar.png'}"
+              alt="${escapeHtml(comment.user?.nickname || comment.user?.username || 'User')}"
+              class="h-10 w-10 rounded-full object-cover flex-shrink-0"
+            />
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-3 mb-2">
-                <h4 class="font-medium text-gray-900 dark:text-white truncate">${comment.user?.nickname || comment.user?.username}</h4>
-                <span class="text-xs text-gray-500 dark:text-gray-400">${new Date(comment.createdAt).toLocaleDateString('zh-TW')}</span>
+                <h4 class="font-bold text-neutral-900 dark:text-white truncate">${escapeHtml(comment.user?.nickname || comment.user?.username || 'User')}</h4>
+                <span class="text-xs text-neutral-500">${formatCommentDate(comment.createdAt)}</span>
               </div>
-              <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">${comment.content}</p>
+              <p class="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed break-words">${escapeHtml(comment.content || '')}</p>
               <div class="mt-3 flex items-center gap-4">
-                <button onclick="showReplyForm(${comment.id})" class="text-xs text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition flex items-center gap-1">
+                <button onclick="showReplyForm(${comment.id})" class="text-xs font-bold text-neutral-500 hover:text-brand-red transition flex items-center gap-1">
                   <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                   </svg>
                   回复
                 </button>
               </div>
+              ${renderReplies(comment.replies)}
               <div id="reply-form-${comment.id}" class="reply-form-container hidden mt-4">
                 <div class="flex gap-2">
-                  <input
-                    type="hidden"
-                    id="parentCommentId"
-                    value="${comment.id}"
-                  />
                   <input
                     type="text"
                     id="reply-content-${comment.id}"
                     placeholder="写下你的回复..."
-                    class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    class="flex-1 px-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-none bg-white dark:bg-neutral-900 focus:outline-none focus:border-brand-red"
                   />
                   <button
                     onclick="submitReply(${comment.id})"
-                    class="px-4 py-2 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                    class="btn-primary px-4 py-2 text-xs"
                   >
                     发送
                   </button>
@@ -426,6 +482,11 @@ export async function getStaticPaths() {
     };
 
     window.showReplyForm = (commentId) => {
+      if (!window.authManager.isAuthenticated) {
+        window.location.href = '/login';
+        return;
+      }
+
       document.querySelectorAll('.reply-form-container').forEach(form => {
         if (form.id !== `reply-form-${commentId}`) {
           form.classList.add('hidden');
@@ -443,9 +504,13 @@ export async function getStaticPaths() {
     };
 
     window.submitReply = async (commentId) => {
+      if (!window.authManager.isAuthenticated) {
+        window.location.href = '/login';
+        return;
+      }
+
       const content = document.getElementById(`reply-content-${commentId}`)?.value.trim();
       if (!content) {
-        showToast('请输入回复内容', 'error');
         return;
       }
 
@@ -455,13 +520,9 @@ export async function getStaticPaths() {
           document.getElementById(`reply-content-${commentId}`).value = '';
           document.getElementById(`reply-form-${commentId}`).classList.add('hidden');
           await loadComments();
-          const count = parseInt(document.getElementById('commentCount').textContent) + 1;
-          document.getElementById('commentCount').textContent = count;
-          showToast('回复成功！', 'success');
         }
       } catch (error) {
         console.error('Failed to add reply:', error);
-        showToast('回复失败：' + error.message, 'error');
       }
     };
 
@@ -473,34 +534,15 @@ export async function getStaticPaths() {
             url: window.location.href
           });
         } catch (error) {
-          console.log('Share cancelled');
+          // Share cancelled
         }
       } else {
-        // Fallback: copy to clipboard
         try {
           await navigator.clipboard.writeText(window.location.href);
-          showToast('链接已复制到剪贴板', 'success');
         } catch (error) {
-          showToast('复制失败，请手动复制链接', 'error');
+          // Clipboard access denied
         }
       }
-    };
-
-    const showToast = (message, type = 'info') => {
-      // Simple toast implementation
-      const toast = document.createElement('div');
-      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-sm font-medium z-50 transition-all ${
-        type === 'success' ? 'bg-green-600 text-white' :
-        type === 'error' ? 'bg-red-600 text-white' :
-        'bg-zinc-800 text-white'
-      }`;
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translate(-50%, 10px)';
-        setTimeout(() => toast.remove(), 300);
-      }, 2500);
     };
 
     const init = () => {

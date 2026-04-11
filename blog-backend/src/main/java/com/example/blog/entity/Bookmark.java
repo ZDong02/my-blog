@@ -38,4 +38,10 @@ public class Bookmark {
      */
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
+
+    /**
+     * 关联文章信息
+     */
+    @TableField(exist = false)
+    private Post post;
 }

@@ -2,6 +2,8 @@ package com.example.blog.controller;
 
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.service.FileUploadService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.Map;
 @CrossOrigin
 public class FileUploadController {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
+
     @Autowired
     private FileUploadService fileUploadService;
 
@@ -31,9 +35,11 @@ public class FileUploadController {
             Map<String, String> data = new HashMap<>();
             data.put("url", filePath);
             data.put("filename", file.getOriginalFilename());
-            return ResponseEntity.ok(ApiResponse.success("File uploaded successfully", data));
-        } catch (IOException e) {
-            return ResponseEntity.ok(ApiResponse.error("Upload failed: " + e.getMessage()));
+            logger.info("File uploaded successfully: {}", file.getOriginalFilename());
+            return ResponseEntity.ok(ApiResponse.success("文件上传成功", data));
+        } catch (Exception e) {
+            logger.error("File upload failed", e);
+            return ResponseEntity.ok(ApiResponse.error("文件上传失败，请检查文件格式和大小"));
         }
     }
 
@@ -48,9 +54,11 @@ public class FileUploadController {
             Map<String, Object> data = new HashMap<>();
             data.put("urls", urls);
             data.put("count", urls.size());
-            return ResponseEntity.ok(ApiResponse.success("Files uploaded successfully", data));
+            logger.info("Multiple files uploaded successfully: {} files", urls.size());
+            return ResponseEntity.ok(ApiResponse.success("文件批量上传成功", data));
         } catch (Exception e) {
-            return ResponseEntity.ok(ApiResponse.error("Upload failed: " + e.getMessage()));
+            logger.error("File upload failed", e);
+            return ResponseEntity.ok(ApiResponse.error("文件上传失败，请检查文件格式和大小"));
         }
     }
 }
