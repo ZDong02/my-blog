@@ -1,0 +1,30 @@
+# IDE / local tooling
+.idea/
+.vscode/
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Frontend build artifacts
+**/node_modules/
+**/dist/
+**/.astro/
+
+# Java build artifacts
+**/target/
+**/*.class
+
+# Logs
+**/*.log
+
+# Runtime uploads
+uploads/
+**/uploads/
+
+# Environment
+**/.env
+**/.env.*
+!**/.env.example

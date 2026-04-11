@@ -1,0 +1,143 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const title = '管理员登录 - 社会工厂';
+const description = '管理员登录入口';
+---
+
+<Layout title={title} description={description}>
+  <main class="min-h-screen flex items-center justify-center py-20 relative overflow-hidden">
+
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none">
+      <div class="absolute inset-0" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 60px, currentColor 60px, currentColor 61px);"></div>
+    </div>
+
+    <div class="relative z-10 max-w-md w-full mx-4">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <a href="/" class="inline-block mb-8">
+          <span class="text-3xl font-black text-neutral-900 dark:text-white">社会工厂</span>
+        </a>
+        <h1 class="text-headline text-neutral-900 dark:text-white mb-4">管理员入口</h1>
+        <p class="text-neutral-500">仅限管理员访问</p>
+      </div>
+
+      <!-- Admin Login Card -->
+      <div class="card p-8 lg:p-10 border-4 border-brand-red">
+        <div class="w-16 h-16 mx-auto mb-6 bg-brand-red/10 flex items-center justify-center">
+          <svg class="w-8 h-8 text-brand-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+
+        <form id="adminLoginForm" class="space-y-6">
+          <div>
+            <label for="usernameOrEmail" class="input-label">管理员账号</label>
+            <input
+              id="usernameOrEmail"
+              name="usernameOrEmail"
+              type="text"
+              required
+              autocomplete="username"
+              class="input-field"
+              placeholder="输入管理员用户名或邮箱"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="input-label">密码</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autocomplete="current-password"
+              class="input-field"
+              placeholder="输入您的密码"
+            />
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              id="loginBtn"
+              class="btn-primary w-full flex items-center justify-center gap-3"
+            >
+              <span id="loginBtnText">管理员登录</span>
+              <span id="loginLoading" class="hidden">
+                <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </span>
+            </button>
+          </div>
+
+          <div id="errorMessage" class="hidden p-4 border-2 border-red-500 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold text-center"></div>
+        </form>
+      </div>
+
+      <!-- Back links -->
+      <div class="text-center mt-8 space-y-4">
+        <a href="/login" class="block text-sm font-bold uppercase tracking-widest text-neutral-500 hover:text-brand-red transition-colors">
+          返回用户登录
+        </a>
+        <a href="/" class="block text-sm font-bold uppercase tracking-widest text-neutral-500 hover:text-brand-red transition-colors">
+          返回首页
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    import { apiClient } from '../../lib/api.js';
+
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginLoading = document.getElementById('loginLoading');
+    const errorDiv = document.getElementById('errorMessage');
+
+    document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const usernameOrEmail = e.target.usernameOrEmail.value;
+      const password = e.target.password.value;
+
+      loginBtn.disabled = true;
+      loginBtnText.classList.add('hidden');
+      loginLoading.classList.remove('hidden');
+      errorDiv.classList.add('hidden');
+
+      try {
+        // Use admin login endpoint
+        const response = await fetch(`${import.meta.env.PUBLIC_API_BASE_URL || 'http://localhost:8080/api'}/auth/admin/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ usernameOrEmail, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          apiClient.setTokens(data.data.token, data.data.refreshToken);
+          window.location.href = '/admin';
+        } else {
+          errorDiv.textContent = data.message || '管理员登录失败';
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Admin login error:', error);
+        errorDiv.textContent = error.message || '登录时发生错误';
+        errorDiv.classList.remove('hidden');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtnText.classList.remove('hidden');
+        loginLoading.classList.add('hidden');
+      }
+    });
+  </script>
+</Layout>
