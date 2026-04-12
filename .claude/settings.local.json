@@ -76,7 +76,9 @@
       "Bash(mvn spring-boot:run -q)",
       "Bash(mvn -q exec:java -Dexec.mainClass=\"org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder\" -Dexec.args=\"admin123\")",
       "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.GenPass\" -Dexec.args=\"admin123\")",
-      "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.UpdatePass\")"
+      "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.UpdatePass\")",
+      "Bash(git push:*)",
+      "Bash(git remote:*)"
     ]
   }
 }
