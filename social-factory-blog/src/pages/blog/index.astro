@@ -49,10 +49,59 @@ const description = '浏览所有文章';
           <!-- Posts List -->
           <div class="col-span-12 lg:col-span-8">
 
-            <!-- Loading State -->
-            <div id="loading" class="text-center py-20">
-              <div class="spinner mx-auto mb-6"></div>
-              <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">加载中...</p>
+            <!-- Loading State - Skeleton -->
+            <div id="loading" class="hidden space-y-8">
+              <div class="card group overflow-hidden">
+                <div class="grid grid-cols-12 gap-0">
+                  <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto skeleton-image"></div>
+                  <div class="col-span-12 md:col-span-8 p-6 lg:p-8">
+                    <div class="skeleton-title w-3/4 mb-4"></div>
+                    <div class="skeleton-text w-full mb-2"></div>
+                    <div class="skeleton-text w-2/3 mb-4"></div>
+                    <div class="flex justify-between">
+                      <div class="flex gap-4">
+                        <div class="skeleton-text w-20"></div>
+                        <div class="skeleton-text w-20"></div>
+                      </div>
+                      <div class="skeleton-text w-12"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card group overflow-hidden">
+                <div class="grid grid-cols-12 gap-0">
+                  <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto skeleton-image"></div>
+                  <div class="col-span-12 md:col-span-8 p-6 lg:p-8">
+                    <div class="skeleton-title w-3/4 mb-4"></div>
+                    <div class="skeleton-text w-full mb-2"></div>
+                    <div class="skeleton-text w-2/3 mb-4"></div>
+                    <div class="flex justify-between">
+                      <div class="flex gap-4">
+                        <div class="skeleton-text w-20"></div>
+                        <div class="skeleton-text w-20"></div>
+                      </div>
+                      <div class="skeleton-text w-12"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card group overflow-hidden">
+                <div class="grid grid-cols-12 gap-0">
+                  <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto skeleton-image"></div>
+                  <div class="col-span-12 md:col-span-8 p-6 lg:p-8">
+                    <div class="skeleton-title w-3/4 mb-4"></div>
+                    <div class="skeleton-text w-full mb-2"></div>
+                    <div class="skeleton-text w-2/3 mb-4"></div>
+                    <div class="flex justify-between">
+                      <div class="flex gap-4">
+                        <div class="skeleton-text w-20"></div>
+                        <div class="skeleton-text w-20"></div>
+                      </div>
+                      <div class="skeleton-text w-12"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Empty State -->
@@ -238,7 +287,7 @@ const description = '浏览所有文章';
                     <!-- Image -->
                     <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto relative overflow-hidden">
                       ${post.featuredImage ? `
-                        <img src="${apiClient.resolveMediaUrl(post.featuredImage)}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <img src="${apiClient.resolveMediaUrl(post.featuredImage)}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ` : `
                         <div class="w-full h-full bg-gradient-to-br from-brand-red via-brand-red-dark to-neutral-900 flex items-center justify-center">
                           <span class="text-white/20 text-6xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
@@ -369,7 +418,7 @@ const description = '浏览所有文章';
           <a href="/blog/${post.id}" class="group flex gap-4 cursor-pointer">
             <div class="w-20 h-20 flex-shrink-0 overflow-hidden">
               ${post.featuredImage ? `
-                <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
               ` : `
                 <div class="w-full h-full bg-gradient-to-br from-brand-red to-brand-red-dark flex items-center justify-center">
                   <span class="text-white/30 text-xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>

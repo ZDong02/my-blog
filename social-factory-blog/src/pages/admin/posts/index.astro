@@ -286,7 +286,7 @@ const description = '管理所有文章';
             <td class="px-6 py-4">
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-12 w-16 bg-neutral-200 dark:bg-neutral-700 rounded overflow-hidden">
-                  ${post.featuredImage ? `<img src="${post.featuredImage}" class="h-full w-full object-cover" />` : ''}
+                  ${post.featuredImage ? `<img src="${post.featuredImage}" alt="${post.title}" class="h-full w-full object-cover" />` : ''}
                 </div>
                 <div class="ml-4">
                   <div class="text-sm font-bold text-neutral-900 dark:text-white">${post.title}</div>
@@ -351,7 +351,7 @@ const description = '管理所有文章';
             <td class="px-6 py-4">
               <div class="flex items-center">
                 <div class="flex-shrink-0 h-12 w-16 bg-neutral-200 dark:bg-neutral-700 rounded overflow-hidden">
-                  ${post.featuredImage ? `<img src="${post.featuredImage}" class="h-full w-full object-cover" />` : ''}
+                  ${post.featuredImage ? `<img src="${post.featuredImage}" alt="${post.title}" class="h-full w-full object-cover" />` : ''}
                 </div>
                 <div class="ml-4">
                   <div class="text-sm font-bold text-neutral-900 dark:text-white">${post.title}</div>

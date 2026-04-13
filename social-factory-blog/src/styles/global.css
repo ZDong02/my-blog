@@ -187,8 +187,13 @@ body {
   }
 
   .card:hover {
-    transform: translate(-4px, -4px);
     box-shadow: 12px 12px 0 var(--neutral-900);
+    border-color: theme('colors.brand.red');
+  }
+
+  .dark .card:hover {
+    box-shadow: 12px 12px 0 theme('colors.neutral.100');
+    border-color: theme('colors.brand.red');
   }
 
   .card-glass {
@@ -304,6 +309,31 @@ body {
   .spinner-sm {
     @apply animate-spin rounded-full h-5 w-5 border-2 border-neutral-200 dark:border-neutral-800
            border-t-brand-red border-r-brand-red;
+  }
+
+  /* === SKELETON SCREENS === */
+  .skeleton {
+    @apply bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded;
+  }
+
+  .skeleton-text {
+    @apply h-4 bg-neutral-200 dark:bg-neutral-800 rounded animate-pulse;
+  }
+
+  .skeleton-title {
+    @apply h-8 bg-neutral-200 dark:bg-neutral-800 rounded animate-pulse;
+  }
+
+  .skeleton-image {
+    @apply bg-neutral-200 dark:bg-neutral-800 animate-pulse;
+  }
+
+  .skeleton-avatar {
+    @apply h-10 w-10 rounded-full bg-neutral-200 dark:bg-neutral-800 animate-pulse;
+  }
+
+  .skeleton-card {
+    @apply bg-white dark:bg-neutral-900 border-2 border-neutral-200 dark:border-neutral-700 p-6 animate-pulse;
   }
 
   /* === PROSE - Magazine Article Style === */
@@ -601,17 +631,54 @@ body {
   }
 }
 
-/* Dark Mode Refinements */
+/* Dark Mode Refinements - Using Tailwind dark: strategy */
+/* Note: All dark mode colors should be defined using Tailwind classes */
+/* This ensures consistency and proper dark mode support */
+
+/* Ensure dark mode background uses Tailwind's default dark neutral values */
 .dark {
   --tw-bg-opacity: 1;
-  background-color: #0a0a0a;
 }
 
+.dark body {
+  background-color: theme('colors.neutral.900');
+  color: theme('colors.neutral.100');
+}
+
+/* Consistent dark mode surfaces */
 .dark .bg-neutral-900,
 .dark.bg-neutral-900 {
-  background-color: #0a0a0a !important;
+  background-color: theme('colors.neutral.900') !important;
 }
 
 .dark .bg-neutral-800 {
-  background-color: #1c1917;
+  background-color: theme('colors.neutral.800') !important;
+}
+
+.dark .bg-neutral-950 {
+  background-color: theme('colors.neutral.950') !important;
+}
+
+/* Ensure text colors adapt properly in dark mode */
+.dark .text-white {
+  color: theme('colors.neutral.100') !important;
+}
+
+/* Card hover states in dark mode */
+.dark .card:hover {
+  box-shadow: 12px 12px 0 theme('colors.neutral.100');
+}
+
+/* Form input dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: theme('colors.neutral.800');
+  border-color: theme('colors.neutral.600');
+  color: theme('colors.neutral.100');
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: theme('colors.neutral.500');
 }

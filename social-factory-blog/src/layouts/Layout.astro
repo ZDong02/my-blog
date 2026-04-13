@@ -3,9 +3,19 @@ import Navbar from "../components/Navbar.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import AuthProvider from "../components/AuthProvider.astro";
 import Toast from "../components/Toast.astro";
+import SEO from "../components/SEO.astro";
 import "../styles/global.css";
 
-const { title = "社会工厂", description = "不偏不倚" } = Astro.props;
+const {
+  title = "社会工厂",
+  description = "不偏不倚，致力于构建更人道的社会。探索最新的技术文章、实用教程和深度思考。",
+  image = "/images/og-default.jpg",
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  author,
+  tags,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -13,13 +23,23 @@ const { title = "社会工厂", description = "不偏不倚" } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      type={type}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      author={author}
+      tags={tags}
+    />
     <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/images/V1.jpg" />
   </head>
   <body class="bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white font-sans antialiased">
     <!-- Film Grain Overlay -->

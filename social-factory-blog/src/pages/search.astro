@@ -200,7 +200,7 @@ const description = '搜索文章';
             <div class="flex gap-4">
               ${post.featuredImage ? `
                 <div class="w-32 h-24 flex-shrink-0 overflow-hidden">
-                  <img src="${post.featuredImage}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="${post.featuredImage}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
               ` : ''}
               <div class="flex-1 min-w-0">

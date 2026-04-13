@@ -6,16 +6,45 @@ export async function getStaticPaths() {
     params: { slug: String(index + 1) }
   }));
 }
+
+const { slug } = Astro.params;
 ---
 
-<Layout title="文章 - Social Factory" description="阅读文章详情">
+<Layout
+  title="文章 - Social Factory"
+  description="阅读文章详情"
+  type="article"
+>
   <main class="min-h-screen pt-24 pb-20">
     <article class="max-w-4xl mx-auto px-4 sm:px-8">
 
-    <!-- Loading State -->
-    <div id="loading" class="text-center py-16">
-      <div class="spinner mx-auto mb-6"></div>
-      <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
+    <!-- Loading State - Skeleton -->
+    <div id="loading" class="hidden">
+      <div class="mb-10">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="skeleton-text w-20"></div>
+          <div class="skeleton-text w-16 h-6"></div>
+        </div>
+        <div class="skeleton-title w-full mb-4"></div>
+        <div class="skeleton-title w-3/4 mb-6"></div>
+        <div class="flex gap-4 mb-12">
+          <div class="skeleton-text w-32"></div>
+          <div class="skeleton-text w-24"></div>
+        </div>
+      </div>
+      <div class="skeleton-image w-full aspect-[16/9] mb-12"></div>
+      <div class="space-y-4 mb-12">
+        <div class="skeleton-text w-full"></div>
+        <div class="skeleton-text w-full"></div>
+        <div class="skeleton-text w-3/4"></div>
+        <div class="skeleton-text w-full"></div>
+        <div class="skeleton-text w-2/3"></div>
+      </div>
+      <div class="flex gap-4 pt-8 border-t border-neutral-200 dark:border-neutral-700">
+        <div class="skeleton-text w-24 h-12"></div>
+        <div class="skeleton-text w-24 h-12"></div>
+        <div class="skeleton-text w-24 h-12"></div>
+      </div>
     </div>
 
     <!-- Article Content (loaded via JS) -->
@@ -41,7 +70,7 @@ export async function getStaticPaths() {
 
       <!-- Featured Image -->
       <div class="mb-12 overflow-hidden">
-        <img id="featuredImage" src="" alt="" class="w-full h-auto object-cover" />
+        <img id="featuredImage" src="" alt="文章封面图片" class="w-full h-auto object-cover" />
       </div>
 
       <!-- Article Content -->
