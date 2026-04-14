@@ -87,6 +87,12 @@ public class User {
     @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedAt;
 
+    /**
+     * 最后登录时间
+     */
+    @TableField("last_login_at")
+    private LocalDateTime lastLoginAt;
+
     // ========== 非数据库字段，用于统计信息 ==========
 
     /**
@@ -117,6 +123,7 @@ public class User {
                 ", status=" + status +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", lastLoginAt=" + lastLoginAt +
                 '}';
     }
 }
