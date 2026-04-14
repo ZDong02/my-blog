@@ -13,6 +13,8 @@ import com.example.blog.exception.BusinessException;
 import com.example.blog.security.JwtUserDetails;
 import com.example.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -118,7 +120,7 @@ public class UserManagementController {
 
     @PutMapping("/batch/status")
     public ResponseEntity<ApiResponse<Void>> batchUpdateStatus(
-            @RequestBody BatchStatusUpdateRequest request,
+            @Valid @RequestBody BatchStatusUpdateRequest request,
             @AuthenticationPrincipal JwtUserDetails currentAdmin) {
 
         if (request.getUserIds() == null || request.getUserIds().isEmpty()) {
@@ -137,7 +139,7 @@ public class UserManagementController {
 
     @DeleteMapping("/batch")
     public ResponseEntity<ApiResponse<Void>> batchDeleteUsers(
-            @RequestBody BatchDeleteRequest request,
+            @Valid @RequestBody BatchDeleteRequest request,
             @AuthenticationPrincipal JwtUserDetails currentAdmin) {
 
         if (request.getUserIds() == null || request.getUserIds().isEmpty()) {
