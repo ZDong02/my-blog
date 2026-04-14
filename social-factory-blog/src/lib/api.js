@@ -400,6 +400,54 @@ class ApiClient {
     });
   }
 
+  // User management methods (Admin)
+  async getAllUsers() {
+    return this.request('/admin/users');
+  }
+
+  async getUserById(userId) {
+    return this.request(`/admin/users/${userId}`);
+  }
+
+  async updateUserRole(userId, role) {
+    return this.request(`/admin/users/${userId}/role`, {
+      method: 'PUT',
+      body: JSON.stringify({ role }),
+    });
+  }
+
+  async updateUserStatus(userId, status) {
+    return this.request(`/admin/users/${userId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async deleteUser(userId) {
+    return this.request(`/admin/users/${userId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Batch operations (Admin)
+  async batchUpdateUserStatus(userIds, status) {
+    return this.request('/admin/users/batch/status', {
+      method: 'PUT',
+      body: JSON.stringify({ userIds, status }),
+    });
+  }
+
+  async batchDeleteUsers(userIds) {
+    return this.request('/admin/users/batch', {
+      method: 'DELETE',
+      body: JSON.stringify({ userIds }),
+    });
+  }
+
+  async getUserStats() {
+    return this.request('/admin/users/stats');
+  }
+
   // Get user's liked posts
   async getMyLikes(page = 1, size = 10) {
     return this.request(`/interactions/likes/my-likes?page=${page}&size=${size}`);
