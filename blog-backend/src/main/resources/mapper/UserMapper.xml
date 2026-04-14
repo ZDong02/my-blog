@@ -67,4 +67,87 @@
         SELECT * FROM users WHERE avatar IS NULL OR avatar = ''
     </select>
 
+    <!-- 查询所有用户 -->
+    <select id="findAllUsers" resultMap="UserResultMap">
+        SELECT u.*,
+               (SELECT COUNT(*) FROM posts p WHERE p.author_id = u.id AND p.status != 'DELETED') as post_count,
+               (SELECT COUNT(*) FROM comments c WHERE c.user_id = u.id) as comment_count
+        FROM users u
+        ORDER BY u.created_at DESC
+    </select>
+
+    <!-- 更新用户角色 -->
+    <update id="updateUserRole">
+        UPDATE users SET role = #{role}, updated_at = NOW() WHERE id = #{userId}
+    </update>
+
+    <!-- 更新用户状态 -->
+    <update id="updateUserStatus">
+        UPDATE users SET status = #{status}, updated_at = NOW() WHERE id = #{userId}
+    </update>
+
+    <!-- 批量更新用户状态 -->
+    <update id="batchUpdateStatus">
+        UPDATE users SET status = #{status}, updated_at = NOW()
+        WHERE id IN
+        <foreach collection="userIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 批量删除用户 -->
+    <delete id="batchDeleteUsers">
+        DELETE FROM users WHERE id IN
+        <foreach collection="userIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 统计今日新增用户数 -->
+    <select id="countTodayNewUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+        WHERE DATE(created_at) = CURDATE()
+    </select>
+
+    <!-- 统计本月新增用户数 -->
+    <select id="countMonthNewUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+        WHERE YEAR(created_at) = YEAR(CURDATE())
+        AND MONTH(created_at) = MONTH(CURDATE())
+    </select>
+
+    <!-- 统计活跃用户数（近30天有更新 updated_at） -->
+    <select id="countActiveUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+        WHERE updated_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+    </select>
+
+    <!-- 统计角色分布 -->
+    <select id="countRoleDistribution" resultType="java.util.HashMap">
+        SELECT role as roleName, COUNT(*) as count
+        FROM users
+        GROUP BY role
+    </select>
+
+    <!-- 获取用户增长趋势 -->
+    <select id="getGrowthTrend" resultType="java.util.HashMap">
+        SELECT DATE(created_at) as date, COUNT(*) as count
+        FROM users
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL #{days} DAY)
+        GROUP BY DATE(created_at)
+        ORDER BY date ASC
+    </select>
+
+    <!-- 按ID列表查询用户 -->
+    <select id="selectUsersByIds" resultMap="UserResultMap">
+        SELECT u.*,
+               (SELECT COUNT(*) FROM posts p WHERE p.author_id = u.id AND p.status != 'DELETED') as post_count,
+               (SELECT COUNT(*) FROM comments c WHERE c.user_id = u.id) as comment_count
+        FROM users u
+        WHERE u.id IN
+        <foreach collection="userIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>
