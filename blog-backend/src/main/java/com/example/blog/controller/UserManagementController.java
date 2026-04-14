@@ -14,7 +14,7 @@ import com.example.blog.security.JwtUserDetails;
 import com.example.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
