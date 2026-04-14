@@ -6,84 +6,84 @@ const description = '管理系统用户';
 ---
 
 <AdminLayout title={title} description={description}>
-<!-- Stats Cards -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="card p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">总用户数</p>
-          <p id="statTotalUsers" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
-        </div>
-        <div class="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
-          <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="card p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">今日新增</p>
-          <p id="statTodayNew" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
-        </div>
-        <div class="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-          <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="card p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">本月新增</p>
-          <p id="statMonthNew" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
-        </div>
-        <div class="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center">
-          <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="card p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">活跃用户</p>
-          <p id="statActiveUsers" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
-        </div>
-        <div class="h-12 w-12 rounded-full bg-orange-500/10 flex items-center justify-center">
-          <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Charts Row -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <div class="card p-6">
-      <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">角色分布</h3>
-      <div class="h-64 flex items-center justify-center">
-        <canvas id="roleChart"></canvas>
-      </div>
-    </div>
-    <div class="card p-6">
-      <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">用户增长趋势（近30天）</h3>
-      <div class="h-64">
-        <canvas id="growthChart"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
   <div class="py-8">
+    <!-- Stats Cards -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">总用户数</p>
+              <p id="statTotalUsers" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
+              <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">今日新增</p>
+              <p id="statTodayNew" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
+              <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">本月新增</p>
+              <p id="statMonthNew" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center">
+              <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">活跃用户</p>
+              <p id="statActiveUsers" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-orange-500/10 flex items-center justify-center">
+              <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="card p-6">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">角色分布</h3>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="roleChart"></canvas>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">用户增长趋势（近30天）</h3>
+          <div class="h-64">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Header -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
@@ -250,6 +250,13 @@ const description = '管理系统用户';
       document.head.appendChild(script);
     }
 
+    const escapeHtml = (str) => {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    };
+
     import { apiClient } from '../../../lib/api.js';
 
     let allUsers = [];
@@ -276,7 +283,6 @@ const description = '管理系统用户';
       }
 
       currentAdminId = user.id;
-      loadUserStats();
       await loadUsers();
     };
 
@@ -345,13 +351,13 @@ const description = '管理系统用户';
               <div class="flex items-center gap-4">
                 <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
                   ${user.avatar
-                    ? `<img src="${user.avatar}" alt="${user.nickname || user.username}" class="w-full h-full object-cover" />`
-                    : `<div class="w-full h-full flex items-center justify-center text-neutral-500 font-bold">${(user.nickname || user.username).charAt(0).toUpperCase()}</div>`
+                    ? `<img src="${escapeHtml(user.avatar)}" alt="${escapeHtml(user.nickname || user.username)}" class="w-full h-full object-cover" />`
+                    : `<div class="w-full h-full flex items-center justify-center text-neutral-500 font-bold">${escapeHtml((user.nickname || user.username).charAt(0).toUpperCase())}</div>`
                   }
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-neutral-900 dark:text-white">${user.nickname || user.username}</div>
-                  <div class="text-xs text-neutral-500">@${user.username} · ${user.email}</div>
+                  <div class="text-sm font-bold text-neutral-900 dark:text-white">${escapeHtml(user.nickname || user.username)}</div>
+                  <div class="text-xs text-neutral-500">@${escapeHtml(user.username)} · ${escapeHtml(user.email)}</div>
                 </div>
               </div>
             </td>
@@ -369,9 +375,9 @@ const description = '管理系统用户';
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <button onclick="openDetailModal(${user.id})" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3 font-bold">详情</button>
-              <button onclick="openRoleModal(${user.id}, '${(user.nickname || user.username).replace(/'/g, "\\'")}', '${user.role}')" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 mr-3 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能修改自己的角色"' : ''}>改角色</button>
-              <button onclick="openStatusModal(${user.id}, '${(user.nickname || user.username).replace(/'/g, "\\'")}', ${user.status})" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能修改自己的状态"' : ''}>改状态</button>
-              <button onclick="deleteUser(${user.id}, '${(user.nickname || user.username).replace(/'/g, "\\'")}')" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能删除自己"' : ''}>删除</button>
+              <button onclick="openRoleModal(${user.id}, '${escapeHtml(user.nickname || user.username).replace(/'/g, "\\'")}', '${user.role}')" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 mr-3 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能修改自己的角色"' : ''}>改角色</button>
+              <button onclick="openStatusModal(${user.id}, '${escapeHtml(user.nickname || user.username).replace(/'/g, "\\'")}', ${user.status})" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能修改自己的状态"' : ''}>改状态</button>
+              <button onclick="deleteUser(${user.id}, '${escapeHtml(user.nickname || user.username).replace(/'/g, "\\'")}')" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能删除自己"' : ''}>删除</button>
             </td>
           </tr>
         `;
@@ -575,26 +581,32 @@ const updateBatchToolbar = () => {
 
 const batchEnable = async () => {
   if (selectedUserIds.size === 0) return;
+  const idsToUpdate = Array.from(selectedUserIds).filter(id => id !== currentAdminId);
+  if (idsToUpdate.length === 0) return;
   try {
-    const response = await apiClient.batchUpdateUserStatus(Array.from(selectedUserIds), 1);
+    const response = await apiClient.batchUpdateUserStatus(idsToUpdate, 1);
     if (response.success) { window.showToast?.('批量启用成功', 'success'); selectedUserIds.clear(); updateBatchToolbar(); loadUsers(); }
   } catch (error) { console.error('Batch enable failed:', error); window.showToast?.('批量启用失败', 'error'); }
 };
 
 const batchDisable = async () => {
   if (selectedUserIds.size === 0) return;
+  const idsToUpdate = Array.from(selectedUserIds).filter(id => id !== currentAdminId);
+  if (idsToUpdate.length === 0) return;
   try {
-    const response = await apiClient.batchUpdateUserStatus(Array.from(selectedUserIds), 0);
+    const response = await apiClient.batchUpdateUserStatus(idsToUpdate, 0);
     if (response.success) { window.showToast?.('批量禁用成功', 'success'); selectedUserIds.clear(); updateBatchToolbar(); loadUsers(); }
   } catch (error) { console.error('Batch disable failed:', error); window.showToast?.('批量禁用失败', 'error'); }
 };
 
 const batchDelete = async () => {
   if (selectedUserIds.size === 0) return;
-  const selectedNames = allUsers.filter(u => selectedUserIds.has(u.id)).map(u => u.nickname || u.username).join(', ');
+  const idsToDelete = Array.from(selectedUserIds).filter(id => id !== currentAdminId);
+  if (idsToDelete.length === 0) return;
+  const selectedNames = allUsers.filter(u => idsToDelete.includes(u.id)).map(u => u.nickname || u.username).join(', ');
   if (!confirm(`确定要删除以下用户吗？此操作不可恢复。\n${selectedNames}`)) return;
   try {
-    const response = await apiClient.batchDeleteUsers(Array.from(selectedUserIds));
+    const response = await apiClient.batchDeleteUsers(idsToDelete);
     if (response.success) { window.showToast?.('批量删除成功', 'success'); selectedUserIds.clear(); updateBatchToolbar(); loadUsers(); }
   } catch (error) { console.error('Batch delete failed:', error); window.showToast?.('批量删除失败', 'error'); }
 };
@@ -610,15 +622,15 @@ const openDetailModal = async (userId) => {
   body.innerHTML = `
     <div class="flex items-center gap-4 mb-6">
       <div class="h-16 w-16 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
-        ${user.avatar ? `<img src="${user.avatar}" alt="${user.nickname || user.username}" class="w-full h-full object-cover" />` : `<div class="w-full h-full flex items-center justify-center text-2xl text-neutral-500 font-bold">${(user.nickname || user.username).charAt(0).toUpperCase()}</div>`}
+        ${user.avatar ? `<img src="${escapeHtml(user.avatar)}" alt="${escapeHtml(user.nickname || user.username)}" class="w-full h-full object-cover" />` : `<div class="w-full h-full flex items-center justify-center text-2xl text-neutral-500 font-bold">${escapeHtml((user.nickname || user.username).charAt(0).toUpperCase())}</div>`}
       </div>
       <div>
-        <div class="text-xl font-bold text-neutral-900 dark:text-white">${user.nickname || user.username}</div>
-        <div class="text-sm text-neutral-500">@${user.username}</div>
+        <div class="text-xl font-bold text-neutral-900 dark:text-white">${escapeHtml(user.nickname || user.username)}</div>
+        <div class="text-sm text-neutral-500">@${escapeHtml(user.username)}</div>
       </div>
     </div>
     <div class="space-y-4">
-      <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">邮箱</span><span class="text-sm font-medium text-neutral-900 dark:text-white">${user.email}</span></div>
+      <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">邮箱</span><span class="text-sm font-medium text-neutral-900 dark:text-white">${escapeHtml(user.email)}</span></div>
       <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">角色</span><span class="px-3 py-1 text-xs font-bold border ${roleClass}">${roleText}</span></div>
       <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">状态</span><span class="px-3 py-1 text-xs font-bold border ${statusClass}">${statusText}</span></div>
       <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">文章数</span><span class="text-sm font-medium text-neutral-900 dark:text-white">${user.postCount || 0}</span></div>
