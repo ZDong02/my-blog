@@ -43,9 +43,25 @@ CREATE TABLE IF NOT EXISTS `comments` (
     INDEX `idx_parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='评论表';
 
+-- 创建 music 表 (如果不存在)
+CREATE TABLE IF NOT EXISTS `music` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `title` VARCHAR(255) NOT NULL COMMENT '歌曲名称',
+    `artist` VARCHAR(255) DEFAULT NULL COMMENT '艺术家',
+    `youtube_id` VARCHAR(255) NOT NULL COMMENT 'YouTube视频ID',
+    `category` VARCHAR(100) DEFAULT NULL COMMENT '分类标签',
+    `sort_order` INT DEFAULT 0 COMMENT '排序顺序',
+    `cover_image` VARCHAR(500) DEFAULT NULL COMMENT '封面图URL',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    INDEX `idx_sort_order` (`sort_order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='音乐表';
+
 -- =====================================================
 -- 验证表是否创建成功
 -- =====================================================
 SHOW TABLES LIKE 'like_records';
 SHOW TABLES LIKE 'bookmarks';
 SHOW TABLES LIKE 'comments';
+SHOW TABLES LIKE 'music';
