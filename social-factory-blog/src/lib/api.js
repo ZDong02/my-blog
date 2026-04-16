@@ -537,6 +537,35 @@ class ApiClient {
       method: 'DELETE',
     });
   }
+
+  // Music methods
+  async getMusicList() {
+    return this.request('/music');
+  }
+
+  async getMusicById(id) {
+    return this.request(`/music/${id}`);
+  }
+
+  async createMusic(musicData) {
+    return this.request('/music', {
+      method: 'POST',
+      body: JSON.stringify(musicData),
+    });
+  }
+
+  async updateMusic(id, musicData) {
+    return this.request(`/music/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(musicData),
+    });
+  }
+
+  async deleteMusic(id) {
+    return this.request(`/music/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 // Create and export singleton instance
