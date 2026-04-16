@@ -281,51 +281,49 @@ const description = '浏览所有文章';
             const excerpt = post.summary || post.content?.substring(0, 150) || '';
 
             html += `
-              <article class="card group overflow-hidden reveal" style="animation-delay: ${index * 0.1}s">
-                <a href="/blog/${post.id}" class="block cursor-pointer">
-                  <div class="grid grid-cols-12 gap-0">
-                    <!-- Image -->
-                    <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto relative overflow-hidden">
-                      ${post.featuredImage ? `
-                        <img src="${apiClient.resolveMediaUrl(post.featuredImage)}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      ` : `
-                        <div class="w-full h-full bg-gradient-to-br from-brand-red via-brand-red-dark to-neutral-900 flex items-center justify-center">
-                          <span class="text-white/20 text-6xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
-                        </div>
-                      `}
-                      <!-- Category badge -->
-                      <div class="absolute top-4 left-4">
-                        <span class="badge-red">${post.category?.name || '未分类'}</span>
+              <a href="/blog/${post.id}" class="card group overflow-hidden block reveal" style="animation-delay: ${index * 0.1}s">
+                <div class="grid grid-cols-12 gap-0">
+                  <!-- Image -->
+                  <div class="col-span-12 md:col-span-4 aspect-[4/3] md:aspect-auto relative overflow-hidden">
+                    ${post.featuredImage ? `
+                      <img src="${apiClient.resolveMediaUrl(post.featuredImage)}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ` : `
+                      <div class="w-full h-full bg-gradient-to-br from-brand-red via-brand-red-dark to-neutral-900 flex items-center justify-center">
+                        <span class="text-white/20 text-6xl font-black">${post.category?.name?.charAt(0) || 'B'}</span>
                       </div>
+                    `}
+                    <!-- Category badge -->
+                    <div class="absolute top-4 left-4">
+                      <span class="badge-red">${post.category?.name || '未分类'}</span>
                     </div>
+                  </div>
 
-                    <!-- Content -->
-                    <div class="col-span-12 md:col-span-8 p-6 lg:p-8 flex flex-col justify-between">
-                      <div>
-                        <h2 class="text-2xl lg:text-3xl font-black text-neutral-900 dark:text-white group-hover:text-brand-red transition-colors mb-4 leading-tight">
-                          ${post.title}
-                        </h2>
-                        <p class="text-neutral-600 dark:text-neutral-400 line-clamp-3 mb-6">
-                          ${excerpt}
-                        </p>
+                  <!-- Content -->
+                  <div class="col-span-12 md:col-span-8 p-6 lg:p-8 flex flex-col justify-between">
+                    <div>
+                      <h2 class="text-2xl lg:text-3xl font-black text-neutral-900 dark:text-white group-hover:text-brand-red transition-colors mb-4 leading-tight">
+                        ${post.title}
+                      </h2>
+                      <p class="text-neutral-600 dark:text-neutral-400 line-clamp-3 mb-6">
+                        ${excerpt}
+                      </p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-4 text-sm text-neutral-500">
+                        <span>${postDate}</span>
+                        <span class="w-1 h-1 bg-neutral-400 rounded-full"></span>
+                        <span>${readingTime} 分钟</span>
                       </div>
-                      <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4 text-sm text-neutral-500">
-                          <span>${postDate}</span>
-                          <span class="w-1 h-1 bg-neutral-400 rounded-full"></span>
-                          <span>${readingTime} 分钟</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-brand-red">
-                          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                          </svg>
-                          <span class="text-sm font-bold">${post.likeCount || 0}</span>
-                        </div>
+                      <div class="flex items-center gap-2 text-brand-red">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span class="text-sm font-bold">${post.likeCount || 0}</span>
                       </div>
                     </div>
                   </div>
-                </a>
-              </article>
+                </div>
+              </a>
             `;
           });
 
@@ -383,7 +381,7 @@ const description = '浏览所有文章';
       let html = `
         <button
           data-category=""
-          class="badge ${!currentCategory ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : ''} hover:bg-neutral-900 hover:text-white dark:hover:bg-white dark:hover:text-neutral-900 transition-colors cursor-pointer"
+          class="badge ${!currentCategory ? 'bg-brand-red text-black' : 'bg-white text-neutral-900 hover:bg-brand-red hover:text-white'} transition-colors cursor-pointer"
         >
           全部
         </button>
@@ -393,7 +391,7 @@ const description = '浏览所有文章';
         html += `
           <button
             data-category="${cat.name.replace(/"/g, '&quot;')}"
-            class="badge ${isActive ? 'bg-brand-red text-white' : ''} hover:bg-brand-red hover:text-white transition-colors cursor-pointer"
+            class="badge ${isActive ? 'bg-brand-red text-black' : 'bg-white text-neutral-900 hover:bg-brand-red hover:text-white'} transition-colors cursor-pointer"
           >
             ${cat.name}
           </button>
@@ -474,12 +472,12 @@ const description = '浏览所有文章';
         const isActive = btnCategory === currentCategory;
         const isAll = !currentCategory && !btnCategory;
 
-        btn.classList.remove('bg-neutral-900', 'text-white', 'dark:bg-white', 'dark:text-neutral-900', 'bg-brand-red', 'text-white');
+        btn.classList.remove('bg-brand-red', 'text-white', 'text-black', 'bg-white', 'text-neutral-900', 'hover:bg-brand-red', 'hover:text-white');
 
-        if (isActive) {
-          btn.classList.add('bg-brand-red', 'text-white');
-        } else if (isAll) {
-          btn.classList.add('bg-neutral-900', 'text-white', 'dark:bg-white', 'dark:text-neutral-900');
+        if (isActive || isAll) {
+          btn.classList.add('bg-brand-red', 'text-black');
+        } else {
+          btn.classList.add('bg-white', 'text-neutral-900', 'hover:bg-brand-red', 'hover:text-white');
         }
       });
     };

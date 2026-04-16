@@ -78,7 +78,19 @@
       "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.GenPass\" -Dexec.args=\"admin123\")",
       "Bash(mvn -q compile exec:java -Dexec.mainClass=\"org.example.tools.UpdatePass\")",
       "Bash(git push:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(gh repo:*)",
+      "Skill(update-config)",
+      "Skill(claude-hud:setup)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(bash:*)",
+      "Bash(\"/c/Program Files/nodejs/node\" \"C:/Users/A/.claude/plugins/cache/claude-hud/claude-hud/0.0.12/dist/index.js\")",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
