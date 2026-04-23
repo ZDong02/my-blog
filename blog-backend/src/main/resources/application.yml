@@ -65,3 +65,11 @@ file:
 # 管理员注册邀请码
 admin:
   invite-code: ADMIN2026
+
+# 登录限流配置
+rate-limit:
+  max-login-attempts: 5
+  lockout-duration-minutes: 15
+  attempt-window-minutes: 5
+  global-ip-max-attempts: 20
+  global-ip-lockout-seconds: 60

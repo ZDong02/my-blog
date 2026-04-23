@@ -16,8 +16,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (e.getCode() == 429) {
+            status = HttpStatus.TOO_MANY_REQUESTS;
+        } else if (e.getCode() >= 400 && e.getCode() < 600) {
+            try {
+                status = HttpStatus.valueOf(e.getCode());
+            } catch (IllegalArgumentException ex) {
+                status = HttpStatus.BAD_REQUEST;
+            }
+        }
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(status)
                 .body(ApiResponse.error(e.getMessage()));
     }
 

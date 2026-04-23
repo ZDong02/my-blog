@@ -52,6 +52,7 @@ public class MusicService {
         existing.setCategory(music.getCategory());
         existing.setSortOrder(music.getSortOrder());
         existing.setCoverImage(music.getCoverImage());
+        existing.setAudioUrl(music.getAudioUrl());
         musicMapper.updateById(existing);
         return existing;
     }

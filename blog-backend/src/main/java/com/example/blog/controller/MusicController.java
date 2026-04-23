@@ -1,13 +1,17 @@
 package com.example.blog.controller;
 
 import com.example.blog.dto.response.ApiResponse;
+import com.example.blog.exception.BusinessException;
 import com.example.blog.entity.Music;
+import com.example.blog.service.FileUploadService;
 import com.example.blog.service.MusicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -17,6 +21,9 @@ public class MusicController {
 
     @Autowired
     private MusicService musicService;
+
+    @Autowired
+    private FileUploadService fileUploadService;
 
     /**
      * 获取所有音乐
@@ -73,5 +80,21 @@ public class MusicController {
             return ResponseEntity.ok(ApiResponse.error("Music not found"));
         }
         return ResponseEntity.ok(ApiResponse.success("Music deleted successfully", null));
+    }
+
+    /**
+     * 上传音乐音频文件（Admin）
+     */
+    @PostMapping("/upload-audio")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<String>> uploadAudio(@RequestParam("file") MultipartFile file) {
+        try {
+            String audioUrl = fileUploadService.uploadAudioFile(file);
+            return ResponseEntity.ok(ApiResponse.success("Audio uploaded successfully", audioUrl));
+        } catch (IOException e) {
+            return ResponseEntity.ok(ApiResponse.error("Failed to upload audio: " + e.getMessage()));
+        } catch (BusinessException e) {
+            return ResponseEntity.ok(ApiResponse.error(e.getMessage()));
+        }
     }
 }

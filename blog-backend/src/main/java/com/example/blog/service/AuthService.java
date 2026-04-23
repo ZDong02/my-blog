@@ -5,12 +5,12 @@ import com.example.blog.dto.request.UserRegistrationRequest;
 import com.example.blog.dto.response.AuthResponse;
 import com.example.blog.entity.User;
 import com.example.blog.exception.BusinessException;
-import com.example.blog.mapper.UserMapper;
 import com.example.blog.security.JwtTokenProvider;
+import com.example.blog.util.IpUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +21,19 @@ public class AuthService {
     private UserService userService;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private JwtTokenProvider tokenProvider;
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private RateLimitService rateLimitService;
+
+    @Autowired
+    private AuditService auditService;
+
+    @Autowired
+    private HttpServletRequest httpServletRequest;
 
     public AuthResponse register(UserRegistrationRequest request) {
         User user = userService.registerUser(request);
@@ -48,6 +54,7 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         User user;
+        String clientIp = getClientIP();
 
         // Check if login is by username or email
         if (request.getUsernameOrEmail().contains("@")) {
@@ -57,6 +64,7 @@ public class AuthService {
         }
 
         if (user == null) {
+            recordFailedLogin(request.getUsernameOrEmail(), clientIp);
             throw new BusinessException("Invalid username/email or password");
         }
 
@@ -71,10 +79,14 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword())
             );
         } catch (org.springframework.security.core.AuthenticationException e) {
+            recordFailedLogin(user.getUsername(), clientIp);
             throw new BusinessException("Invalid username/email or password");
         }
 
         if (authentication.isAuthenticated()) {
+            clearFailedLogin(user.getUsername(), clientIp);
+            auditService.logAuthAction("LOGIN", user.getUsername(), true, "IP: " + clientIp);
+
             String token = tokenProvider.generateToken(user);
             String refreshToken = tokenProvider.generateToken(user);
 
@@ -88,8 +100,26 @@ public class AuthService {
                     .expiresIn(86400000L)
                     .build();
         } else {
+            recordFailedLogin(user.getUsername(), clientIp);
+            auditService.logAuthAction("LOGIN", user.getUsername(), false, "IP: " + clientIp);
             throw new BusinessException("Invalid username/email or password");
         }
+    }
+
+    private void recordFailedLogin(String username, String ip) {
+        String identifier = username + ":" + ip;
+        rateLimitService.recordFailedLogin(identifier);
+        rateLimitService.recordGlobalIpFailure(ip);
+    }
+
+    private void clearFailedLogin(String username, String ip) {
+        String identifier = username + ":" + ip;
+        rateLimitService.clearFailedLoginAttempts(identifier);
+        rateLimitService.clearGlobalIpFailure(ip);
+    }
+
+    private String getClientIP() {
+        return IpUtils.getClientIP(httpServletRequest);
     }
 
     public AuthResponse refreshToken(String token) {

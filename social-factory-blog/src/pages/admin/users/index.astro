@@ -1,8 +1,8 @@
 ---
-import AdminLayout from '../../../layouts/AdminLayout.astro';
+import AdminLayout from "../../../layouts/AdminLayout.astro";
 
-const title = '用户管理 - 管理员';
-const description = '管理系统用户';
+const title = "用户管理 - 管理员";
+const description = "管理系统用户";
 ---
 
 <AdminLayout title={title} description={description}>
@@ -13,12 +13,33 @@ const description = '管理系统用户';
         <div class="card p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">总用户数</p>
-              <p id="statTotalUsers" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+              <p
+                class="text-sm font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                总用户数
+              </p>
+              <p
+                id="statTotalUsers"
+                class="text-3xl font-bold text-neutral-900 dark:text-white mt-2"
+              >
+                -
+              </p>
             </div>
-            <div class="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
-              <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            <div
+              class="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center"
+            >
+              <svg
+                class="h-6 w-6 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
               </svg>
             </div>
           </div>
@@ -27,12 +48,32 @@ const description = '管理系统用户';
         <div class="card p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">今日新增</p>
-              <p id="statTodayNew" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+              <p
+                class="text-sm font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                今日新增
+              </p>
+              <p
+                id="statTodayNew"
+                class="text-3xl font-bold text-neutral-900 dark:text-white mt-2"
+              >
+                -
+              </p>
             </div>
-            <div class="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
-              <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            <div
+              class="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center"
+            >
+              <svg
+                class="h-6 w-6 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
             </div>
           </div>
@@ -41,12 +82,33 @@ const description = '管理系统用户';
         <div class="card p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">本月新增</p>
-              <p id="statMonthNew" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+              <p
+                class="text-sm font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                本月新增
+              </p>
+              <p
+                id="statMonthNew"
+                class="text-3xl font-bold text-neutral-900 dark:text-white mt-2"
+              >
+                -
+              </p>
             </div>
-            <div class="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center">
-              <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            <div
+              class="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center"
+            >
+              <svg
+                class="h-6 w-6 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
               </svg>
             </div>
           </div>
@@ -55,12 +117,32 @@ const description = '管理系统用户';
         <div class="card p-6">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm font-medium text-neutral-500 uppercase tracking-wider">活跃用户</p>
-              <p id="statActiveUsers" class="text-3xl font-bold text-neutral-900 dark:text-white mt-2">-</p>
+              <p
+                class="text-sm font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                活跃用户
+              </p>
+              <p
+                id="statActiveUsers"
+                class="text-3xl font-bold text-neutral-900 dark:text-white mt-2"
+              >
+                -
+              </p>
             </div>
-            <div class="h-12 w-12 rounded-full bg-orange-500/10 flex items-center justify-center">
-              <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            <div
+              class="h-12 w-12 rounded-full bg-orange-500/10 flex items-center justify-center"
+            >
+              <svg
+                class="h-6 w-6 text-orange-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
             </div>
           </div>
@@ -70,13 +152,17 @@ const description = '管理系统用户';
       <!-- Charts Row -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="card p-6">
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">角色分布</h3>
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">
+            角色分布
+          </h3>
           <div class="h-64 flex items-center justify-center">
             <canvas id="roleChart"></canvas>
           </div>
         </div>
         <div class="card p-6">
-          <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">用户增长趋势（近30天）</h3>
+          <h3 class="text-lg font-bold text-neutral-900 dark:text-white mb-4">
+            用户增长趋势（近30天）
+          </h3>
           <div class="h-64">
             <canvas id="growthChart"></canvas>
           </div>
@@ -87,14 +173,18 @@ const description = '管理系统用户';
     <!-- Header -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
-        <h1 class="text-3xl font-black text-neutral-900 dark:text-white">用户管理</h1>
+        <h1 class="text-3xl font-black text-neutral-900 dark:text-white">
+          用户管理
+        </h1>
       </div>
     </div>
 
     <!-- Users Table -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
       <div class="card p-0 overflow-hidden">
-        <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700">
+        <div
+          class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700"
+        >
           <div class="flex items-center gap-4">
             <div class="flex-1">
               <input
@@ -104,12 +194,18 @@ const description = '管理系统用户';
                 class="w-full max-w-md px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
               />
             </div>
-            <select id="roleFilter" class="px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none">
+            <select
+              id="roleFilter"
+              class="px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
+            >
               <option value="">全部角色</option>
               <option value="ADMIN">管理员</option>
               <option value="USER">普通用户</option>
             </select>
-            <select id="statusFilter" class="px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none">
+            <select
+              id="statusFilter"
+              class="px-4 py-3 border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-white focus:outline-none focus:border-brand-red transition rounded-none"
+            >
               <option value="">全部状态</option>
               <option value="1">正常</option>
               <option value="0">禁用</option>
@@ -118,37 +214,80 @@ const description = '管理系统用户';
         </div>
 
         <!-- Batch Actions Toolbar -->
-        <div id="batchToolbar" class="hidden px-6 py-4 bg-purple-50 dark:bg-purple-900/20 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+        <div
+          id="batchToolbar"
+          class="hidden px-6 py-4 bg-purple-50 dark:bg-purple-900/20 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between"
+        >
           <div class="flex items-center gap-3">
-            <span class="text-sm font-bold text-purple-600 dark:text-purple-400">已选择 <span id="selectedCount">0</span> 项</span>
+            <span class="text-sm font-bold text-purple-600 dark:text-purple-400"
+              >已选择 <span id="selectedCount">0</span> 项</span
+            >
           </div>
           <div class="flex items-center gap-3">
-            <button onclick="batchEnable()" class="btn-secondary px-4 py-2 text-sm">批量启用</button>
-            <button onclick="batchDisable()" class="btn-secondary px-4 py-2 text-sm">批量禁用</button>
-            <button onclick="batchDelete()" class="btn-danger px-4 py-2 text-sm">批量删除</button>
+            <button
+              onclick="batchEnable()"
+              class="btn-secondary px-4 py-2 text-sm">批量启用</button
+            >
+            <button
+              onclick="batchDisable()"
+              class="btn-secondary px-4 py-2 text-sm">批量禁用</button
+            >
+            <button onclick="batchDelete()" class="btn-danger px-4 py-2 text-sm"
+              >批量删除</button
+            >
           </div>
         </div>
 
         <div id="loading" class="text-center py-12">
           <div class="spinner mx-auto mb-6"></div>
-          <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
+          <p
+            class="text-neutral-500 font-bold uppercase tracking-widest text-sm"
+          >
+            正在加载...
+          </p>
         </div>
 
         <table id="usersTable" class="hidden min-w-full">
           <thead class="bg-neutral-50 dark:bg-neutral-800">
             <tr>
               <th class="px-6 py-4 text-left">
-                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()" class="w-4 h-4 rounded border-neutral-300 dark:border-neutral-600 text-brand-red focus:ring-brand-red" />
+                <input
+                  type="checkbox"
+                  id="selectAllCheckbox"
+                  onchange="toggleSelectAll()"
+                  class="w-4 h-4 rounded border-neutral-300 dark:border-neutral-600 text-brand-red focus:ring-brand-red"
+                />
               </th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">用户</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">角色</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">状态</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">文章数</th>
-              <th class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider">注册时间</th>
-              <th class="px-6 py-4 text-right text-xs font-bold text-neutral-500 uppercase tracking-wider">操作</th>
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider"
+                >用户</th
+              >
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider"
+                >角色</th
+              >
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider"
+                >状态</th
+              >
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider"
+                >文章数</th
+              >
+              <th
+                class="px-6 py-4 text-left text-xs font-bold text-neutral-500 uppercase tracking-wider"
+                >注册时间</th
+              >
+              <th
+                class="px-6 py-4 text-right text-xs font-bold text-neutral-500 uppercase tracking-wider"
+                >操作</th
+              >
             </tr>
           </thead>
-          <tbody id="usersTableBody" class="divide-y divide-neutral-200 dark:divide-neutral-700">
+          <tbody
+            id="usersTableBody"
+            class="divide-y divide-neutral-200 dark:divide-neutral-700"
+          >
             <!-- Users will be loaded here -->
           </tbody>
         </table>
@@ -161,22 +300,48 @@ const description = '管理系统用户';
   </div>
 
   <!-- Edit Role Modal -->
-  <div id="roleModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div
+    id="roleModal"
+    class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  >
     <div class="card max-w-md w-full mx-4 p-0">
-      <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
-        <h3 class="text-lg font-bold text-neutral-900 dark:text-white">修改用户角色</h3>
-        <button onclick="closeRoleModal()" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      <div
+        class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between"
+      >
+        <h3 class="text-lg font-bold text-neutral-900 dark:text-white">
+          修改用户角色
+        </h3>
+        <button
+          onclick="closeRoleModal()"
+          class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
       <form id="roleForm" onsubmit="handleRoleSubmit(event)">
         <input type="hidden" id="roleUserId" />
         <div class="px-6 py-6 space-y-4">
-          <p id="roleUserName" class="text-sm font-bold text-neutral-900 dark:text-white"></p>
+          <p
+            id="roleUserName"
+            class="text-sm font-bold text-neutral-900 dark:text-white"
+          >
+          </p>
           <div>
-            <label for="newRole" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
+            <label
+              for="newRole"
+              class="block text-sm font-bold text-neutral-900 dark:text-white mb-2"
+            >
               选择角色 <span class="text-brand-red">*</span>
             </label>
             <select
@@ -189,35 +354,65 @@ const description = '管理系统用户';
             </select>
           </div>
         </div>
-        <div class="px-6 py-5 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeRoleModal()" class="btn-secondary px-6 py-3">
+        <div
+          class="px-6 py-5 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-end gap-3"
+        >
+          <button
+            type="button"
+            onclick="closeRoleModal()"
+            class="btn-secondary px-6 py-3"
+          >
             取消
           </button>
-          <button type="submit" class="btn-primary px-6 py-3">
-            保存
-          </button>
+          <button type="submit" class="btn-primary px-6 py-3"> 保存 </button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Edit Status Modal -->
-  <div id="statusModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+  <div
+    id="statusModal"
+    class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  >
     <div class="card max-w-md w-full mx-4 p-0">
-      <div class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
-        <h3 class="text-lg font-bold text-neutral-900 dark:text-white">修改用户状态</h3>
-        <button onclick="closeStatusModal()" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      <div
+        class="px-6 py-5 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between"
+      >
+        <h3 class="text-lg font-bold text-neutral-900 dark:text-white">
+          修改用户状态
+        </h3>
+        <button
+          onclick="closeStatusModal()"
+          class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
           </svg>
         </button>
       </div>
       <form id="statusForm" onsubmit="handleStatusSubmit(event)">
         <input type="hidden" id="statusUserId" />
         <div class="px-6 py-6 space-y-4">
-          <p id="statusUserName" class="text-sm font-bold text-neutral-900 dark:text-white"></p>
+          <p
+            id="statusUserName"
+            class="text-sm font-bold text-neutral-900 dark:text-white"
+          >
+          </p>
           <div>
-            <label for="newStatus" class="block text-sm font-bold text-neutral-900 dark:text-white mb-2">
+            <label
+              for="newStatus"
+              class="block text-sm font-bold text-neutral-900 dark:text-white mb-2"
+            >
               选择状态 <span class="text-brand-red">*</span>
             </label>
             <select
@@ -230,40 +425,104 @@ const description = '管理系统用户';
             </select>
           </div>
         </div>
-        <div class="px-6 py-5 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-end gap-3">
-          <button type="button" onclick="closeStatusModal()" class="btn-secondary px-6 py-3">
+        <div
+          class="px-6 py-5 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-end gap-3"
+        >
+          <button
+            type="button"
+            onclick="closeStatusModal()"
+            class="btn-secondary px-6 py-3"
+          >
             取消
           </button>
-          <button type="submit" class="btn-primary px-6 py-3">
-            保存
-          </button>
+          <button type="submit" class="btn-primary px-6 py-3"> 保存 </button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // Chart.js CDN
-    if (!window.Chart) {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
-      document.head.appendChild(script);
+    type ChartInstance = { destroy: () => void };
+    type ChartConstructor = new (
+      ctx: CanvasRenderingContext2D,
+      config: unknown,
+    ) => ChartInstance;
+
+    declare global {
+      interface Window {
+        Chart?: ChartConstructor;
+      }
     }
 
+    let chartLoaderPromise: Promise<ChartConstructor> | null = null;
+
+    const ensureChartJs = async (): Promise<ChartConstructor> => {
+      if (window.Chart) return window.Chart;
+      if (chartLoaderPromise) return chartLoaderPromise;
+
+      chartLoaderPromise = new Promise((resolve, reject) => {
+        const existingScript = document.querySelector(
+          'script[data-chartjs="true"]',
+        );
+
+        if (existingScript) {
+          existingScript.addEventListener("load", () => {
+            if (window.Chart) resolve(window.Chart);
+            else reject(new Error("Chart.js loaded but constructor missing"));
+          });
+          existingScript.addEventListener("error", () =>
+            reject(new Error("Failed to load Chart.js")),
+          );
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src =
+          "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js";
+        script.async = true;
+        script.dataset.chartjs = "true";
+        script.onload = () => {
+          if (window.Chart) resolve(window.Chart);
+          else reject(new Error("Chart.js loaded but constructor missing"));
+        };
+        script.onerror = () => reject(new Error("Failed to load Chart.js"));
+        document.head.appendChild(script);
+      });
+
+      return chartLoaderPromise;
+    };
+
     const escapeHtml = (str) => {
-      if (!str) return '';
-      const div = document.createElement('div');
+      if (!str) return "";
+      const div = document.createElement("div");
       div.textContent = str;
       return div.innerHTML;
     };
 
-    import { apiClient } from '../../../lib/api.js';
+    const escapeJS = (str) => {
+      if (!str) return "";
+      return str
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/</g, "\\<")
+        .replace(/>/g, "\\>");
+    };
+
+    import { apiClient } from "../../../lib/api.js";
 
     let allUsers = [];
     let selectedUserIds = new Set();
-    let roleChart = null;
-    let growthChart = null;
+    let roleChart: ChartInstance | null = null;
+    let growthChart: ChartInstance | null = null;
     let currentAdminId = null;
+
+    const setTextContent = (id: string, value: string | number) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = String(value);
+      }
+    };
 
     const checkAdminAccess = async () => {
       if (window.authManager.isLoading) {
@@ -272,13 +531,13 @@ const description = '管理系统用户';
       }
 
       if (!window.authManager.isAuthenticated) {
-        window.location.href = '/login';
+        window.location.href = "/login";
         return;
       }
 
       const user = window.authManager.currentUser;
-      if (user.role !== 'ADMIN') {
-        window.location.href = '/dashboard';
+      if (user.role !== "ADMIN") {
+        window.location.href = "/dashboard";
         return;
       }
 
@@ -287,14 +546,14 @@ const description = '管理系统用户';
     };
 
     const loadUsers = async () => {
-      const loading = document.getElementById('loading');
-      const table = document.getElementById('usersTable');
-      const noUsers = document.getElementById('noUsers');
+      const loading = document.getElementById("loading");
+      const table = document.getElementById("usersTable");
+      const noUsers = document.getElementById("noUsers");
 
       try {
-        loading.classList.remove('hidden');
-        table.classList.add('hidden');
-        noUsers.classList.add('hidden');
+        loading.classList.remove("hidden");
+        table.classList.add("hidden");
+        noUsers.classList.add("hidden");
 
         const response = await apiClient.getAllUsers();
 
@@ -304,55 +563,58 @@ const description = '管理系统用户';
           renderUsers(allUsers);
         }
       } catch (error) {
-        console.error('Failed to load users:', error);
+        console.error("Failed to load users:", error);
         if (window.showToast) {
-          window.showToast('加载用户列表失败', 'error');
+          window.showToast("加载用户列表失败", "error");
         }
       } finally {
-        loading.classList.add('hidden');
+        loading.classList.add("hidden");
       }
     };
 
     const renderUsers = (users) => {
-      const table = document.getElementById('usersTable');
-      const tbody = document.getElementById('usersTableBody');
-      const loading = document.getElementById('loading');
-      const noUsers = document.getElementById('noUsers');
+      const table = document.getElementById("usersTable");
+      const tbody = document.getElementById("usersTableBody");
+      const loading = document.getElementById("loading");
+      const noUsers = document.getElementById("noUsers");
 
-      loading.classList.add('hidden');
+      loading.classList.add("hidden");
 
       if (users.length === 0) {
-        noUsers.classList.remove('hidden');
-        table.classList.add('hidden');
+        noUsers.classList.remove("hidden");
+        table.classList.add("hidden");
         return;
       }
 
-      noUsers.classList.add('hidden');
-      table.classList.remove('hidden');
+      noUsers.classList.add("hidden");
+      table.classList.remove("hidden");
 
-      let html = '';
-      users.forEach(user => {
+      let html = "";
+      users.forEach((user) => {
         const isCurrentAdmin = user.id === currentAdminId;
-        const roleClass = user.role === 'ADMIN'
-          ? 'bg-purple-500/10 text-purple-600 border-purple-500/20'
-          : 'bg-blue-500/10 text-blue-600 border-blue-500/20';
-        const roleText = user.role === 'ADMIN' ? '管理员' : '普通用户';
-        const statusClass = user.status === 1
-          ? 'bg-green-500/10 text-green-600 border-green-500/20'
-          : 'bg-red-500/10 text-red-600 border-red-500/20';
-        const statusText = user.status === 1 ? '正常' : '禁用';
+        const roleClass =
+          user.role === "ADMIN"
+            ? "bg-purple-500/10 text-purple-600 border-purple-500/20"
+            : "bg-blue-500/10 text-blue-600 border-blue-500/20";
+        const roleText = user.role === "ADMIN" ? "管理员" : "普通用户";
+        const statusClass =
+          user.status === 1
+            ? "bg-green-500/10 text-green-600 border-green-500/20"
+            : "bg-red-500/10 text-red-600 border-red-500/20";
+        const statusText = user.status === 1 ? "正常" : "禁用";
 
         html += `
           <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition">
             <td class="px-6 py-4 whitespace-nowrap">
-              <input type="checkbox" class="user-checkbox w-4 h-4 rounded border-neutral-300 dark:border-neutral-600 text-brand-red focus:ring-brand-red" data-user-id="${user.id}" onchange="toggleUserSelect(${user.id})" ${isCurrentAdmin ? 'disabled' : ''} />
+              <input type="checkbox" class="user-checkbox w-4 h-4 rounded border-neutral-300 dark:border-neutral-600 text-brand-red focus:ring-brand-red" data-user-id="${user.id}" onchange="toggleUserSelect(${user.id})" ${isCurrentAdmin ? "disabled" : ""} />
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center gap-4">
                 <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
-                  ${user.avatar
-                    ? `<img src="${escapeHtml(user.avatar)}" alt="${escapeHtml(user.nickname || user.username)}" class="w-full h-full object-cover" />`
-                    : `<div class="w-full h-full flex items-center justify-center text-neutral-500 font-bold">${escapeHtml((user.nickname || user.username).charAt(0).toUpperCase())}</div>`
+                  ${
+                    user.avatar
+                      ? `<img src="${escapeHtml(user.avatar)}" alt="${escapeHtml(user.nickname || user.username)}" class="w-full h-full object-cover" />`
+                      : `<div class="w-full h-full flex items-center justify-center text-neutral-500 font-bold">${escapeHtml((user.nickname || user.username).charAt(0).toUpperCase())}</div>`
                   }
                 </div>
                 <div>
@@ -371,13 +633,13 @@ const description = '管理系统用户';
               ${user.postCount || 0}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
-              ${new Date(user.createdAt).toLocaleDateString('zh-CN')}
+              ${new Date(user.createdAt).toLocaleDateString("zh-CN")}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <button onclick="openDetailModal(${user.id})" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3 font-bold">详情</button>
-              <button onclick="openRoleModal(${user.id}, '${escapeHtml(user.nickname || user.username).replace(/'/g, "\\'")}', '${user.role}')" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 mr-3 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能修改自己的角色"' : ''}>改角色</button>
-              <button onclick="openStatusModal(${user.id}, '${escapeHtml(user.nickname || user.username).replace(/'/g, "\\'")}', ${user.status})" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能修改自己的状态"' : ''}>改状态</button>
-              <button onclick="deleteUser(${user.id}, '${escapeHtml(user.nickname || user.username).replace(/'/g, "\\'")}')" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-bold ${isCurrentAdmin ? 'opacity-50 cursor-not-allowed' : ''}" ${isCurrentAdmin ? 'disabled title="不能删除自己"' : ''}>删除</button>
+              <button onclick="openRoleModal(${user.id}, '${escapeJS(user.nickname || user.username)}', '${user.role}')" class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 mr-3 font-bold ${isCurrentAdmin ? "opacity-50 cursor-not-allowed" : ""}" ${isCurrentAdmin ? 'disabled title="不能修改自己的角色"' : ""}>改角色</button>
+              <button onclick="openStatusModal(${user.id}, '${escapeJS(user.nickname || user.username)}', ${user.status})" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-3 font-bold ${isCurrentAdmin ? "opacity-50 cursor-not-allowed" : ""}" ${isCurrentAdmin ? 'disabled title="不能修改自己的状态"' : ""}>改状态</button>
+              <button onclick="deleteUser(${user.id}, '${escapeJS(user.nickname || user.username)}')" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 font-bold ${isCurrentAdmin ? "opacity-50 cursor-not-allowed" : ""}" ${isCurrentAdmin ? 'disabled title="不能删除自己"' : ""}>删除</button>
             </td>
           </tr>
         `;
@@ -387,69 +649,77 @@ const description = '管理系统用户';
     };
 
     const openRoleModal = (userId, userName, currentRole) => {
-      document.getElementById('roleUserId').value = userId;
-      document.getElementById('roleUserName').textContent = `当前角色：${currentRole === 'ADMIN' ? '管理员' : '普通用户'}`;
-      document.getElementById('newRole').value = currentRole;
-      document.getElementById('roleModal').classList.remove('hidden');
+      document.getElementById("roleUserId").value = userId;
+      document.getElementById("roleUserName").textContent =
+        `当前角色：${currentRole === "ADMIN" ? "管理员" : "普通用户"}`;
+      document.getElementById("newRole").value = currentRole;
+      document.getElementById("roleModal").classList.remove("hidden");
     };
 
     const closeRoleModal = () => {
-      document.getElementById('roleModal').classList.add('hidden');
+      document.getElementById("roleModal").classList.add("hidden");
     };
 
     const handleRoleSubmit = async (event) => {
       event.preventDefault();
 
-      const userId = document.getElementById('roleUserId').value;
-      const newRole = document.getElementById('newRole').value;
+      const userId = document.getElementById("roleUserId").value;
+      const newRole = document.getElementById("newRole").value;
 
       try {
-        const response = await apiClient.updateUserRole(parseInt(userId), newRole);
+        const response = await apiClient.updateUserRole(
+          parseInt(userId),
+          newRole,
+        );
         if (response.success) {
           closeRoleModal();
           if (window.showToast) {
-            window.showToast('用户角色已更新', 'success');
+            window.showToast("用户角色已更新", "success");
           }
           loadUsers();
         }
       } catch (error) {
-        console.error('Failed to update user role:', error);
+        console.error("Failed to update user role:", error);
         if (window.showToast) {
-          window.showToast(error.message || '更新角色失败', 'error');
+          window.showToast(error.message || "更新角色失败", "error");
         }
       }
     };
 
     const openStatusModal = (userId, userName, currentStatus) => {
-      document.getElementById('statusUserId').value = userId;
-      document.getElementById('statusUserName').textContent = `当前状态：${currentStatus === 1 ? '正常' : '禁用'}`;
-      document.getElementById('newStatus').value = currentStatus;
-      document.getElementById('statusModal').classList.remove('hidden');
+      document.getElementById("statusUserId").value = userId;
+      document.getElementById("statusUserName").textContent =
+        `当前状态：${currentStatus === 1 ? "正常" : "禁用"}`;
+      document.getElementById("newStatus").value = currentStatus;
+      document.getElementById("statusModal").classList.remove("hidden");
     };
 
     const closeStatusModal = () => {
-      document.getElementById('statusModal').classList.add('hidden');
+      document.getElementById("statusModal").classList.add("hidden");
     };
 
     const handleStatusSubmit = async (event) => {
       event.preventDefault();
 
-      const userId = document.getElementById('statusUserId').value;
-      const newStatus = parseInt(document.getElementById('newStatus').value);
+      const userId = document.getElementById("statusUserId").value;
+      const newStatus = parseInt(document.getElementById("newStatus").value);
 
       try {
-        const response = await apiClient.updateUserStatus(parseInt(userId), newStatus);
+        const response = await apiClient.updateUserStatus(
+          parseInt(userId),
+          newStatus,
+        );
         if (response.success) {
           closeStatusModal();
           if (window.showToast) {
-            window.showToast('用户状态已更新', 'success');
+            window.showToast("用户状态已更新", "success");
           }
           loadUsers();
         }
       } catch (error) {
-        console.error('Failed to update user status:', error);
+        console.error("Failed to update user status:", error);
         if (window.showToast) {
-          window.showToast(error.message || '更新状态失败', 'error');
+          window.showToast(error.message || "更新状态失败", "error");
         }
       }
     };
@@ -463,31 +733,35 @@ const description = '管理系统用户';
         const response = await apiClient.deleteUser(userId);
         if (response.success) {
           if (window.showToast) {
-            window.showToast('用户已删除', 'success');
+            window.showToast("用户已删除", "success");
           }
           loadUsers();
         }
       } catch (error) {
-        console.error('Failed to delete user:', error);
+        console.error("Failed to delete user:", error);
         if (window.showToast) {
-          window.showToast(error.message || '删除用户失败', 'error');
+          window.showToast(error.message || "删除用户失败", "error");
         }
       }
     };
 
     const filterUsers = () => {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const roleFilter = document.getElementById('roleFilter').value;
-      const statusFilter = document.getElementById('statusFilter').value;
+      const searchTerm = document
+        .getElementById("searchInput")
+        .value.toLowerCase();
+      const roleFilter = document.getElementById("roleFilter").value;
+      const statusFilter = document.getElementById("statusFilter").value;
 
-      const filtered = allUsers.filter(user => {
-        const matchesSearch = !searchTerm ||
+      const filtered = allUsers.filter((user) => {
+        const matchesSearch =
+          !searchTerm ||
           user.username.toLowerCase().includes(searchTerm) ||
           user.email.toLowerCase().includes(searchTerm) ||
           (user.nickname && user.nickname.toLowerCase().includes(searchTerm));
 
         const matchesRole = !roleFilter || user.role === roleFilter;
-        const matchesStatus = !statusFilter || user.status === parseInt(statusFilter);
+        const matchesStatus =
+          !statusFilter || user.status === parseInt(statusFilter);
 
         return matchesSearch && matchesRole && matchesStatus;
       });
@@ -495,131 +769,214 @@ const description = '管理系统用户';
       renderUsers(filtered);
     };
 
-    document.getElementById('searchInput')?.addEventListener('input', filterUsers);
-    document.getElementById('roleFilter')?.addEventListener('change', filterUsers);
-    document.getElementById('statusFilter')?.addEventListener('change', filterUsers);
+    document
+      .getElementById("searchInput")
+      ?.addEventListener("input", filterUsers);
+    document
+      .getElementById("roleFilter")
+      ?.addEventListener("change", filterUsers);
+    document
+      .getElementById("statusFilter")
+      ?.addEventListener("change", filterUsers);
 
-    document.getElementById('roleModal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'roleModal') {
+    document.getElementById("roleModal")?.addEventListener("click", (e) => {
+      if (e.target.id === "roleModal") {
         closeRoleModal();
       }
     });
 
-    document.getElementById('statusModal')?.addEventListener('click', (e) => {
-      if (e.target.id === 'statusModal') {
+    document.getElementById("statusModal")?.addEventListener("click", (e) => {
+      if (e.target.id === "statusModal") {
         closeStatusModal();
       }
     });
 
     const loadUserStats = async () => {
-  try {
-    const response = await apiClient.getUserStats();
-    if (response.success && response.data) {
-      const stats = response.data;
-      document.getElementById('statTotalUsers').textContent = stats.totalUsers || 0;
-      document.getElementById('statTodayNew').textContent = stats.todayNewUsers || 0;
-      document.getElementById('statMonthNew').textContent = stats.monthNewUsers || 0;
-      document.getElementById('statActiveUsers').textContent = stats.activeUsers || 0;
-      renderRoleChart(stats.roleDistribution || {});
-      renderGrowthChart(stats.growthTrend || []);
-    }
-  } catch (error) {
-    console.error('Failed to load user stats:', error);
-  }
-};
+      try {
+        const response = await apiClient.getUserStats();
+        if (response.success && response.data) {
+          const stats = response.data;
+          setTextContent("statTotalUsers", stats.totalUsers || 0);
+          setTextContent("statTodayNew", stats.todayNewUsers || 0);
+          setTextContent("statMonthNew", stats.monthNewUsers || 0);
+          setTextContent("statActiveUsers", stats.activeUsers || 0);
+          await ensureChartJs();
+          renderRoleChart(stats.roleDistribution || {});
+          renderGrowthChart(stats.growthTrend || []);
+        }
+      } catch (error) {
+        console.error("Failed to load user stats:", error);
+      }
+    };
 
-const renderRoleChart = (distribution) => {
-  const ctx = document.getElementById('roleChart')?.getContext('2d');
-  if (!ctx) return;
-  if (roleChart) roleChart.destroy();
-  const labels = Object.keys(distribution).map(k => k === 'ADMIN' ? '管理员' : '普通用户');
-  const data = Object.values(distribution);
-  roleChart = new Chart(ctx, {
-    type: 'pie',
-    data: { labels, datasets: [{ data, backgroundColor: ['#8b5cf6', '#3b82f6'], borderWidth: 0 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-  });
-};
+    const renderRoleChart = (distribution) => {
+      const Chart = window.Chart;
+      const ctx = document.getElementById("roleChart")?.getContext("2d");
+      if (!ctx || !Chart) return;
+      if (roleChart) roleChart.destroy();
+      const labels = Object.keys(distribution).map((k) =>
+        k === "ADMIN" ? "管理员" : "普通用户",
+      );
+      const data = Object.values(distribution);
+      roleChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels,
+          datasets: [
+            { data, backgroundColor: ["#8b5cf6", "#3b82f6"], borderWidth: 0 },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: "bottom" } },
+        },
+      });
+    };
 
-const renderGrowthChart = (trend) => {
-  const ctx = document.getElementById('growthChart')?.getContext('2d');
-  if (!ctx) return;
-  if (growthChart) growthChart.destroy();
-  const labels = trend.map(t => t.date);
-  const data = trend.map(t => t.count);
-  growthChart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets: [{ label: '新增用户', data, borderColor: '#8b5cf6', backgroundColor: 'rgba(139, 92, 246, 0.1)', fill: true, tension: 0.3 }] },
-    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-  });
-};
+    const renderGrowthChart = (trend) => {
+      const Chart = window.Chart;
+      const ctx = document.getElementById("growthChart")?.getContext("2d");
+      if (!ctx || !Chart) return;
+      if (growthChart) growthChart.destroy();
+      const labels = trend.map((t) => t.date);
+      const data = trend.map((t) => t.count);
+      growthChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "新增用户",
+              data,
+              borderColor: "#8b5cf6",
+              backgroundColor: "rgba(139, 92, 246, 0.1)",
+              fill: true,
+              tension: 0.3,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true } },
+        },
+      });
+    };
 
-const toggleSelectAll = () => {
-  const checkbox = document.getElementById('selectAllCheckbox');
-  const checkboxes = document.querySelectorAll('.user-checkbox');
-  if (checkbox.checked) {
-    checkboxes.forEach(cb => { cb.checked = true; selectedUserIds.add(parseInt(cb.dataset.userId)); });
-  } else {
-    checkboxes.forEach(cb => { cb.checked = false; });
-    selectedUserIds.clear();
-  }
-  updateBatchToolbar();
-};
+    const toggleSelectAll = () => {
+      const checkbox = document.getElementById("selectAllCheckbox");
+      const checkboxes = document.querySelectorAll(".user-checkbox");
+      if (checkbox.checked) {
+        checkboxes.forEach((cb) => {
+          cb.checked = true;
+          selectedUserIds.add(parseInt(cb.dataset.userId));
+        });
+      } else {
+        checkboxes.forEach((cb) => {
+          cb.checked = false;
+        });
+        selectedUserIds.clear();
+      }
+      updateBatchToolbar();
+    };
 
-const toggleUserSelect = (userId) => {
-  if (selectedUserIds.has(userId)) selectedUserIds.delete(userId);
-  else selectedUserIds.add(userId);
-  updateBatchToolbar();
-};
+    const toggleUserSelect = (userId) => {
+      if (selectedUserIds.has(userId)) selectedUserIds.delete(userId);
+      else selectedUserIds.add(userId);
+      updateBatchToolbar();
+    };
 
-const updateBatchToolbar = () => {
-  const toolbar = document.getElementById('batchToolbar');
-  const countEl = document.getElementById('selectedCount');
-  if (selectedUserIds.size > 0) { toolbar.classList.remove('hidden'); countEl.textContent = selectedUserIds.size; }
-  else toolbar.classList.add('hidden');
-};
+    const updateBatchToolbar = () => {
+      const toolbar = document.getElementById("batchToolbar");
+      const countEl = document.getElementById("selectedCount");
+      if (selectedUserIds.size > 0 && toolbar && countEl) {
+        toolbar.classList.remove("hidden");
+        countEl.textContent = String(selectedUserIds.size);
+      } else if (toolbar) toolbar.classList.add("hidden");
+    };
 
-const batchEnable = async () => {
-  if (selectedUserIds.size === 0) return;
-  const idsToUpdate = Array.from(selectedUserIds).filter(id => id !== currentAdminId);
-  if (idsToUpdate.length === 0) return;
-  try {
-    const response = await apiClient.batchUpdateUserStatus(idsToUpdate, 1);
-    if (response.success) { window.showToast?.('批量启用成功', 'success'); selectedUserIds.clear(); updateBatchToolbar(); loadUsers(); }
-  } catch (error) { console.error('Batch enable failed:', error); window.showToast?.('批量启用失败', 'error'); }
-};
+    const batchEnable = async () => {
+      if (selectedUserIds.size === 0) return;
+      const idsToUpdate = Array.from(selectedUserIds).filter(
+        (id) => id !== currentAdminId,
+      );
+      if (idsToUpdate.length === 0) return;
+      try {
+        const response = await apiClient.batchUpdateUserStatus(idsToUpdate, 1);
+        if (response.success) {
+          window.showToast?.("批量启用成功", "success");
+          selectedUserIds.clear();
+          updateBatchToolbar();
+          loadUsers();
+        }
+      } catch (error) {
+        console.error("Batch enable failed:", error);
+        window.showToast?.("批量启用失败", "error");
+      }
+    };
 
-const batchDisable = async () => {
-  if (selectedUserIds.size === 0) return;
-  const idsToUpdate = Array.from(selectedUserIds).filter(id => id !== currentAdminId);
-  if (idsToUpdate.length === 0) return;
-  try {
-    const response = await apiClient.batchUpdateUserStatus(idsToUpdate, 0);
-    if (response.success) { window.showToast?.('批量禁用成功', 'success'); selectedUserIds.clear(); updateBatchToolbar(); loadUsers(); }
-  } catch (error) { console.error('Batch disable failed:', error); window.showToast?.('批量禁用失败', 'error'); }
-};
+    const batchDisable = async () => {
+      if (selectedUserIds.size === 0) return;
+      const idsToUpdate = Array.from(selectedUserIds).filter(
+        (id) => id !== currentAdminId,
+      );
+      if (idsToUpdate.length === 0) return;
+      try {
+        const response = await apiClient.batchUpdateUserStatus(idsToUpdate, 0);
+        if (response.success) {
+          window.showToast?.("批量禁用成功", "success");
+          selectedUserIds.clear();
+          updateBatchToolbar();
+          loadUsers();
+        }
+      } catch (error) {
+        console.error("Batch disable failed:", error);
+        window.showToast?.("批量禁用失败", "error");
+      }
+    };
 
-const batchDelete = async () => {
-  if (selectedUserIds.size === 0) return;
-  const idsToDelete = Array.from(selectedUserIds).filter(id => id !== currentAdminId);
-  if (idsToDelete.length === 0) return;
-  const selectedNames = allUsers.filter(u => idsToDelete.includes(u.id)).map(u => u.nickname || u.username).join(', ');
-  if (!confirm(`确定要删除以下用户吗？此操作不可恢复。\n${selectedNames}`)) return;
-  try {
-    const response = await apiClient.batchDeleteUsers(idsToDelete);
-    if (response.success) { window.showToast?.('批量删除成功', 'success'); selectedUserIds.clear(); updateBatchToolbar(); loadUsers(); }
-  } catch (error) { console.error('Batch delete failed:', error); window.showToast?.('批量删除失败', 'error'); }
-};
+    const batchDelete = async () => {
+      if (selectedUserIds.size === 0) return;
+      const idsToDelete = Array.from(selectedUserIds).filter(
+        (id) => id !== currentAdminId,
+      );
+      if (idsToDelete.length === 0) return;
+      const selectedNames = allUsers
+        .filter((u) => idsToDelete.includes(u.id))
+        .map((u) => u.nickname || u.username)
+        .join(", ");
+      if (!confirm(`确定要删除以下用户吗？此操作不可恢复。\n${selectedNames}`))
+        return;
+      try {
+        const response = await apiClient.batchDeleteUsers(idsToDelete);
+        if (response.success) {
+          window.showToast?.("批量删除成功", "success");
+          selectedUserIds.clear();
+          updateBatchToolbar();
+          loadUsers();
+        }
+      } catch (error) {
+        console.error("Batch delete failed:", error);
+        window.showToast?.("批量删除失败", "error");
+      }
+    };
 
-const openDetailModal = async (userId) => {
-  const user = allUsers.find(u => u.id === userId);
-  if (!user) return;
-  const body = document.getElementById('detailDrawerBody');
-  const roleClass = user.role === 'ADMIN' ? 'bg-purple-500/10 text-purple-600 border-purple-500/20' : 'bg-blue-500/10 text-blue-600 border-blue-500/20';
-  const roleText = user.role === 'ADMIN' ? '管理员' : '普通用户';
-  const statusClass = user.status === 1 ? 'bg-green-500/10 text-green-600 border-green-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20';
-  const statusText = user.status === 1 ? '正常' : '禁用';
-  body.innerHTML = `
+    const openDetailModal = async (userId) => {
+      const user = allUsers.find((u) => u.id === userId);
+      if (!user) return;
+      const body = document.getElementById("detailDrawerBody");
+      const roleClass =
+        user.role === "ADMIN"
+          ? "bg-purple-500/10 text-purple-600 border-purple-500/20"
+          : "bg-blue-500/10 text-blue-600 border-blue-500/20";
+      const roleText = user.role === "ADMIN" ? "管理员" : "普通用户";
+      const statusClass =
+        user.status === 1
+          ? "bg-green-500/10 text-green-600 border-green-500/20"
+          : "bg-red-500/10 text-red-600 border-red-500/20";
+      const statusText = user.status === 1 ? "正常" : "禁用";
+      body.innerHTML = `
     <div class="flex items-center gap-4 mb-6">
       <div class="h-16 w-16 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
         ${user.avatar ? `<img src="${escapeHtml(user.avatar)}" alt="${escapeHtml(user.nickname || user.username)}" class="w-full h-full object-cover" />` : `<div class="w-full h-full flex items-center justify-center text-2xl text-neutral-500 font-bold">${escapeHtml((user.nickname || user.username).charAt(0).toUpperCase())}</div>`}
@@ -634,36 +991,70 @@ const openDetailModal = async (userId) => {
       <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">角色</span><span class="px-3 py-1 text-xs font-bold border ${roleClass}">${roleText}</span></div>
       <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">状态</span><span class="px-3 py-1 text-xs font-bold border ${statusClass}">${statusText}</span></div>
       <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">文章数</span><span class="text-sm font-medium text-neutral-900 dark:text-white">${user.postCount || 0}</span></div>
-      <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">注册时间</span><span class="text-sm font-medium text-neutral-900 dark:text-white">${new Date(user.createdAt).toLocaleDateString('zh-CN')}</span></div>
+      <div class="flex justify-between items-center py-3 border-b border-neutral-200 dark:border-neutral-700"><span class="text-sm text-neutral-500">注册时间</span><span class="text-sm font-medium text-neutral-900 dark:text-white">${new Date(user.createdAt).toLocaleDateString("zh-CN")}</span></div>
     </div>
   `;
-  document.getElementById('detailDrawer').classList.remove('hidden');
-  setTimeout(() => document.getElementById('detailDrawerContent').classList.remove('translate-x-full'), 10);
-};
+      document.getElementById("detailDrawer").classList.remove("hidden");
+      setTimeout(
+        () =>
+          document
+            .getElementById("detailDrawerContent")
+            .classList.remove("translate-x-full"),
+        10,
+      );
+    };
 
-const closeDetailDrawer = () => {
-  document.getElementById('detailDrawerContent').classList.add('translate-x-full');
-  setTimeout(() => document.getElementById('detailDrawer').classList.add('hidden'), 300);
-};
+    const closeDetailDrawer = () => {
+      document
+        .getElementById("detailDrawerContent")
+        .classList.add("translate-x-full");
+      setTimeout(
+        () => document.getElementById("detailDrawer").classList.add("hidden"),
+        300,
+      );
+    };
 
-    document.addEventListener('DOMContentLoaded', checkAdminAccess);
+    document.addEventListener("DOMContentLoaded", checkAdminAccess);
   </script>
 
-<!-- User Detail Drawer -->
-<div id="detailDrawer" class="hidden fixed inset-0 z-50">
-  <div class="absolute inset-0 bg-black/50" onclick="closeDetailDrawer()"></div>
-  <div id="detailDrawerContent" class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-neutral-900 shadow-xl transform transition-transform duration-300 translate-x-full">
-    <div class="flex items-center justify-between px-6 py-5 border-b border-neutral-200 dark:border-neutral-700">
-      <h3 class="text-lg font-bold text-neutral-900 dark:text-white">用户详情</h3>
-      <button onclick="closeDetailDrawer()" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
+  <!-- User Detail Drawer -->
+  <div id="detailDrawer" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black/50" onclick="closeDetailDrawer()">
     </div>
-    <div id="detailDrawerBody" class="p-6 overflow-y-auto h-[calc(100%-64px)]">
-      <!-- Content loaded dynamically -->
+    <div
+      id="detailDrawerContent"
+      class="absolute right-0 top-0 h-full w-full max-w-md bg-white dark:bg-neutral-900 shadow-xl transform transition-transform duration-300 translate-x-full"
+    >
+      <div
+        class="flex items-center justify-between px-6 py-5 border-b border-neutral-200 dark:border-neutral-700"
+      >
+        <h3 class="text-lg font-bold text-neutral-900 dark:text-white">
+          用户详情
+        </h3>
+        <button
+          onclick="closeDetailDrawer()"
+          class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+        >
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div
+        id="detailDrawerBody"
+        class="p-6 overflow-y-auto h-[calc(100%-64px)]"
+      >
+        <!-- Content loaded dynamically -->
+      </div>
     </div>
   </div>
-</div>
 </AdminLayout>

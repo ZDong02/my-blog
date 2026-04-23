@@ -11,6 +11,7 @@ import com.example.blog.dto.response.UserStatsResponse;
 import com.example.blog.entity.User;
 import com.example.blog.exception.BusinessException;
 import com.example.blog.security.JwtUserDetails;
+import com.example.blog.service.AuditService;
 import com.example.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +31,9 @@ public class UserManagementController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuditService auditService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
@@ -74,6 +78,8 @@ public class UserManagementController {
         user.setRole(newRole);
         userService.updateUserRole(userId, newRole);
 
+        auditService.logUserAction(userId, user.getUsername(), "ROLE_UPDATE", "Changed to " + newRole);
+
         User updatedUser = userService.findById(userId);
         updatedUser.setPassword(null);
         return ResponseEntity.ok(ApiResponse.success("用户角色已更新", updatedUser));
@@ -96,6 +102,9 @@ public class UserManagementController {
         }
 
         userService.updateUserStatus(userId, request.getStatus());
+
+        auditService.logUserAction(userId, user.getUsername(), "STATUS_UPDATE", "Changed to " + request.getStatus());
+
         return ResponseEntity.ok(ApiResponse.success("用户状态已更新", null));
     }
 
@@ -115,6 +124,9 @@ public class UserManagementController {
         }
 
         userService.deleteUser(userId);
+
+        auditService.logUserAction(userId, user.getUsername(), "DELETE", null);
+
         return ResponseEntity.ok(ApiResponse.success("用户已删除", null));
     }
 
@@ -132,6 +144,8 @@ public class UserManagementController {
 
         if (!request.getUserIds().isEmpty()) {
             userService.batchUpdateUserStatus(request.getUserIds(), request.getStatus());
+            auditService.log("BATCH_STATUS_UPDATE", "USER", null,
+                "Updated " + request.getUserIds().size() + " users to status " + request.getStatus());
         }
 
         return ResponseEntity.ok(ApiResponse.success("批量更新状态成功", null));
@@ -150,6 +164,8 @@ public class UserManagementController {
         request.getUserIds().removeIf(id -> currentAdmin.getId().equals(id));
 
         if (!request.getUserIds().isEmpty()) {
+            auditService.log("BATCH_DELETE", "USER", null,
+                "Deleted " + request.getUserIds().size() + " users");
             userService.batchDeleteUsers(request.getUserIds());
         }
 

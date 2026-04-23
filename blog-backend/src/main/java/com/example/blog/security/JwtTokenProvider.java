@@ -16,15 +16,36 @@ import lombok.AllArgsConstructor;
 @Component
 public class JwtTokenProvider {
 
+    private static final int MIN_SECRET_LENGTH = 32;
+    private static final String PROD_PROFILE = "prod";
+
     private final SecretKey jwtSecret;
     private final long jwtExpiration;
     private final Map<String, JwtClaims> claimsCache = new ConcurrentHashMap<>();
 
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") long expiration) {
+            @Value("${jwt.expiration}") long expiration,
+            @Value("${spring.profiles.active:default}") String activeProfiles) {
+        validateSecret(secret, activeProfiles);
         this.jwtSecret = Keys.hmacShaKeyFor(secret.getBytes());
         this.jwtExpiration = expiration;
+    }
+
+    private void validateSecret(String secret, String activeProfiles) {
+        if (secret == null || secret.length() < MIN_SECRET_LENGTH) {
+            throw new IllegalStateException(
+                "JWT secret must be at least " + MIN_SECRET_LENGTH + " characters long for security reasons");
+        }
+
+        boolean isProduction = activeProfiles != null &&
+            (activeProfiles.contains(PROD_PROFILE) || activeProfiles.contains("production"));
+
+        if (isProduction && secret.startsWith("mySecretKey")) {
+            throw new IllegalStateException(
+                "SECURITY ALERT: Using default JWT secret in production is not allowed! " +
+                "Please set a secure JWT_SECRET environment variable.");
+        }
     }
 
     public String generateToken(User user) {
@@ -74,7 +95,7 @@ public class JwtTokenProvider {
                 .verifyWith(jwtSecret)
                 .build()
                 .parseSignedClaims(token)
-                .getBody();
+                .getPayload();
 
         JwtClaims jwtClaims = new JwtClaims(
             Long.parseLong(claims.getSubject()),

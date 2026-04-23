@@ -58,6 +58,12 @@ public class Music {
     private String coverImage;
 
     /**
+     * 音频文件 URL
+     */
+    @TableField("audio_url")
+    private String audioUrl;
+
+    /**
      * 创建时间
      */
     @TableField(value = "created_at", fill = FieldFill.INSERT)
