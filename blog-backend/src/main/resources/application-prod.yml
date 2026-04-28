@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+  cache:
+    caffeine:
+      spec: maximumSize=200,expireAfterAccess=1800s
+
+logging:
+  level:
+    root: WARN
+    com.example.blog: INFO
+
+file:
+  upload-dir: /var/www/blog/uploads
