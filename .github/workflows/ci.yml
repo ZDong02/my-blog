@@ -71,6 +71,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: ./blog-backend
+        dockerfile: ./blog-backend/Dockerfile
         push: false
         tags: blog-backend:latest
         cache-from: type=gha
@@ -80,6 +81,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: ./social-factory-blog
+        dockerfile: ./social-factory-blog/Dockerfile.nginx
         push: false
         tags: blog-frontend:latest
         cache-from: type=gha
