@@ -25,7 +25,6 @@
 
 - :memo: **文章管理** - Markdown 写作，支持代码高亮
 - :person: **用户系统** - 注册、登录、JWT 认证
-- :musical_note: **音乐管理** - 歌单管理（可选功能）
 - :framed_picture: **文件上传** - MinIO 对象存储
 - :lock: **安全特性** - 登录限流、审计日志
 - :whale: **Docker 部署** - 一键部署到生产环境
