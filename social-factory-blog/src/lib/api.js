@@ -497,24 +497,6 @@ class ApiClient {
     return response;
   }
 
-  // Upload audio file for music
-  async uploadAudioFile(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    const response = await fetch(`${API_BASE_URL}/music/upload-audio`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.token}`
-      },
-      body: formData,
-    });
-    const data = await response.json();
-    if (data.success && data.data) {
-      data.data = this.resolveMediaUrl(data.data);
-    }
-    return data;
-  }
-
   // Tags
   async getTags() {
     return this.request('/tags');
@@ -556,34 +538,6 @@ class ApiClient {
     });
   }
 
-  // Music methods
-  async getMusicList() {
-    return this.request('/music');
-  }
-
-  async getMusicById(id) {
-    return this.request(`/music/${id}`);
-  }
-
-  async createMusic(musicData) {
-    return this.request('/music', {
-      method: 'POST',
-      body: JSON.stringify(musicData),
-    });
-  }
-
-  async updateMusic(id, musicData) {
-    return this.request(`/music/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(musicData),
-    });
-  }
-
-  async deleteMusic(id) {
-    return this.request(`/music/${id}`, {
-      method: 'DELETE',
-    });
-  }
 }
 
 // Create and export singleton instance

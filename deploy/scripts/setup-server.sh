@@ -98,7 +98,7 @@ configure_nginx() {
     cat > /etc/nginx/sites-available/blog <<EOF
 server {
     listen 80;
-    server_name zdong01.com www.zdong01.com;
+    server_name 8.136.159.160;
 
     root /var/www/blog/dist;
     index index.html;
@@ -153,7 +153,8 @@ EOF
 # Setup SSL with Let's Encrypt
 setup_ssl() {
     log_info "Setting up SSL certificate..."
-    certbot --nginx -d zdong01.com -d www.zdong01.com --non-interactive --agree-tos -m ${ADMIN_EMAIL}
+    # Note: Let's Encrypt requires domain. For IP-only, skip this step.
+    log_warn "SSL skipped - using IP address instead of domain"
 }
 
 # Create application directory

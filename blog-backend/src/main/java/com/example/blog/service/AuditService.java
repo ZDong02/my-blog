@@ -74,10 +74,6 @@ public class AuditService {
         log(action, "CATEGORY", categoryId, "Category: " + categoryName);
     }
 
-    public void logMusicAction(Long musicId, String musicTitle, String action) {
-        log(action, "MUSIC", musicId, "Music: " + musicTitle);
-    }
-
     public void logAuthAction(String action, String username, boolean success, String details) {
         String result = success ? "SUCCESS" : "FAILED";
         log(action, "AUTH", null,

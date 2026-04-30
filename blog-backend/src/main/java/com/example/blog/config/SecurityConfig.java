@@ -64,12 +64,16 @@ public class SecurityConfig {
                 .requestMatchers("/auth/**").permitAll()
                 // 验证码 - 完全公开
                 .requestMatchers("/captcha/**").permitAll()
+                // OPTIONS 请求 (CORS preflight) - 完全公开
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 公开查询接口
                 .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/comments/post/*").permitAll()
                 // 静态资源 - 允许公开访问上传的文件
                 .requestMatchers("uploads/**").permitAll()
+                // MinIO 文件 - 公开访问
+                .requestMatchers("/minio/**").permitAll()
                 // 需要 ADMIN 角色的接口
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 // 其他所有请求需要认证
@@ -87,6 +91,10 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:*",
             "http://127.0.0.1:*",
+            "http://8.136.159.160",
+            "http://8.136.159.160:*",
+            "http://8.136.159.160:80",
+            "http://8.136.159.160:8080",
             "https://zdong01.com",
             "https://*.zdong01.com"
         ));
