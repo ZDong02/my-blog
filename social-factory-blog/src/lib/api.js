@@ -52,6 +52,10 @@ class ApiClient {
       return apiOrigin ? `${apiOrigin}${url}` : url;
     }
 
+    if (url.startsWith('/api/minio/')) {
+      return apiOrigin ? `${apiOrigin}${url}` : url;
+    }
+
     if (url.startsWith('/uploads/')) {
       return apiOrigin ? `${apiOrigin}${url}` : url;
     }

@@ -5,13 +5,13 @@ import com.example.blog.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 
@@ -60,23 +59,17 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // 认证相关 - 完全公开
                 .requestMatchers("/auth/**").permitAll()
-                // 验证码 - 完全公开
                 .requestMatchers("/captcha/**").permitAll()
-                // OPTIONS 请求 (CORS preflight) - 完全公开
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // 公开查询接口
                 .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/comments/post/*").permitAll()
-                // 静态资源 - 允许公开访问上传的文件
-                .requestMatchers("uploads/**").permitAll()
-                // MinIO 文件 - 公开访问
+                .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/api/uploads/**").permitAll()
                 .requestMatchers("/minio/**").permitAll()
-                // 需要 ADMIN 角色的接口
+                .requestMatchers("/api/minio/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                // 其他所有请求需要认证
                 .anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())

@@ -16,8 +16,6 @@ public class FileUploadConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 由于应用有 /api 上下文路径，实际访问路径会是 /api/uploads/**
-        // 所以我们需要映射 /uploads/** 来处理 /api/uploads/** 的请求
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadDir + "/")
                 .setCachePeriod(3600);
