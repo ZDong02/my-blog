@@ -11,13 +11,21 @@ services:
       - ./uploads:/var/www/blog/uploads
     depends_on:
       backend:
+        condition: service_healthy
+      minio:
         condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     restart: unless-stopped
     networks:
       - blog-network
 
   backend:
-    image: openjdk:17-slim
+    image: eclipse-temurin:17-jre
     container_name: blog-backend
     ports:
       - "8080:8080"
@@ -27,13 +35,13 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - MINIO_ENABLED=true
       - MINIO_ENDPOINT=http://minio:9000
-      - MINIO_ACCESS_KEY=admin
-      - MINIO_SECRET_KEY=B1ogM1n10@2026
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-admin}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-B1ogM1n10@2026}
       - MINIO_BUCKET=blog
       - DB_URL=jdbc:mysql://mysql:3306/blog_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-      - DB_USERNAME=blog_user
-      - DB_PASSWORD=B1ogP@ss2026
-      - JWT_SECRET=ZBlogSecretKey2026ForProductionUseOnly123456789012345678901234567890
+      - DB_USERNAME=${DB_USERNAME:-blog_user}
+      - DB_PASSWORD=${DB_PASSWORD:-B1ogP@ss2026}
+      - JWT_SECRET=${JWT_SECRET:-ZBlogSecretKey2026ForProductionUseOnly123456789012345678901234567890}
     volumes:
       - ./backend.jar:/app/blog-backend.jar:ro
       - ./uploads:/var/www/blog/uploads
@@ -41,7 +49,13 @@ services:
       mysql:
         condition: service_healthy
       minio:
-        condition: service_healthy
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/api/posts?page=1&size=1 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     restart: unless-stopped
     networks:
       - blog-network
@@ -54,13 +68,14 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: B1ogR00t@2026
-      MYSQL_DATABASE: blog_db
-      MYSQL_USER: blog_user
-      MYSQL_PASSWORD: B1ogP@ss2026
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-B1ogR00t@2026}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-blog_db}
+      MYSQL_USER: ${DB_USERNAME:-blog_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-B1ogP@ss2026}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./db/init-tables.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./db/init-full.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -77,16 +92,11 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: B1ogM1n10@2026
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-B1ogM1n10@2026}
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
     restart: unless-stopped
     networks:
       - blog-network

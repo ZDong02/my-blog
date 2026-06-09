@@ -28,3 +28,18 @@ uploads/
 **/.env
 **/.env.*
 !**/.env.example
+
+# Deployment artifacts
+*.tar.gz
+blog-backend.jar
+deploy/backend.jar
+deploy/blog-deploy.tar.gz
+deploy/dist/
+
+# Redundant config directories (consolidated into deploy/)
+docker/
+nginx/
+
+# Codex / MCP tooling
+.codex-tools/
+.mcp.json
