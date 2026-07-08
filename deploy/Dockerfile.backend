@@ -1,30 +1,23 @@
-FROM eclipse-temurin:17-jdk-alpine AS builder
-
-WORKDIR /app
-
-COPY blog-backend/target/blog-backend-1.0.0.jar app.jar
-
-RUN apk add --no-cache curl && \
-    mkdir -p /opt/app && \
-    cd /opt/app && \
-    java -Djarmode=layertools -jar /app/app.jar extract && \
-    rm /app/app.jar
-
 FROM eclipse-temurin:17-jre-alpine
 
-RUN apk add --no-cache tzdata && \
+RUN apk add --no-cache tzdata fontconfig freetype ttf-dejavu curl && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
 
 WORKDIR /app
 
-COPY --from=builder /opt/app/dependencies/ ./
-COPY --from=builder /opt/app/spring-boot-loader/ ./
-COPY --from=builder /opt/app/snapshot-dependencies/ ./
-COPY --from=builder /opt/app/application/ ./
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
 
-ENV JAVA_OPTS="-Xmx768m -Xms256m -XX:+UseG1GC"
+RUN mkdir -p /var/www/blog/uploads && \
+    chown -R appuser:appgroup /var/www/blog/uploads
+
+COPY backend.jar app.jar
+
+USER appuser
 
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} org.springframework.boot.loader.launch.JarLauncher"]
+ENV JAVA_OPTS="-Xmx768m -Xms256m -XX:+UseG1GC"
+
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar app.jar"]

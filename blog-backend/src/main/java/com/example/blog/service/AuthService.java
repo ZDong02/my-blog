@@ -39,7 +39,7 @@ public class AuthService {
         User user = userService.registerUser(request);
 
         String token = tokenProvider.generateToken(user);
-        String refreshToken = tokenProvider.generateToken(user); // In production, use different refresh token logic
+        String refreshToken = tokenProvider.generateRefreshToken(user);
 
         return AuthResponse.builder()
                 .token(token)
@@ -88,7 +88,7 @@ public class AuthService {
             auditService.logAuthAction("LOGIN", user.getUsername(), true, "IP: " + clientIp);
 
             String token = tokenProvider.generateToken(user);
-            String refreshToken = tokenProvider.generateToken(user);
+            String refreshToken = tokenProvider.generateRefreshToken(user);
 
             return AuthResponse.builder()
                     .token(token)
@@ -129,7 +129,7 @@ public class AuthService {
 
             if (user != null && user.getStatus() == 1) {
                 String newToken = tokenProvider.generateToken(user);
-                String newRefreshToken = tokenProvider.generateToken(user);
+                String newRefreshToken = tokenProvider.generateRefreshToken(user);
 
                 return AuthResponse.builder()
                         .token(newToken)

@@ -1,7 +1,24 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { BUILD_API_BASE_URL } from '../../lib/api-config.js';
 
 export async function getStaticPaths() {
+  try {
+    const response = await fetch(`${BUILD_API_BASE_URL}/posts?page=1&size=1000`);
+    const payload = await response.json();
+    const posts = payload?.data?.content || payload?.data?.list || [];
+
+    if (Array.isArray(posts) && posts.length > 0) {
+      return posts
+        .filter((post) => post?.id !== undefined && post?.id !== null)
+        .map((post) => ({
+          params: { slug: String(post.id) }
+        }));
+    }
+  } catch (error) {
+    console.warn('Falling back to numeric blog paths:', error);
+  }
+
   return Array.from({ length: 300 }, (_, index) => ({
     params: { slug: String(index + 1) }
   }));
@@ -15,7 +32,7 @@ const { slug } = Astro.params;
   description="阅读文章详情"
   type="article"
 >
-  <main class="min-h-screen pt-24 pb-20">
+  <div class="min-h-screen pb-20">
     <article class="max-w-4xl mx-auto px-4 sm:px-8">
 
     <!-- Loading State - Skeleton -->
@@ -173,7 +190,7 @@ const { slug } = Astro.params;
       </div>
     </div>
   </article>
-  </main>
+  </div>
 
   <script>
     import { apiClient } from '../../lib/api.js';
@@ -190,6 +207,141 @@ const { slug } = Astro.params;
     if (isNaN(parseInt(postId))) {
       postId = '1';
     }
+
+    const renderMarkdown = (md) => {
+      // Sanitize: escape raw HTML to prevent XSS
+      let text = String(md)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      const lines = text.split('\n');
+      const output = [];
+      let i = 0;
+      let inCodeBlock = false;
+      let codeContent = [];
+      let codeLang = '';
+
+      while (i < lines.length) {
+        const line = lines[i];
+
+        // Fenced code blocks
+        if (line.trim().startsWith('```')) {
+          if (!inCodeBlock) {
+            inCodeBlock = true;
+            codeLang = line.trim().slice(3).trim();
+            codeContent = [];
+          } else {
+            output.push(`<pre><code${codeLang ? ` class="language-${codeLang}"` : ''}>${codeContent.join('\n')}</code></pre>`);
+            inCodeBlock = false;
+            codeLang = '';
+          }
+          i++;
+          continue;
+        }
+
+        if (inCodeBlock) {
+          codeContent.push(line);
+          i++;
+          continue;
+        }
+
+        // Horizontal rules
+        if (/^(\s*[-*_]\s*){3,}$/.test(line)) {
+          output.push('<hr>');
+          i++;
+          continue;
+        }
+
+        // Headings
+        const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+        if (headingMatch) {
+          const level = headingMatch[1].length;
+          output.push(`<h${level}>${headingMatch[2]}</h${level}>`);
+          i++;
+          continue;
+        }
+
+        // Blockquotes
+        if (line.startsWith('&gt; ') || line === '&gt;') {
+          const quoteLines = [];
+          while (i < lines.length && (lines[i].startsWith('&gt; ') || lines[i] === '&gt;')) {
+            quoteLines.push(lines[i].replace(/^&gt;\s?/, ''));
+            i++;
+          }
+          output.push(`<blockquote><p>${quoteLines.join(' ')}</p></blockquote>`);
+          continue;
+        }
+
+        // Unordered lists
+        if (/^\s*[-*+]\s+/.test(line)) {
+          const listItems = [];
+          while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+            listItems.push(`<li>${lines[i].replace(/^\s*[-*+]\s+/, '')}</li>`);
+            i++;
+          }
+          output.push(`<ul>${listItems.join('')}</ul>`);
+          continue;
+        }
+
+        // Ordered lists
+        if (/^\s*\d+\.\s+/.test(line)) {
+          const listItems = [];
+          while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
+            listItems.push(`<li>${lines[i].replace(/^\s*\d+\.\s+/, '')}</li>`);
+            i++;
+          }
+          output.push(`<ol>${listItems.join('')}</ol>`);
+          continue;
+        }
+
+        // Empty lines
+        if (line.trim() === '') {
+          output.push('');
+          i++;
+          continue;
+        }
+
+        // Paragraphs: collect consecutive non-empty, non-special lines
+        const paraLines = [];
+        while (i < lines.length &&
+          lines[i].trim() !== '' &&
+          !lines[i].trim().startsWith('```') &&
+          !/^#{1,6}\s+/.test(lines[i]) &&
+          !lines[i].startsWith('&gt; ') &&
+          !/^\s*[-*+]\s+/.test(lines[i]) &&
+          !/^\s*\d+\.\s+/.test(lines[i]) &&
+          !/^(\s*[-*_]\s*){3,}$/.test(lines[i])) {
+          paraLines.push(lines[i]);
+          i++;
+        }
+        if (paraLines.length > 0) {
+          output.push(`<p>${paraLines.join(' ')}</p>`);
+        }
+      }
+
+      // Close unclosed code block
+      if (inCodeBlock) {
+        output.push(`<pre><code>${codeContent.join('\n')}</code></pre>`);
+      }
+
+      // Apply inline markdown formatting
+      let result = output.join('\n');
+      // Bold: **text** or __text__
+      result = result.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      result = result.replace(/__(.+?)__/g, '<strong>$1</strong>');
+      // Italic: *text* or _text_
+      result = result.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      result = result.replace(/_(.+?)_/g, '<em>$1</em>');
+      // Inline code
+      result = result.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Images (before links to avoid conflict)
+      result = result.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+      // Links
+      result = result.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+      return result;
+    };
 
     const loadPostData = async () => {
       try {
@@ -223,11 +375,7 @@ const { slug } = Astro.params;
 
           const contentDiv = document.getElementById('content');
           if (post.content) {
-            const formattedContent = post.content
-              .split('\n\n')
-              .map(p => `<p>${p.trim()}</p>`)
-              .join('');
-            contentDiv.innerHTML = formattedContent;
+            contentDiv.innerHTML = renderMarkdown(post.content);
           }
 
           document.getElementById('viewCount').textContent = post.viewCount || 0;
@@ -411,6 +559,25 @@ const { slug } = Astro.params;
       return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('zh-TW');
     };
 
+    const getCurrentUserId = () => {
+      try {
+        const token = localStorage.getItem('auth_token');
+        if (!token) return null;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.id || payload.sub;
+      } catch { return null; }
+    };
+
+    const canEditComment = (comment) => {
+      if (!window.authManager.isAuthenticated) return false;
+      const currentUserId = getCurrentUserId();
+      if (String(comment.userId) !== String(currentUserId)) return false;
+      const created = new Date(comment.createdAt);
+      const now = new Date();
+      const diffMinutes = (now.getTime() - created.getTime()) / (1000 * 60);
+      return diffMinutes <= 5;
+    };
+
     const renderReplies = (replies = []) => {
       if (!Array.isArray(replies) || replies.length === 0) {
         return '';
@@ -419,7 +586,7 @@ const { slug } = Astro.params;
       return `
         <div class="mt-4 pl-4 border-l-2 border-neutral-200 dark:border-neutral-700 space-y-3">
           ${replies.map((reply) => `
-            <div class="flex gap-3 p-4 bg-neutral-50 dark:bg-neutral-800">
+            <div class="flex gap-3 p-4 bg-neutral-50 dark:bg-neutral-800" id="comment-${reply.id}">
               <img
                 src="${apiClient.resolveMediaUrl(reply.user?.avatar) || '/images/default-avatar.png'}"
                 alt="${escapeHtml(reply.user?.nickname || reply.user?.username || 'User')}"
@@ -431,8 +598,17 @@ const { slug } = Astro.params;
                     ${escapeHtml(reply.user?.nickname || reply.user?.username || 'User')}
                   </h5>
                   <span class="text-xs text-neutral-500">${formatCommentDate(reply.createdAt)}</span>
+                  ${reply.updatedAt && new Date(reply.updatedAt) > new Date(new Date(reply.createdAt).getTime() + 60000) ? '<span class="text-xs text-neutral-400">(已编辑)</span>' : ''}
                 </div>
-                <p class="text-sm text-neutral-700 dark:text-neutral-300 break-words">${escapeHtml(reply.content || '')}</p>
+                <p class="text-sm text-neutral-700 dark:text-neutral-300 break-words" id="reply-content-${reply.id}">${escapeHtml(reply.content || '')}</p>
+                <div class="mt-2 flex items-center gap-3">
+                  ${canEditComment(reply) ? `
+                    <button onclick="showEditForm(${reply.id}, '${escapeHtml(reply.content).replace(/'/g, "\\'")}')" class="text-xs font-bold text-neutral-400 hover:text-brand-red transition">编辑</button>
+                  ` : ''}
+                  ${window.authManager.isAuthenticated && String(reply.userId) === String(getCurrentUserId()) ? `
+                    <button onclick="deleteCommentById(${reply.id})" class="text-xs font-bold text-neutral-400 hover:text-red-500 transition">删除</button>
+                  ` : ''}
+                </div>
               </div>
             </div>
           `).join('')}
@@ -448,6 +624,18 @@ const { slug } = Astro.params;
           const totalComments = countAllComments(response.data);
           document.getElementById('commentsCount').textContent = totalComments;
           document.getElementById('commentCount').textContent = totalComments;
+
+          // Handle anchor link scroll
+          if (window.location.hash && window.location.hash.startsWith('#comment-')) {
+            setTimeout(() => {
+              const target = document.querySelector(window.location.hash);
+              if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('ring-2', 'ring-brand-red');
+                setTimeout(() => target.classList.remove('ring-2', 'ring-brand-red'), 3000);
+              }
+            }, 300);
+          }
         }
       } catch (error) {
         console.error('Failed to load comments:', error);
@@ -462,10 +650,12 @@ const { slug } = Astro.params;
         return;
       }
 
+      const currentUserId = getCurrentUserId();
       let html = '';
       comments.forEach(comment => {
+        const isOwner = window.authManager.isAuthenticated && String(comment.userId) === String(currentUserId);
         html += `
-          <div class="flex gap-4 p-6 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+          <div class="flex gap-4 p-6 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700" id="comment-${comment.id}">
             <img
               src="${apiClient.resolveMediaUrl(comment.user?.avatar) || '/images/default-avatar.png'}"
               alt="${escapeHtml(comment.user?.nickname || comment.user?.username || 'User')}"
@@ -475,8 +665,9 @@ const { slug } = Astro.params;
               <div class="flex items-center gap-3 mb-2">
                 <h4 class="font-bold text-neutral-900 dark:text-white truncate">${escapeHtml(comment.user?.nickname || comment.user?.username || 'User')}</h4>
                 <span class="text-xs text-neutral-500">${formatCommentDate(comment.createdAt)}</span>
+                ${comment.updatedAt && new Date(comment.updatedAt) > new Date(new Date(comment.createdAt).getTime() + 60000) ? '<span class="text-xs text-neutral-400">(已编辑)</span>' : ''}
               </div>
-              <p class="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed break-words">${escapeHtml(comment.content || '')}</p>
+              <p class="text-neutral-700 dark:text-neutral-300 text-sm leading-relaxed break-words" id="comment-content-${comment.id}">${escapeHtml(comment.content || '')}</p>
               <div class="mt-3 flex items-center gap-4">
                 <button onclick="showReplyForm(${comment.id})" class="text-xs font-bold text-neutral-500 hover:text-brand-red transition flex items-center gap-1">
                   <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -484,23 +675,53 @@ const { slug } = Astro.params;
                   </svg>
                   回复
                 </button>
+                ${canEditComment(comment) ? `
+                  <button onclick="showEditForm(${comment.id}, '${escapeHtml(comment.content).replace(/'/g, "\\'")}')" class="text-xs font-bold text-neutral-500 hover:text-brand-red transition flex items-center gap-1">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    编辑
+                  </button>
+                ` : ''}
+                ${isOwner ? `
+                  <button onclick="deleteCommentById(${comment.id})" class="text-xs font-bold text-neutral-500 hover:text-red-500 transition flex items-center gap-1">
+                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    删除
+                  </button>
+                ` : ''}
               </div>
               ${renderReplies(comment.replies)}
               <div id="reply-form-${comment.id}" class="reply-form-container hidden mt-4">
                 <div class="flex gap-2">
-                  <input
-                    type="text"
+                  <textarea
                     id="reply-content-${comment.id}"
+                    rows="2"
                     placeholder="写下你的回复..."
-                    class="flex-1 px-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-none bg-white dark:bg-neutral-900 focus:outline-none focus:border-brand-red"
-                  />
+                    class="flex-1 px-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-none bg-white dark:bg-neutral-900 focus:outline-none focus:border-brand-red resize-none"
+                  ></textarea>
                   <button
                     onclick="submitReply(${comment.id})"
-                    class="btn-primary px-4 py-2 text-xs"
+                    class="btn-primary px-4 py-2 text-xs self-end"
                   >
                     发送
                   </button>
                 </div>
+              </div>
+              <div id="edit-form-${comment.id}" class="edit-form-container hidden mt-4">
+                <div class="flex gap-2">
+                  <textarea
+                    id="edit-content-${comment.id}"
+                    rows="3"
+                    class="flex-1 px-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded-none bg-white dark:bg-neutral-900 focus:outline-none focus:border-brand-red resize-none"
+                  ></textarea>
+                  <div class="flex flex-col gap-2 self-end">
+                    <button onclick="submitEdit(${comment.id})" class="btn-primary px-4 py-2 text-xs">保存</button>
+                    <button onclick="cancelEdit(${comment.id})" class="px-4 py-2 text-xs border border-neutral-200 dark:border-neutral-700 text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition">取消</button>
+                  </div>
+                </div>
+                <p class="text-xs text-neutral-400 mt-1">发布后 5 分钟内可编辑</p>
               </div>
             </div>
           </div>
@@ -521,6 +742,7 @@ const { slug } = Astro.params;
           form.classList.add('hidden');
         }
       });
+      document.querySelectorAll('.edit-form-container').forEach(form => form.classList.add('hidden'));
 
       const replyForm = document.getElementById(`reply-form-${commentId}`);
       if (replyForm) {
@@ -529,6 +751,63 @@ const { slug } = Astro.params;
         if (input && !replyForm.classList.contains('hidden')) {
           input.focus();
         }
+      }
+    };
+
+    window.showEditForm = (commentId, currentContent) => {
+      document.querySelectorAll('.edit-form-container').forEach(form => {
+        if (form.id !== `edit-form-${commentId}`) form.classList.add('hidden');
+      });
+      document.querySelectorAll('.reply-form-container').forEach(form => form.classList.add('hidden'));
+
+      const editForm = document.getElementById(`edit-form-${commentId}`);
+      const editInput = document.getElementById(`edit-content-${commentId}`);
+      if (editForm && editInput) {
+        editInput.value = currentContent.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'");
+        editForm.classList.remove('hidden');
+        editInput.focus();
+        editInput.setSelectionRange(editInput.value.length, editInput.value.length);
+      }
+    };
+
+    window.cancelEdit = (commentId) => {
+      const editForm = document.getElementById(`edit-form-${commentId}`);
+      if (editForm) editForm.classList.add('hidden');
+    };
+
+    window.submitEdit = async (commentId) => {
+      const content = document.getElementById(`edit-content-${commentId}`)?.value.trim();
+      if (!content) return;
+
+      try {
+        const response = await apiClient.editComment(commentId, content);
+        if (response.success) {
+          document.getElementById(`edit-form-${commentId}`).classList.add('hidden');
+          await loadComments();
+          if (window.showToast) window.showToast('评论已更新', 'success');
+        } else {
+          if (window.showToast) window.showToast(response.message || '编辑失败', 'error');
+        }
+      } catch (error) {
+        console.error('Failed to edit comment:', error);
+        if (window.showToast) window.showToast('编辑失败，请稍后重试', 'error');
+      }
+    };
+
+    window.deleteCommentById = async (commentId) => {
+      if (!confirm('确定要删除这条评论吗？')) return;
+
+      try {
+        const response = await apiClient.deleteComment(commentId);
+        if (response.success) {
+          await loadComments();
+          if (window.showToast) window.showToast('评论已删除', 'success');
+        } else {
+          if (window.showToast) window.showToast(response.message || '删除失败', 'error');
+        }
+      } catch (error) {
+        console.error('Failed to delete comment:', error);
+        if (window.showToast) window.showToast('删除失败，请稍后重试', 'error');
       }
     };
 

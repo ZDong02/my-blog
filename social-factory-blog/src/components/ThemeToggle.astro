@@ -1,28 +1,25 @@
----
+﻿---
 ---
 <button
   id="theme-toggle"
-  onclick="document.documentElement.classList.toggle('dark')"
-  aria-label="切换暗色模式"
+  aria-label="Toggle theme"
   class="fixed bottom-6 right-6 z-50 w-14 h-14 glass-card flex items-center justify-center hover:bg-white/90 dark:hover:bg-neutral-900/90 transition-all duration-300 cursor-pointer group focus:outline-none focus:ring-2 focus:ring-brand-red"
 >
   <svg
-    class="w-6 h-6 text-neutral-900 dark:text-white transition-transform duration-300 group-hover:rotate-12"
+    class="w-6 h-6 text-neutral-900 dark:text-white transition-all duration-300 group-hover:rotate-12"
     fill="none"
     stroke="currentColor"
     viewBox="0 0 24 24"
   >
-    <!-- Sun icon (shown in dark mode) -->
     <path
-      class="hidden dark:block"
+      class="dark:sun-icon"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="2"
       d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
     />
-    <!-- Moon icon (shown in light mode) -->
     <path
-      class="block dark:hidden"
+      class="moon-icon"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="2"
@@ -31,13 +28,103 @@
   </svg>
 </button>
 
+<style>
+  .sun-icon {
+    display: none;
+  }
+
+  .dark .sun-icon {
+    display: block;
+  }
+
+  .dark .moon-icon {
+    display: none;
+  }
+</style>
+
 <script>
+  class ThemeManager {
+    private theme: 'light' | 'dark';
+    private toggleBtn: HTMLElement | null;
+    private listeners: Array<(state: { theme: 'light' | 'dark' }) => void> = [];
+
+    constructor() {
+      this.theme = this.getCurrentTheme();
+      this.toggleBtn = document.getElementById('theme-toggle');
+      this.init();
+    }
+
+    private getCurrentTheme(): 'light' | 'dark' {
+      if (typeof window === 'undefined') return 'light';
+
+      const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
+      if (saved) return saved;
+
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    private init() {
+      this.updateDOM();
+      this.bindEvents();
+      this.setupSystemPreferenceListener();
+    }
+
+    private updateDOM() {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(this.theme);
+    }
+
+    private bindEvents() {
+      this.toggleBtn?.addEventListener('click', () => this.toggle());
+    }
+
+    private setupSystemPreferenceListener() {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      mediaQuery.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+          this.setTheme(e.matches ? 'dark' : 'light');
+        }
+      });
+    }
+
+    private setTheme(theme: 'light' | 'dark') {
+      this.theme = theme;
+      localStorage.setItem('theme', theme);
+      this.updateDOM();
+      this.notifyListeners();
+    }
+
+    public toggle() {
+      this.setTheme(this.theme === 'dark' ? 'light' : 'dark');
+    }
+
+    public getTheme() {
+      return this.theme;
+    }
+
+    public isDark() {
+      return this.theme === 'dark';
+    }
+
+    public addListener(callback: (state: { theme: 'light' | 'dark' }) => void) {
+      this.listeners.push(callback);
+    }
+
+    private notifyListeners() {
+      this.listeners.forEach(cb => cb({ theme: this.theme }));
+    }
+
+    public getState() {
+      return { theme: this.theme };
+    }
+  }
+
+  // Initialize theme manager
+  const themeManager = new ThemeManager();
+
+  // Expose globally for other components
+  (window as any).themeManager = themeManager;
+
   // Add smooth transition for theme toggle
   document.documentElement.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-
-  // Check for saved theme preference or default to system preference
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
-  }
 </script>

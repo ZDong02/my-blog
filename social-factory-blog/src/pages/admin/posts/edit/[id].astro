@@ -329,6 +329,7 @@ const description = '编辑文章';
       textarea.selectionStart = start + prefix.length;
       textarea.selectionEnd = start + prefix.length + selectedText.length;
     };
+    window.insertMarkdown = insertMarkdown;
 
     document.getElementById('editPostForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -344,9 +345,13 @@ const description = '编辑文章';
       try {
         const response = await apiClient.updatePost(postId, formData);
         if (response.success) {
+            if (window.showToast) window.showToast('文章已保存', 'success');
+        } else {
+            if (window.showToast) window.showToast(response.message || '保存失败', 'error');
         }
       } catch (error) {
         console.error('Failed to update post:', error);
+        if (window.showToast) window.showToast('保存失败，请稍后重试', 'error');
       }
     });
 

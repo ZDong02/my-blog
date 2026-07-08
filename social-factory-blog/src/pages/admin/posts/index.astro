@@ -172,7 +172,7 @@ const description = '管理所有文章';
         noPosts.classList.add('hidden');
         pagination.classList.add('hidden');
 
-        const response = await apiClient.request('/posts/my-posts');
+        const response = await apiClient.request('/posts/admin/all');
 
         if (response.success && response.data) {
           allPosts = response.data;

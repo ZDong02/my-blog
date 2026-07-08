@@ -89,12 +89,12 @@
 
     <!-- 更新点赞数 -->
     <update id="updateLikeCount">
-        UPDATE posts SET like_count = like_count + #{increment} WHERE id = #{postId}
+        UPDATE posts SET like_count = GREATEST(0, like_count + #{increment}) WHERE id = #{postId}
     </update>
 
     <!-- 更新评论数 -->
     <update id="updateCommentCount">
-        UPDATE posts SET comment_count = comment_count + #{increment} WHERE id = #{postId}
+        UPDATE posts SET comment_count = GREATEST(0, comment_count + #{increment}) WHERE id = #{postId}
     </update>
 
     <!-- 按标题查询文章 -->
@@ -186,6 +186,21 @@
         SELECT COUNT(*) FROM posts p
         INNER JOIN post_tags pt ON p.id = pt.post_id
         WHERE p.status = 'PUBLISHED' AND pt.tag_id = #{tagId}
+    </select>
+
+    <!-- 查询所有未删除的文章（管理员用） -->
+    <select id="findAllNonDeletedPosts" resultMap="PostResultMap">
+        SELECT p.*,
+               u.username as author_username,
+               u.nickname as author_nickname,
+               u.avatar as author_avatar,
+               c.name as category_name,
+               c.description as category_description
+        FROM posts p
+        LEFT JOIN users u ON p.author_id = u.id
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.status != 'DELETED'
+        ORDER BY p.created_at DESC
     </select>
 
     <!-- 查询回收站中的文章（已删除的文章） -->

@@ -8,6 +8,7 @@ Allow: /
 
 # Disallow admin and api routes
 Disallow: /admin/
+Disallow: /admin2026
 Disallow: /api/
 Disallow: /dashboard
 Disallow: /profile

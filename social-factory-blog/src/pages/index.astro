@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Social Factory | No Favouritism">
-  <main class="min-h-screen">
+  <div class="min-h-screen">
 
     <!-- Hero Section - Split Screen Magazine Style -->
     <section class="grid grid-cols-1 lg:grid-cols-12 min-h-[90vh]">
@@ -244,9 +244,10 @@ import Layout from "../layouts/Layout.astro";
           订阅更新，获取最新文章和深度思考，与我们一起成长。
         </p>
 
-        <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+        <form id="newsletterForm" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
           <input
             type="email"
+            id="newsletterEmail"
             placeholder="输入您的邮箱"
             class="flex-1 px-6 py-4 bg-white/20 border-2 border-white/30 text-white placeholder:text-red-200 focus:outline-none focus:border-white rounded-none transition-colors"
           />
@@ -254,10 +255,11 @@ import Layout from "../layouts/Layout.astro";
             订阅
           </button>
         </form>
+        <p id="newsletterMsg" class="hidden mt-4 text-sm text-red-200"></p>
       </div>
     </section>
 
-  </main>
+  </div>
 
   <script>
     import { apiClient } from '../lib/api.js';
@@ -400,6 +402,18 @@ import Layout from "../layouts/Layout.astro";
         console.error('Failed to load posts:', error);
       }
     };
+
+    // Newsletter form handler
+    document.getElementById('newsletterForm')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('newsletterEmail')?.value?.trim();
+      const msg = document.getElementById('newsletterMsg');
+      if (!email) return;
+      if (msg) {
+        msg.textContent = '订阅功能暂未开放，敬请期待。';
+        msg.classList.remove('hidden');
+      }
+    });
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {

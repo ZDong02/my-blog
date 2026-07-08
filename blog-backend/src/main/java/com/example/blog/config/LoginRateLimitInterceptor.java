@@ -21,20 +21,6 @@ public class LoginRateLimitInterceptor implements HandlerInterceptor {
 
         if (uri.endsWith("/login") || uri.endsWith("/admin/login")) {
             String ip = IpUtils.getClientIP(request);
-            String identifier = ip;
-
-            String username = request.getParameter("usernameOrEmail");
-            if (username != null && !username.contains("@")) {
-                identifier = username + ":" + ip;
-            }
-
-            if (rateLimitService.isLockedOut(identifier)) {
-                long remainingTime = rateLimitService.getRemainingLockoutTime(identifier);
-                throw new BusinessException(
-                    "登录失败次数过多，请等待 " + remainingTime + " 秒后再试",
-                    429
-                );
-            }
 
             if (rateLimitService.isGlobalRateLimited(ip)) {
                 throw new BusinessException(

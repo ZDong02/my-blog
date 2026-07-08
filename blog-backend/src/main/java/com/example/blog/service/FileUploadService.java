@@ -6,6 +6,7 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.SetBucketPolicyArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,8 @@ public class FileUploadService {
             if (!bucketExists) {
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioBucket).build());
             }
+            // Always ensure public policy is set (bucket may exist but policy not set)
+            setBucketPublicPolicy(minioBucket);
 
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -199,6 +202,31 @@ public class FileUploadService {
             }
         } catch (IOException e) {
             throw new BusinessException("Failed to delete file: " + e.getMessage());
+        }
+    }
+
+    private void setBucketPublicPolicy(String bucketName) {
+        try {
+            String policy = """
+                {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {"AWS": "*"},
+                      "Action": ["s3:GetObject"],
+                      "Resource": ["arn:aws:s3:::%s/*"]
+                    }
+                  ]
+                }
+                """.formatted(bucketName);
+            minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                    .bucket(bucketName)
+                    .config(policy)
+                    .build());
+            logger.info("Set public read policy for bucket: {}", bucketName);
+        } catch (Exception e) {
+            logger.warn("Failed to set bucket policy, files may not be publicly accessible: {}", e.getMessage());
         }
     }
 

@@ -102,4 +102,47 @@ public interface CommentMapper extends BaseMapper<Comment> {
 
     @Select("SELECT COUNT(*) FROM comments WHERE user_id = #{userId} AND status = 1")
     int countByUserId(@Param("userId") Long userId);
+
+    // ========== 管理后台查询方法 ==========
+
+    @Select("<script>" +
+            "SELECT c.*, u.id as user_id, u.username as user_username, u.nickname as user_nickname, u.avatar as user_avatar, " +
+            "p.id as p_id, p.title as p_title " +
+            "FROM comments c " +
+            "LEFT JOIN users u ON c.user_id = u.id " +
+            "LEFT JOIN posts p ON c.post_id = p.id " +
+            "<where>" +
+            "  <if test='status != null'> AND c.status = #{status}</if>" +
+            "  <if test='postId != null'> AND c.post_id = #{postId}</if>" +
+            "</where>" +
+            " ORDER BY c.created_at DESC" +
+            " LIMIT #{offset}, #{limit}" +
+            "</script>")
+    @Results({
+        @Result(property = "id", column = "id"),
+        @Result(property = "postId", column = "post_id"),
+        @Result(property = "userId", column = "user_id"),
+        @Result(property = "content", column = "content"),
+        @Result(property = "parentId", column = "parent_id"),
+        @Result(property = "status", column = "status"),
+        @Result(property = "createdAt", column = "created_at"),
+        @Result(property = "updatedAt", column = "updated_at"),
+        @Result(property = "user.id", column = "user_id"),
+        @Result(property = "user.username", column = "user_username"),
+        @Result(property = "user.nickname", column = "user_nickname"),
+        @Result(property = "user.avatar", column = "user_avatar"),
+        @Result(property = "post.id", column = "p_id"),
+        @Result(property = "post.title", column = "p_title")
+    })
+    List<Comment> findAllCommentsAdmin(@Param("offset") int offset, @Param("limit") int limit,
+                                       @Param("status") Integer status, @Param("postId") Long postId);
+
+    @Select("<script>" +
+            "SELECT COUNT(*) FROM comments c" +
+            "<where>" +
+            "  <if test='status != null'> AND c.status = #{status}</if>" +
+            "  <if test='postId != null'> AND c.post_id = #{postId}</if>" +
+            "</where>" +
+            "</script>")
+    int countAllCommentsAdmin(@Param("status") Integer status, @Param("postId") Long postId);
 }

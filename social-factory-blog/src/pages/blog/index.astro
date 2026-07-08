@@ -523,8 +523,7 @@ const description = '浏览所有文章';
       const emailInput = document.getElementById('newsletterEmail');
       const email = emailInput?.value;
       if (email && email.includes('@')) {
-        showToast('订阅成功！', 'success');
-        if (emailInput) emailInput.value = '';
+        showToast('订阅功能暂未开放，敬请期待', 'info');
       } else {
         showToast('请输入有效邮箱', 'error');
       }

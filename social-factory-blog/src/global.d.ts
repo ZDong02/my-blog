@@ -49,6 +49,15 @@ declare global {
 
     // API client
     apiClient: any;
+
+    // Theme manager for handling dark/light mode
+    themeManager: {
+      getTheme(): 'light' | 'dark';
+      isDark(): boolean;
+      toggle(): void;
+      addListener(callback: (state: { theme: 'light' | 'dark' }) => void): void;
+      getState(): { theme: 'light' | 'dark' };
+    };
   }
 }
 

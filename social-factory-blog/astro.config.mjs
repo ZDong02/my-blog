@@ -5,6 +5,13 @@ import rehypePrettyCode from 'rehype-pretty-code';
 export default defineConfig({
   integrations: [tailwind()],
   output: 'static',
+  vite: {
+    server: {
+      proxy: {
+        '/api': 'http://localhost:8080',
+      },
+    },
+  },
   markdown: {
     syntaxHighlight: 'shiki',
     rehypePlugins: [[rehypePrettyCode, {

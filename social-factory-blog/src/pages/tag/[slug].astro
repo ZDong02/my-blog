@@ -1,26 +1,41 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { BUILD_API_BASE_URL } from '../../lib/api-config.js';
 
 const { slug } = Astro.params;
 const title = '标签';
 const description = '标签下的文章';
 
-// 预构建常见标签页面
 export async function getStaticPaths() {
   const defaultTags = [
-    { slug: 'java', params: { slug: 'java' } },
-    { slug: 'spring-boot', params: { slug: 'spring-boot' } },
-    { slug: 'frontend', params: { slug: 'frontend' } },
-    { slug: 'astro', params: { slug: 'astro' } },
-    { slug: 'mysql', params: { slug: 'mysql' } },
-    { slug: 'tutorial', params: { slug: 'tutorial' } },
-    { slug: 'sharing', params: { slug: 'sharing' } },
-    { slug: 'life', params: { slug: 'life' } },
+    'java',
+    'spring-boot',
+    'frontend',
+    'astro',
+    'mysql',
+    'tutorial',
+    'sharing',
+    'life',
   ];
 
-  return defaultTags.map(tag => ({
-    params: { slug: tag.params.slug },
-    props: { defaultSlug: tag.slug },
+  try {
+    const response = await fetch(`${BUILD_API_BASE_URL}/tags`);
+    const payload = await response.json();
+    const tags = Array.isArray(payload?.data) ? payload.data : [];
+
+    if (tags.length > 0) {
+      return tags
+        .filter((tag) => typeof tag?.slug === 'string' && tag.slug.trim())
+        .map((tag) => ({
+          params: { slug: tag.slug.trim() },
+        }));
+    }
+  } catch (error) {
+    console.warn('Falling back to default tag paths:', error);
+  }
+
+  return defaultTags.map((tagSlug) => ({
+    params: { slug: tagSlug },
   }));
 }
 ---
@@ -28,7 +43,6 @@ export async function getStaticPaths() {
 <Layout title={title} description={description}>
   <main class="min-h-screen">
 
-    <!-- Hero Section -->
     <section class="py-20 lg:py-32 bg-neutral-50 dark:bg-neutral-900">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <a href="/tags" class="inline-flex items-center gap-2 text-sm font-bold text-brand-red hover:text-brand-red-dark mb-6 transition">
@@ -45,17 +59,13 @@ export async function getStaticPaths() {
       </div>
     </section>
 
-    <!-- Articles Section -->
     <section class="py-20 lg:py-32 bg-neutral-900 dark:bg-neutral-50">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <!-- Loading state -->
         <div id="loading" class="text-center py-20">
           <div class="spinner mx-auto mb-6"></div>
           <p class="text-neutral-500 font-bold uppercase tracking-widest text-sm">正在加载...</p>
         </div>
 
-        <!-- No articles -->
         <div id="noArticles" class="hidden text-center py-20">
           <div class="w-32 h-32 bg-neutral-200 dark:bg-neutral-800 mx-auto mb-8 flex items-center justify-center">
             <svg class="w-16 h-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,14 +73,12 @@ export async function getStaticPaths() {
             </svg>
           </div>
           <h3 class="text-2xl font-black text-neutral-900 dark:text-white mb-4">该标签下暂无文章</h3>
-          <p class="text-neutral-500 mb-8">标签将在文章发布后自动生成</p>
+          <p class="text-neutral-500 mb-8">标签会在文章发布后自动生成</p>
           <a href="/blog" class="btn-primary">浏览博客</a>
         </div>
 
-        <!-- Articles -->
         <div id="articles" class="hidden space-y-6"></div>
 
-        <!-- Pagination -->
         <div id="pagination" class="hidden mt-12 flex items-center justify-center gap-4">
           <button id="prevBtn" class="btn-secondary px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed">
             上一页
@@ -82,14 +90,13 @@ export async function getStaticPaths() {
         </div>
       </div>
     </section>
-
   </main>
 
   <script>
     import { apiClient } from '../../lib/api.js';
 
-    const pathParts = window.location.pathname.split('/');
-    const currentSlug = pathParts[pathParts.length - 2] || pathParts[pathParts.length - 1];
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const currentSlug = pathParts[pathParts.length - 1] || '';
     let currentPage = 1;
     let totalPages = 1;
     let currentTag = null;
@@ -107,17 +114,20 @@ export async function getStaticPaths() {
 
       try {
         const tagResponse = await apiClient.getTagBySlug(currentSlug);
-        if (tagResponse.success && tagResponse.data) {
-          currentTag = tagResponse.data;
-          document.getElementById('tagName').textContent = `#${currentTag.name}`;
-          document.getElementById('tagDescription').textContent = currentTag.description || `查看 "${currentTag.name}" 标签下的所有文章`;
+        if (!tagResponse.success || !tagResponse.data) {
+          throw new Error(tagResponse.message || 'Tag not found');
         }
 
-        const postsResponse = await apiClient.getPostsByTag(currentTag?.id || currentSlug, page, 10);
+        currentTag = tagResponse.data;
+        document.getElementById('tagName').textContent = `#${currentTag.name}`;
+        document.getElementById('tagDescription').textContent =
+          currentTag.description || `查看 "${currentTag.name}" 标签下的所有文章`;
+
+        const postsResponse = await apiClient.getPostsByTag(currentTag.id, page, 10);
         if (postsResponse.success && postsResponse.data) {
           const { content, total, size, number } = postsResponse.data;
           currentPage = number;
-          totalPages = Math.ceil(total / size);
+          totalPages = Math.max(1, Math.ceil(total / size));
 
           loading.classList.add('hidden');
 
@@ -135,8 +145,9 @@ export async function getStaticPaths() {
           document.getElementById('nextBtn').disabled = currentPage >= totalPages;
         }
       } catch (error) {
-        console.error('Failed to load:', error);
+        console.error('Failed to load tag page:', error);
         loading.classList.add('hidden');
+        noArticles.classList.remove('hidden');
       }
     };
 
@@ -144,8 +155,8 @@ export async function getStaticPaths() {
       const container = document.getElementById('articles');
       let html = '';
 
-      posts.forEach(post => {
-        const date = new Date(post.createdAt).toLocaleDateString('zh-TW', {
+      posts.forEach((post) => {
+        const date = new Date(post.createdAt).toLocaleDateString('zh-CN', {
           year: 'numeric',
           month: 'long',
           day: 'numeric'

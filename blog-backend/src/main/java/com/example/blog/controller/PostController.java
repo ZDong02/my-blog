@@ -205,6 +205,18 @@ public class PostController {
     }
 
     /**
+     * 获取所有文章（管理员用）
+     *
+     * @return 所有文章列表
+     */
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<List<Post>>> getAllPosts() {
+        List<Post> posts = postService.getAllPosts();
+        return ResponseEntity.ok(ApiResponse.success(posts));
+    }
+
+    /**
      * 搜索文章
      *
      * @param keyword    关键词

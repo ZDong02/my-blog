@@ -12,12 +12,14 @@ public class JwtUserDetails implements UserDetails {
     private final String username;
     private final String password;
     private final String role;
+    private final boolean enabled;
 
-    public JwtUserDetails(Long id, String username, String password, String role) {
+    public JwtUserDetails(Long id, String username, String password, String role, boolean enabled) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
+        this.enabled = enabled;
     }
 
     public Long getId() {
@@ -60,6 +62,6 @@ public class JwtUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

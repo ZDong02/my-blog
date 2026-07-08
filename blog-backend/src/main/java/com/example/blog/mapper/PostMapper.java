@@ -57,6 +57,9 @@ public interface PostMapper extends BaseMapper<Post> {
     // 统计标签下的文章数量
     int countPostsByTag(@Param("tagId") Long tagId);
 
+    // 查询所有未删除的文章（管理员用）
+    List<Post> findAllNonDeletedPosts();
+
     // 查询回收站中的文章（已删除的文章）
     List<Post> findDeletedPosts();
 

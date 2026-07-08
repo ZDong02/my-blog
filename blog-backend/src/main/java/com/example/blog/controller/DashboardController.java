@@ -1,6 +1,5 @@
 package com.example.blog.controller;
 
-import com.example.blog.constant.UserConstants;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.entity.Bookmark;
 import com.example.blog.entity.Comment;
@@ -55,13 +54,9 @@ public class DashboardController {
             @AuthenticationPrincipal JwtUserDetails userDetails) {
         Map<String, Object> stats = new HashMap<>();
 
-        // 获取用户文章数（仅管理员）
-        if (UserConstants.ROLE_ADMIN.equals(userDetails.getRole())) {
-            List<Post> userPosts = postService.getPostsByAuthor(userDetails.getId());
-            stats.put("postsCount", userPosts.size());
-        } else {
-            stats.put("postsCount", 0);
-        }
+        // 获取用户文章数
+        List<Post> userPosts = postService.getPostsByAuthor(userDetails.getId());
+        stats.put("postsCount", userPosts.size());
 
         // 获取用户点赞数
         stats.put("likesCount", likeService.countUserLikes(userDetails.getId()));
@@ -98,11 +93,9 @@ public class DashboardController {
         List<Comment> recentComments = commentService.getUserComments(userDetails.getId(), 1, 5);
         activity.put("recentComments", recentComments);
 
-        // 获取用户的文章（仅管理员）
-        if (UserConstants.ROLE_ADMIN.equals(userDetails.getRole())) {
-            List<Post> userPosts = postService.getPostsByAuthor(userDetails.getId());
-            activity.put("myPosts", userPosts);
-        }
+        // 获取用户的文章
+        List<Post> userPosts = postService.getPostsByAuthor(userDetails.getId());
+        activity.put("myPosts", userPosts);
 
         return ResponseEntity.ok(ApiResponse.success(activity));
     }

@@ -252,6 +252,7 @@ const description = '创建新文章';
       textarea.selectionStart = start + prefix.length;
       textarea.selectionEnd = start + prefix.length + selectedText.length;
     };
+    window.insertMarkdown = insertMarkdown;
 
     document.getElementById('createPostForm').addEventListener('submit', async (e) => {
       e.preventDefault();

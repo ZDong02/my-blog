@@ -1,7 +1,6 @@
 // API client for communicating with the Spring Boot backend
 
-const API_BASE_URL =
-  import.meta.env.PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
+import { API_BASE_URL } from './api-config.js';
 
 class ApiClient {
   constructor() {
@@ -61,10 +60,41 @@ class ApiClient {
     }
 
     if (url.startsWith('uploads/')) {
-      return `${apiRoot}/${url}`;
+      return apiOrigin ? `${apiOrigin}/${url}` : `/${url}`;
+    }
+
+    if (url.startsWith('api/uploads/') || url.startsWith('api/minio/')) {
+      return apiOrigin ? `${apiOrigin}/${url}` : `/${url}`;
+    }
+
+    if (!url.includes('/')) {
+      return apiOrigin ? `${apiOrigin}/uploads/${url}` : `/uploads/${url}`;
     }
 
     return url;
+  }
+
+  normalizePayload(value) {
+    if (Array.isArray(value)) {
+      return value.map((item) => this.normalizePayload(item));
+    }
+
+    if (!value || typeof value !== 'object') {
+      return value;
+    }
+
+    const normalized = {};
+
+    for (const [key, nestedValue] of Object.entries(value)) {
+      if ((key === 'avatar' || key === 'featuredImage') && typeof nestedValue === 'string') {
+        normalized[key] = this.resolveMediaUrl(nestedValue);
+        continue;
+      }
+
+      normalized[key] = this.normalizePayload(nestedValue);
+    }
+
+    return normalized;
   }
 
   async request(endpoint, options = {}) {
@@ -112,7 +142,11 @@ class ApiClient {
         if (refreshed) {
           // Retry the original request with new token
           headers['Authorization'] = `Bearer ${this.token}`;
-          const retryResponse = await fetch(url, { ...config, headers });
+          const retryResponse = await fetch(url, {
+            ...config,
+            headers,
+            ...(abortController ? { signal: abortController.signal } : {}),
+          });
           return this.handleResponse(retryResponse);
         } else {
           this.clearTokens();
@@ -177,7 +211,11 @@ class ApiClient {
     }
 
     if (contentType && contentType.includes('application/json')) {
-      return JSON.parse(text);
+      const payload = JSON.parse(text);
+      if (payload && typeof payload === 'object' && 'data' in payload) {
+        payload.data = this.normalizePayload(payload.data);
+      }
+      return payload;
     }
 
     return { success: true, data: text };
@@ -312,10 +350,56 @@ class ApiClient {
     });
   }
 
+  async editComment(commentId, content) {
+    return this.request(`/comments/${commentId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ content }),
+    });
+  }
+
   async deleteComment(commentId) {
     return this.request(`/comments/${commentId}`, {
       method: 'DELETE',
     });
+  }
+
+  // Admin comment methods
+  async getAdminComments(page = 1, size = 20, status = null, postId = null) {
+    let url = `/admin/comments?page=${page}&size=${size}`;
+    if (status !== null) url += `&status=${status}`;
+    if (postId !== null) url += `&postId=${postId}`;
+    return this.request(url);
+  }
+
+  async updateCommentStatus(commentId, status) {
+    return this.request(`/admin/comments/${commentId}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async adminDeleteComment(commentId) {
+    return this.request(`/admin/comments/${commentId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async batchUpdateCommentStatus(commentIds, status) {
+    return this.request('/admin/comments/batch/status', {
+      method: 'PUT',
+      body: JSON.stringify({ commentIds, status }),
+    });
+  }
+
+  async batchDeleteComments(commentIds) {
+    return this.request('/admin/comments/batch', {
+      method: 'DELETE',
+      body: JSON.stringify({ commentIds }),
+    });
+  }
+
+  async getCommentStats() {
+    return this.request('/admin/comments/stats');
   }
 
   // Interaction methods
@@ -354,6 +438,15 @@ class ApiClient {
   // User methods
   async getProfile() {
     return this.request('/users/profile');
+  }
+
+  async verifyAdmin() {
+    try {
+      const response = await this.getProfile();
+      return Boolean(response?.success && response?.data?.role === 'ADMIN');
+    } catch (error) {
+      return false;
+    }
   }
 
   async updateProfile(profileData) {
@@ -546,6 +639,7 @@ class ApiClient {
 
 // Create and export singleton instance
 export const apiClient = new ApiClient();
+export { API_BASE_URL };
 
 // Load tokens on initialization
 if (typeof window !== 'undefined') {

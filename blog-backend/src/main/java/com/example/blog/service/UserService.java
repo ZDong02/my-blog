@@ -89,7 +89,7 @@ public class UserService {
             user.setNickname(request.getNickname());
         }
         if (request.getAvatar() != null) {
-            user.setAvatar(request.getAvatar());
+            user.setAvatar(normalizeAvatarUrl(request.getAvatar()));
         }
         if (request.getBio() != null) {
             user.setBio(request.getBio());
@@ -184,5 +184,36 @@ public class UserService {
             return Collections.emptyList();
         }
         return userMapper.selectUsersByIds(userIds);
+    }
+
+    private String normalizeAvatarUrl(String avatar) {
+        if (avatar == null) {
+            return null;
+        }
+
+        String trimmedAvatar = avatar.trim();
+        if (trimmedAvatar.isEmpty()) {
+            return "";
+        }
+
+        if (trimmedAvatar.startsWith("http://")
+                || trimmedAvatar.startsWith("https://")
+                || trimmedAvatar.startsWith("/images/")
+                || trimmedAvatar.startsWith("/uploads/")
+                || trimmedAvatar.startsWith("/api/uploads/")
+                || trimmedAvatar.startsWith("/api/minio/")) {
+            return trimmedAvatar;
+        }
+
+        if (trimmedAvatar.startsWith("uploads/")) {
+            return "/" + trimmedAvatar;
+        }
+
+        if (trimmedAvatar.startsWith("api/uploads/") || trimmedAvatar.startsWith("api/minio/")) {
+            return "/" + trimmedAvatar;
+        }
+
+        // Backward compatibility for legacy records that only stored the filename.
+        return "/uploads/" + trimmedAvatar;
     }
 }

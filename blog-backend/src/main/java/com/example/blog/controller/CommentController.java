@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/comments")
@@ -35,6 +36,16 @@ public class CommentController {
             @Valid @RequestBody CommentRequest request) {
         Comment comment = commentService.addComment(postId, userDetails.getId(), request);
         return ResponseEntity.ok(ApiResponse.success("评论添加成功", comment));
+    }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<ApiResponse<Comment>> editComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal JwtUserDetails userDetails,
+            @RequestBody Map<String, String> body) {
+        String content = body.get("content");
+        Comment comment = commentService.editComment(commentId, userDetails.getId(), content);
+        return ResponseEntity.ok(ApiResponse.success("评论已更新", comment));
     }
 
     @DeleteMapping("/{commentId}")

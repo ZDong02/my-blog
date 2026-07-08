@@ -73,6 +73,13 @@ const description = '您的评论历史';
   <script>
     import { apiClient } from '../lib/api.js';
 
+    const escapeHtml = (value = '') => String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
     let currentPage = 1;
     let totalPages = 1;
 
@@ -159,7 +166,7 @@ const description = '您的评论历史';
                   ` : ''}
 
                   <div class="bg-neutral-50 dark:bg-neutral-800 p-4 border-l-4 border-brand-red">
-                    <p class="text-neutral-700 dark:text-neutral-300 leading-relaxed">${comment.content}</p>
+                    <p class="text-neutral-700 dark:text-neutral-300 leading-relaxed">${escapeHtml(comment.content)}</p>
                   </div>
 
                   ${comment.replies && comment.replies.length > 0 ? `
@@ -170,7 +177,7 @@ const description = '您的评论历史';
                             <span class="text-sm font-bold text-neutral-700 dark:text-neutral-300">${reply.user?.nickname || reply.user?.username}</span>
                             <span class="text-xs text-neutral-500">${new Date(reply.createdAt).toLocaleDateString()}</span>
                           </div>
-                          <p class="text-sm text-neutral-600 dark:text-neutral-400">${reply.content}</p>
+                          <p class="text-sm text-neutral-600 dark:text-neutral-400">${escapeHtml(reply.content)}</p>
                         </div>
                       `).join('')}
                     </div>

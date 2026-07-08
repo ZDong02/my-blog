@@ -180,6 +180,8 @@ const description = '搜索文章';
       }
     };
 
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
     const renderResults = (results) => {
       const container = document.getElementById('searchResults');
       let html = '';
@@ -190,7 +192,7 @@ const description = '搜索文章';
         let summary = post.summary || post.content?.substring(0, 200) || '';
 
         searchTerms.forEach(term => {
-          const regex = new RegExp(`(${term})`, 'gi');
+          const regex = new RegExp(`(${escapeRegex(term)})`, 'gi');
           title = title.replace(regex, '<mark class="bg-brand-red/30 text-brand-red px-1">$1</mark>');
           summary = summary.replace(regex, '<mark class="bg-brand-red/30 text-brand-red px-1">$1</mark>');
         });

@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="联系 - 社会工厂">
-  <main class="min-h-screen">
+  <div class="min-h-screen">
 
     <!-- Hero Section -->
     <section class="py-20 lg:py-32 bg-neutral-50 dark:bg-neutral-900">
@@ -212,7 +212,7 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </section>
 
-  </main>
+  </div>
 
   <script>
     const form = document.getElementById('contactForm') as HTMLFormElement;
@@ -238,12 +238,12 @@ import Layout from "../layouts/Layout.astro";
       formMessage.classList.add('hidden');
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Contact form backend integration is not yet available
+        if (window.showToast) window.showToast('联系功能暂未开放，请稍后再试', 'info');
 
-        formMessage.textContent = '感谢您的留言！我们将尽快回复您。';
-        formMessage.className = 'p-4 text-center bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20';
+        formMessage.textContent = '联系功能暂未开放，请稍后再试。';
+        formMessage.className = 'p-4 text-center bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border border-yellow-500/20';
         formMessage.classList.remove('hidden');
-        form.reset();
       } catch (error) {
         formMessage.textContent = '抱歉，发送留言时出错。请重试。';
         formMessage.className = 'p-4 text-center bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20';

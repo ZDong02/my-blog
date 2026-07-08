@@ -16,12 +16,13 @@ public class FileUploadConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        String uploadLocation = getUploadPath().toUri().toString();
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir + "/")
+                .addResourceLocations(uploadLocation)
                 .setCachePeriod(3600);
     }
 
     public Path getUploadPath() {
-        return Paths.get(uploadDir);
+        return Paths.get(uploadDir).toAbsolutePath().normalize();
     }
 }

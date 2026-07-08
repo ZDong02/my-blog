@@ -4,6 +4,7 @@ import com.example.blog.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -21,15 +22,18 @@ public class JwtTokenProvider {
 
     private final SecretKey jwtSecret;
     private final long jwtExpiration;
+    private final long refreshExpiration;
     private final Map<String, JwtClaims> claimsCache = new ConcurrentHashMap<>();
 
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") long expiration,
+            @Value("${jwt.refresh-expiration:604800000}") long refreshExpiration,
             @Value("${spring.profiles.active:default}") String activeProfiles) {
         validateSecret(secret, activeProfiles);
         this.jwtSecret = Keys.hmacShaKeyFor(secret.getBytes());
         this.jwtExpiration = expiration;
+        this.refreshExpiration = refreshExpiration;
     }
 
     private void validateSecret(String secret, String activeProfiles) {
@@ -56,6 +60,21 @@ public class JwtTokenProvider {
                 .subject(user.getId().toString())
                 .claim("username", user.getUsername())
                 .claim("role", user.getRole())
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(jwtSecret)
+                .compact();
+    }
+
+    public String generateRefreshToken(User user) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + refreshExpiration);
+
+        return Jwts.builder()
+                .subject(user.getId().toString())
+                .claim("username", user.getUsername())
+                .claim("role", user.getRole())
+                .claim("type", "refresh")
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(jwtSecret)
@@ -113,6 +132,7 @@ public class JwtTokenProvider {
     }
 
     // Clean up expired cache entries periodically
+    @Scheduled(fixedRate = 3600000)
     public void cleanExpiredCache() {
         claimsCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
     }

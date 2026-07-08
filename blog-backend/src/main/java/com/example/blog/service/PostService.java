@@ -24,7 +24,6 @@ import java.util.Map;
  * @date 2026-03-18
  */
 @Service
-@Transactional
 public class PostService {
 
     @Autowired
@@ -49,6 +48,7 @@ public class PostService {
      * @param request  创建请求
      * @return 创建的文章
      */
+    @Transactional
     @CacheEvict(value = {"posts"}, allEntries = true)
     public Post createPost(Long authorId, PostCreateRequest request) {
         Post post = new Post();
@@ -78,6 +78,7 @@ public class PostService {
      * @param request  更新请求
      * @return 更新后的文章
      */
+    @Transactional
     @CacheEvict(value = {"posts"}, allEntries = true)
     public Post updatePost(Long postId, Long authorId, PostCreateRequest request) {
         Post post = postMapper.selectById(postId);
@@ -192,6 +193,7 @@ public class PostService {
      * @param authorId 作者 ID
      * @return 恢复后的文章
      */
+    @Transactional
     @CacheEvict(value = {"posts"}, allEntries = true)
     public Post restorePost(Long postId, Long authorId) {
         Post post = postMapper.selectById(postId);
@@ -218,6 +220,7 @@ public class PostService {
      * @param postId   文章 ID
      * @param authorId 作者 ID
      */
+    @Transactional
     @CacheEvict(value = {"posts", "hotPosts", "archiveStats"}, allEntries = true)
     public void permanentlyDeletePost(Long postId, Long authorId) {
         Post post = postMapper.selectById(postId);
@@ -284,6 +287,15 @@ public class PostService {
      */
     public List<Post> getPostsByAuthor(Long authorId) {
         return postMapper.findByAuthorId(authorId);
+    }
+
+    /**
+     * 获取所有文章（管理员用，不含已删除）
+     *
+     * @return 所有文章列表
+     */
+    public List<Post> getAllPosts() {
+        return postMapper.findAllNonDeletedPosts();
     }
 
     /**
