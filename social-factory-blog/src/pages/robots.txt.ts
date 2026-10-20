@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 
-const SITE_URL = 'https://zdong01.com';
+// 站点地址统一取自 astro.config.mjs 的 site 配置
+const SITE_URL = import.meta.env.SITE;
 
 export const GET: APIRoute = () => {
   const robotsTxt = `User-agent: *

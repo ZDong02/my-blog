@@ -47,26 +47,17 @@ class ApiClient {
     const originMatch = apiRoot.match(/^(https?:\/\/[^/]+)/i);
     const apiOrigin = originMatch ? originMatch[1] : '';
 
-    if (url.startsWith('/api/uploads/')) {
+    // 后端返回的已是完整路径，补上 API 源地址即可
+    if (url.startsWith('/api/uploads/') || url.startsWith('/uploads/')) {
       return apiOrigin ? `${apiOrigin}${url}` : url;
     }
 
-    if (url.startsWith('/api/minio/')) {
-      return apiOrigin ? `${apiOrigin}${url}` : url;
-    }
-
-    if (url.startsWith('/uploads/')) {
-      return apiOrigin ? `${apiOrigin}${url}` : url;
-    }
-
-    if (url.startsWith('uploads/')) {
+    // 缺少前导斜杠的相对路径
+    if (url.startsWith('uploads/') || url.startsWith('api/uploads/')) {
       return apiOrigin ? `${apiOrigin}/${url}` : `/${url}`;
     }
 
-    if (url.startsWith('api/uploads/') || url.startsWith('api/minio/')) {
-      return apiOrigin ? `${apiOrigin}/${url}` : `/${url}`;
-    }
-
+    // 纯文件名
     if (!url.includes('/')) {
       return apiOrigin ? `${apiOrigin}/uploads/${url}` : `/uploads/${url}`;
     }

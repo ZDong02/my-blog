@@ -1,11 +1,22 @@
+# =====================================================
+# 本地开发配置
+# =====================================================
+# 本项目当前仅用于本地运行，所有配置均为本地默认值，
+# 如需改动可直接修改本文件，或用环境变量覆盖（见注释说明）。
+# =====================================================
+
 server:
   port: 8080
   servlet:
     context-path: /api
 
 spring:
+  application:
+    name: blog-backend
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    # 可用环境变量 DB_URL / DB_USERNAME / DB_PASSWORD 覆盖
     url: ${DB_URL:jdbc:mysql://localhost:3306/blog_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
@@ -16,9 +27,6 @@ spring:
       max-lifetime: 1200000
       connection-timeout: 30000
       validation-timeout: 5000
-
-  application:
-    name: blog-backend
 
   cache:
     type: caffeine
@@ -34,6 +42,7 @@ spring:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
+    # 本地默认关闭 SQL 打印；排查问题时改为 org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: ${MYBATIS_LOG_IMPL:org.apache.ibatis.logging.nologging.NoLoggingImpl}
     cache-enabled: true
     default-statement-timeout: 30
@@ -45,13 +54,13 @@ mybatis-plus:
 
 jwt:
   secret: ${JWT_SECRET:mySecretKey1234567890123456789012345678901234567890123456789012345678901234567890}
-  expiration: ${JWT_EXPIRATION:86400000}
-  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+  expiration: 86400000
+  refresh-expiration: 604800000
 
 logging:
   level:
     root: WARN
-    com.example.blog: ${APP_LOG_LEVEL:INFO}
+    com.example.blog: INFO
     org.springframework.security: WARN
     org.springframework.web: INFO
     com.baomidou.mybatisplus: INFO
@@ -59,6 +68,7 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
 
 file:
+  # 图片上传目录（相对项目根目录）
   upload-dir: ./uploads
   max-size: 10485760
 
@@ -66,7 +76,7 @@ file:
 admin:
   invite-code: ADMIN2026
 
-# 登录限流配置
+# 登录限流
 rate-limit:
   max-login-attempts: 5
   lockout-duration-minutes: 15

@@ -1,45 +1,32 @@
-# IDE / local tooling
+# IDE
 .idea/
 .vscode/
-.claude/settings.local.json
 
 # OS
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# Frontend build artifacts
+# 依赖与构建产物
 **/node_modules/
 **/dist/
 **/.astro/
-
-# Java build artifacts
 **/target/
 **/*.class
 
-# Logs
+# 日志
 **/*.log
+logs/
 
-# Runtime uploads
+# 运行时上传目录
 uploads/
 **/uploads/
 
-# Environment
+# 环境变量
 **/.env
 **/.env.*
 !**/.env.example
 
-# Deployment artifacts
-*.tar.gz
-blog-backend.jar
-deploy/backend.jar
-deploy/blog-deploy.tar.gz
-deploy/dist/
-
-# Redundant config directories (consolidated into deploy/)
-docker/
-nginx/
-
-# Codex / MCP tooling
-.codex-tools/
-.mcp.json
+# 本地工具与缓存
+.dev-logs/
+.workbuddy/

@@ -78,11 +78,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return path.startsWith("/auth/")
                 || path.startsWith("/captcha/")
-                || path.equals("/actuator/health")
                 || path.startsWith("/uploads/")
                 || path.startsWith("/api/uploads/")
-                || path.startsWith("/minio/")
-                || path.startsWith("/api/minio/")
                 || ("GET".equalsIgnoreCase(method) && path.startsWith("/posts") && !path.startsWith("/posts/admin/"))
                 || ("GET".equalsIgnoreCase(method) && path.startsWith("/tags"))
                 || ("GET".equalsIgnoreCase(method) && path.startsWith("/categories"))

@@ -73,7 +73,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/captcha/**").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/posts/admin/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
@@ -82,8 +81,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/comments/post/*").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/api/uploads/**").permitAll()
-                .requestMatchers("/minio/**").permitAll()
-                .requestMatchers("/api/minio/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
