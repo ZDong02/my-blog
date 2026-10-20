@@ -20,17 +20,11 @@ public interface UserMapper extends BaseMapper<User> {
     // 更新个人资料
     int updateProfile(User user);
 
-    // 标记为非首个用户
-    int markAsNotFirstUser(@Param("userId") Long userId);
-
     // 统计用户总数
     int countTotalUsers();
 
-    // 查询用户及统计信息
-    User selectWithStats(Long id);
-
     // 查询所有头像为空的用户
-    java.util.List<User> findAllUsersWithNullAvatar();
+    List<User> findAllUsersWithNullAvatar();
 
     // 查询所有用户
     List<User> findAllUsers();
@@ -61,7 +55,4 @@ public interface UserMapper extends BaseMapper<User> {
 
     // 获取用户增长趋势（近30天每日新增）
     List<Map<String, Object>> getGrowthTrend(@Param("days") int days);
-
-    // 按ID列表查询用户
-    List<User> selectUsersByIds(@Param("userIds") List<Long> userIds);
 }

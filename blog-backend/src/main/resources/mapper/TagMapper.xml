@@ -63,14 +63,4 @@
         LIMIT #{offset}, #{limit}
     </select>
 
-    <!-- 统计搜索结果 -->
-    <select id="countSearchTags" resultType="int">
-        SELECT COUNT(*) FROM tags
-        <where>
-            <if test="keyword != null and keyword != ''">
-                (name LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
-            </if>
-        </where>
-    </select>
-
 </mapper>

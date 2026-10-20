@@ -15,11 +15,6 @@
         DELETE FROM post_tags WHERE post_id = #{postId}
     </delete>
 
-    <!-- 根据标签 ID 删除关联 -->
-    <delete id="deleteByTagId">
-        DELETE FROM post_tags WHERE tag_id = #{tagId}
-    </delete>
-
     <!-- 统计标签使用次数 -->
     <select id="countByTagId" resultType="int">
         SELECT COUNT(*) FROM post_tags WHERE tag_id = #{tagId}

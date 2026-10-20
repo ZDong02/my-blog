@@ -89,16 +89,6 @@ public class LikeService {
     }
 
     /**
-     * 获取文章点赞数
-     *
-     * @param postId 文章 ID
-     * @return 点赞数
-     */
-    public int getPostLikeCount(Long postId) {
-        return likeMapper.countLikesByPostId(postId);
-    }
-
-    /**
      * 获取用户的点赞记录
      *
      * @param userId 用户 ID

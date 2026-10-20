@@ -179,13 +179,6 @@ public class UserService {
         return stats;
     }
 
-    public List<User> getUsersByIds(List<Long> userIds) {
-        if (userIds == null || userIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return userMapper.selectUsersByIds(userIds);
-    }
-
     private String normalizeAvatarUrl(String avatar) {
         if (avatar == null) {
             return null;
@@ -200,8 +193,7 @@ public class UserService {
                 || trimmedAvatar.startsWith("https://")
                 || trimmedAvatar.startsWith("/images/")
                 || trimmedAvatar.startsWith("/uploads/")
-                || trimmedAvatar.startsWith("/api/uploads/")
-                || trimmedAvatar.startsWith("/api/minio/")) {
+                || trimmedAvatar.startsWith("/api/uploads/")) {
             return trimmedAvatar;
         }
 
@@ -209,7 +201,7 @@ public class UserService {
             return "/" + trimmedAvatar;
         }
 
-        if (trimmedAvatar.startsWith("api/uploads/") || trimmedAvatar.startsWith("api/minio/")) {
+        if (trimmedAvatar.startsWith("api/uploads/")) {
             return "/" + trimmedAvatar;
         }
 

@@ -233,9 +233,4 @@
         ORDER BY p.updated_at DESC
     </select>
 
-    <!-- 统计回收站中的文章数量 -->
-    <select id="countDeletedPosts" resultType="int">
-        SELECT COUNT(*) FROM posts WHERE status = 'DELETED'
-    </select>
-
 </mapper>

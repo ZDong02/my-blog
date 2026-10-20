@@ -18,6 +18,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ import java.util.Map;
  */
 @Component
 public class DataInitializer implements ApplicationRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
     @Autowired
     private UserMapper userMapper;
@@ -65,7 +69,7 @@ public class DataInitializer implements ApplicationRunner {
         userMapper.findAllUsersWithNullAvatar().forEach(user -> {
             user.setAvatar("/images/default-avatar.svg");
             userMapper.updateById(user);
-            System.out.println("Updated avatar for user: " + user.getUsername());
+            logger.info("Updated avatar for user: {}", user.getUsername());
         });
     }
 
@@ -82,54 +86,41 @@ public class DataInitializer implements ApplicationRunner {
             user.setRole(UserConstants.ROLE_ADMIN);
             user.setIsFirstUser(1);
             userMapper.insert(user);
-            System.out.println("Admin user created: admin/admin123");
+            logger.info("Default admin user created (admin/admin123)");
         } else {
             // Upgrade existing admin user to ADMIN role if not already
             if (!UserConstants.ROLE_ADMIN.equals(adminUser.getRole())) {
                 adminUser.setRole(UserConstants.ROLE_ADMIN);
                 userMapper.updateById(adminUser);
-                System.out.println("Admin user upgraded to ADMIN role");
+                logger.info("Admin user upgraded to ADMIN role");
             }
             // Set default avatar if missing
             if (adminUser.getAvatar() == null || adminUser.getAvatar().isEmpty()) {
                 adminUser.setAvatar("/images/default-avatar.svg");
                 userMapper.updateById(adminUser);
-                System.out.println("Admin user avatar updated to default");
+                logger.info("Admin user avatar updated to default");
             }
         }
     }
 
+    /**
+     * 检测标签相关表是否就绪。
+     * <p>
+     * 表结构由唯一的 schema 定义文件创建：
+     * {@code blog-backend/src/main/resources/db/schema.sql}
+     * <p>
+     * 此处只做可用性探测，不再重复执行建表语句，避免结构定义分散在多处。
+     * 若未执行 schema.sql，则跳过标签相关的种子数据写入（不影响文章、分类等其余功能）。
+     */
     private boolean ensureTagTables() {
         try {
-            jdbcTemplate.execute("""
-                    CREATE TABLE IF NOT EXISTS tags (
-                      id BIGINT NOT NULL AUTO_INCREMENT,
-                      name VARCHAR(100) NOT NULL,
-                      slug VARCHAR(120) NOT NULL,
-                      description TEXT NULL,
-                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                      PRIMARY KEY (id),
-                      UNIQUE KEY uk_tags_name (name),
-                      UNIQUE KEY uk_tags_slug (slug)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-                    """);
-
-            jdbcTemplate.execute("""
-                    CREATE TABLE IF NOT EXISTS post_tags (
-                      id BIGINT NOT NULL AUTO_INCREMENT,
-                      post_id BIGINT NOT NULL,
-                      tag_id BIGINT NOT NULL,
-                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                      PRIMARY KEY (id),
-                      UNIQUE KEY uk_post_tags_post_id_tag_id (post_id, tag_id),
-                      KEY idx_post_tags_tag_id (tag_id)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-                    """);
-
-            return true;
+            Integer tagsCount = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM information_schema.tables "
+                            + "WHERE table_schema = DATABASE() AND table_name IN ('tags', 'post_tags')",
+                    Integer.class);
+            return tagsCount != null && tagsCount == 2;
         } catch (Exception ex) {
-            System.err.println("Failed to ensure tag tables, tag seeding will be skipped: " + ex.getMessage());
+            logger.warn("Failed to check tag tables, tag seeding will be skipped: {}", ex.getMessage());
             return false;
         }
     }
@@ -137,7 +128,7 @@ public class DataInitializer implements ApplicationRunner {
     private void createSeedContent(boolean tagTablesReady) {
         User adminUser = userMapper.findByUsername("admin");
         if (adminUser == null) {
-            System.out.println("Admin user not found, skipping seed content creation");
+            logger.warn("Admin user not found, skipping seed content creation");
             return;
         }
 
@@ -275,7 +266,7 @@ public class DataInitializer implements ApplicationRunner {
         category.setName(name);
         category.setDescription(description);
         categoryMapper.insert(category);
-        System.out.println("Category created: " + name);
+        logger.info("Category created: {}", name);
         return category;
     }
 
@@ -295,7 +286,7 @@ public class DataInitializer implements ApplicationRunner {
         tag.setSlug(slug);
         tag.setDescription(description);
         tagMapper.insert(tag);
-        System.out.println("Tag created: " + name);
+        logger.info("Tag created: {}", name);
         return tag;
     }
 
@@ -326,7 +317,7 @@ public class DataInitializer implements ApplicationRunner {
 
         postMapper.insert(post);
         ensureTagsForPost(post.getId(), postTags);
-        System.out.println("Seed post created: " + title + " (ID: " + post.getId() + ")");
+        logger.info("Seed post created: {} (ID: {})", title, post.getId());
     }
 
     private void ensureTagsForPost(Long postId, List<Tag> postTags) {

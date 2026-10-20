@@ -39,9 +39,4 @@ public interface TagMapper extends BaseMapper<Tag> {
      * 按关键词搜索标签
      */
     List<Tag> searchTags(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
-
-    /**
-     * 统计搜索结果
-     */
-    int countSearchTags(@Param("keyword") String keyword);
 }

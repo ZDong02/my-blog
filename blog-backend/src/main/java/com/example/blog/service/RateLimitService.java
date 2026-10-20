@@ -53,27 +53,6 @@ public class RateLimitService {
                 .build();
     }
 
-    public boolean isLockedOut(String identifier) {
-        Long lockoutEnd = lockedOutAccounts.getIfPresent(identifier);
-        if (lockoutEnd != null) {
-            if (System.currentTimeMillis() < lockoutEnd) {
-                return true;
-            } else {
-                lockedOutAccounts.invalidate(identifier);
-                loginAttempts.invalidate(identifier);
-            }
-        }
-        return false;
-    }
-
-    public long getRemainingLockoutTime(String identifier) {
-        Long lockoutEnd = lockedOutAccounts.getIfPresent(identifier);
-        if (lockoutEnd != null && System.currentTimeMillis() < lockoutEnd) {
-            return (lockoutEnd - System.currentTimeMillis()) / 1000;
-        }
-        return 0;
-    }
-
     public void recordFailedLogin(String identifier) {
         AtomicInteger attempts = loginAttempts.get(identifier, k -> new AtomicInteger(0));
         int currentAttempts = attempts.incrementAndGet();
@@ -87,11 +66,6 @@ public class RateLimitService {
     public void clearFailedLoginAttempts(String identifier) {
         loginAttempts.invalidate(identifier);
         lockedOutAccounts.invalidate(identifier);
-    }
-
-    public int getFailedLoginAttempts(String identifier) {
-        AtomicInteger attempts = loginAttempts.getIfPresent(identifier);
-        return attempts != null ? attempts.get() : 0;
     }
 
     public boolean isGlobalRateLimited(String ip) {

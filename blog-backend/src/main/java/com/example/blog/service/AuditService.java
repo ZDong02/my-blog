@@ -4,6 +4,8 @@ import com.example.blog.entity.AuditLog;
 import com.example.blog.mapper.AuditLogMapper;
 import com.example.blog.security.JwtUserDetails;
 import com.example.blog.util.IpUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class AuditService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuditService.class);
 
     @Autowired
     private AuditLogMapper auditLogMapper;
@@ -51,7 +55,7 @@ public class AuditService {
             auditLogMapper.insert(auditLog);
         } catch (Exception e) {
             // Don't let audit logging failure affect main operation
-            System.err.println("Failed to write audit log: " + e.getMessage());
+            logger.warn("Failed to write audit log: {}", e.getMessage());
         }
     }
 
@@ -63,15 +67,6 @@ public class AuditService {
     public void logUserAction(Long targetUserId, String targetUsername, String action, String details) {
         log(action, "USER", targetUserId,
             "Action: " + action + " | Target: " + targetUsername + (details != null ? " | " + details : ""));
-    }
-
-    public void logPostAction(Long postId, String action, String details) {
-        log(action, "POST", postId,
-            "Action: " + action + (details != null ? " | " + details : ""));
-    }
-
-    public void logCategoryAction(Long categoryId, String categoryName, String action) {
-        log(action, "CATEGORY", categoryId, "Category: " + categoryName);
     }
 
     public void logAuthAction(String action, String username, boolean success, String details) {

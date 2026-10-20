@@ -3,13 +3,11 @@ package com.example.blog.controller;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.dto.response.PageResult;
 import com.example.blog.entity.Comment;
-import com.example.blog.security.JwtUserDetails;
 import com.example.blog.service.AuditService;
 import com.example.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

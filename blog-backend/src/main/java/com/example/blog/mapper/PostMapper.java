@@ -65,7 +65,4 @@ public interface PostMapper extends BaseMapper<Post> {
 
     // 按作者查询回收站中的文章
     List<Post> findDeletedPostsByAuthor(@Param("authorId") Long authorId);
-
-    // 统计回收站中的文章数量
-    int countDeletedPosts();
 }

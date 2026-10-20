@@ -23,7 +23,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-const siteUrl = 'https://zdong01.com';
+const siteUrl = import.meta.env.SITE;
 const fullTitle = title === '社会工厂' ? title : `${title} - 社会工厂`;
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const imageUrl = image.startsWith('http') ? image : new URL(image, siteUrl).toString();

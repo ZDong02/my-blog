@@ -21,11 +21,6 @@ public interface PostTagMapper extends BaseMapper<PostTag> {
     int deleteByPostId(@Param("postId") Long postId);
 
     /**
-     * 根据标签 ID 删除关联
-     */
-    int deleteByTagId(@Param("tagId") Long tagId);
-
-    /**
      * 统计标签使用次数
      */
     int countByTagId(@Param("tagId") Long tagId);
