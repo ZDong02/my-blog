@@ -2,6 +2,25 @@
 
 import { API_BASE_URL } from './api-config.js';
 
+// 会话失效（未登录或凭证过期且无法续期）的专用错误标识。
+// 调用方据此区分「用户本来就没登录」与「接口真的报错」，避免未登录场景刷出错误提示。
+export const UNAUTHENTICATED_ERROR = 'UNAUTHENTICATED';
+
+function isUsableToken(value) {
+  return (
+    typeof value === 'string' &&
+    value.trim() !== '' &&
+    value !== 'undefined' &&
+    value !== 'null'
+  );
+}
+
+function createUnauthenticatedError(message = 'Authentication required') {
+  const error = new Error(message);
+  error.code = UNAUTHENTICATED_ERROR;
+  return error;
+}
+
 class ApiClient {
   constructor() {
     this.token = null;
@@ -11,15 +30,21 @@ class ApiClient {
   }
 
   setTokens(token, refreshToken) {
-    this.token = token;
-    this.refreshToken = refreshToken;
+    // 只接受真正可用的字符串，避免把 undefined / null 写进 localStorage
+    // （写入后会变成字符串 "undefined"，下次启动就成了永远刷不掉的坏凭证）
+    this.token = isUsableToken(token) ? token : null;
+    this.refreshToken = isUsableToken(refreshToken) ? refreshToken : null;
     // Store in localStorage for persistence
     if (typeof window !== 'undefined') {
-      if (token) {
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('refresh_token', refreshToken);
+      if (this.token) {
+        localStorage.setItem('auth_token', this.token);
       } else {
         localStorage.removeItem('auth_token');
+      }
+
+      if (this.refreshToken) {
+        localStorage.setItem('refresh_token', this.refreshToken);
+      } else {
         localStorage.removeItem('refresh_token');
       }
     }
@@ -27,8 +52,19 @@ class ApiClient {
 
   loadTokens() {
     if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('auth_token');
-      this.refreshToken = localStorage.getItem('refresh_token');
+      const storedToken = localStorage.getItem('auth_token');
+      const storedRefreshToken = localStorage.getItem('refresh_token');
+
+      this.token = isUsableToken(storedToken) ? storedToken : null;
+      this.refreshToken = isUsableToken(storedRefreshToken) ? storedRefreshToken : null;
+
+      // 清理历史遗留的坏值（"undefined" / "null" / 空串），让状态自愈
+      if (storedToken !== null && !this.token) {
+        localStorage.removeItem('auth_token');
+      }
+      if (storedRefreshToken !== null && !this.refreshToken) {
+        localStorage.removeItem('refresh_token');
+      }
     }
   }
 
@@ -103,55 +139,51 @@ class ApiClient {
     }
 
     // Add authorization header if token exists
-    if (this.token) {
+    if (isUsableToken(this.token)) {
       headers['Authorization'] = `Bearer ${this.token}`;
     }
 
     const { timeoutMs, ...requestOptions } = options;
     const resolvedTimeoutMs =
       Number.isFinite(timeoutMs) && timeoutMs > 0 ? timeoutMs : this.requestTimeoutMs;
-    const abortController =
-      typeof AbortController !== 'undefined' ? new AbortController() : null;
-    const timeoutId =
-      abortController && resolvedTimeoutMs > 0
-        ? setTimeout(() => abortController.abort(), resolvedTimeoutMs)
-        : null;
-
-    const config = {
-      ...requestOptions,
-      headers,
-      credentials: 'include', // Include credentials for CORS requests
-      ...(abortController ? { signal: abortController.signal } : {}),
-    };
 
     try {
-      const response = await fetch(url, config);
+      const response = await this.send(url, requestOptions, headers, resolvedTimeoutMs);
 
-      if (response.status === 401 && this.refreshToken) {
-        // Token expired, try to refresh
-        const refreshed = await this.refreshAuthTokenWithLock();
+      if (response.status === 401) {
+        // 认证接口本身（登录/注册/刷新）返回 401 时不再触发续期，避免递归刷新
+        const canRefresh =
+          !endpoint.startsWith('/auth/') && isUsableToken(this.refreshToken);
+        const refreshed = canRefresh && (await this.refreshAuthTokenWithLock());
+
         if (refreshed) {
-          // Retry the original request with new token
           headers['Authorization'] = `Bearer ${this.token}`;
-          const retryResponse = await fetch(url, {
-            ...config,
+          const retryResponse = await this.send(
+            url,
+            requestOptions,
             headers,
-            ...(abortController ? { signal: abortController.signal } : {}),
-          });
-          return this.handleResponse(retryResponse);
-        } else {
-          this.clearTokens();
-          if (typeof window !== 'undefined' && window.showToast) {
-            window.showToast('Session expired. Please login again.', 'error');
+            resolvedTimeoutMs
+          );
+          if (retryResponse.status !== 401) {
+            return this.handleResponse(retryResponse);
           }
-          throw new Error('Authentication failed');
         }
+
+        // 续期失败：清理本地凭证，按「未登录」处理，不当作错误暴露给用户
+        this.clearTokens();
+        throw createUnauthenticatedError();
       }
 
       return this.handleResponse(response);
     } catch (error) {
       if (error?.name === 'AbortError') {
         error = new Error('Request timeout. Please try again.');
+      }
+
+      // 未登录 / 会话失效属于正常状态，不刷错误日志、不弹错误提示
+      if (error?.code === UNAUTHENTICATED_ERROR) {
+        console.debug('[api] request skipped, session is not authenticated:', endpoint);
+        throw error;
       }
 
       console.error('API request failed:', error);
@@ -162,8 +194,6 @@ class ApiClient {
           // Don't expose internal error details to users
           if (error.message.includes('Network Error') || error.message.includes('fetch')) {
             errorMessage = 'Network error. Please check your connection.';
-          } else if (error.message.includes('Authentication failed')) {
-            errorMessage = 'Authentication failed. Please login again.';
           } else {
             errorMessage = error.message;
           }
@@ -171,6 +201,28 @@ class ApiClient {
         window.showToast(errorMessage, 'error');
       }
       throw error;
+    }
+  }
+
+  /**
+   * 带超时控制的单次请求，便于「原始请求 + 续期后重试」共用同一套超时逻辑。
+   * 每次调用使用独立的 AbortController，重试不会复用已被中止的 signal。
+   */
+  async send(url, requestOptions, headers, timeoutMs) {
+    const abortController =
+      typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId =
+      abortController && timeoutMs > 0
+        ? setTimeout(() => abortController.abort(), timeoutMs)
+        : null;
+
+    try {
+      return await fetch(url, {
+        ...requestOptions,
+        headers,
+        credentials: 'include', // Include credentials for CORS requests
+        ...(abortController ? { signal: abortController.signal } : {}),
+      });
     } finally {
       if (timeoutId) {
         clearTimeout(timeoutId);
@@ -225,6 +277,10 @@ class ApiClient {
   }
 
   async refreshAuthToken() {
+    if (!isUsableToken(this.refreshToken)) {
+      return false;
+    }
+
     const abortController =
       typeof AbortController !== 'undefined' ? new AbortController() : null;
     const timeoutId = abortController
@@ -242,22 +298,20 @@ class ApiClient {
         ...(abortController ? { signal: abortController.signal } : {}),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          this.setTokens(data.data.token, data.data.refreshToken);
-          return true;
-        }
+      if (!response.ok) {
+        return false;
+      }
+
+      const data = await response.json();
+      if (data?.success && isUsableToken(data?.data?.token)) {
+        this.setTokens(data.data.token, data.data.refreshToken);
+        return true;
       }
 
       return false;
     } catch (error) {
-      if (error?.name === 'AbortError') {
-        console.error('Token refresh timed out');
-        return false;
-      }
-
-      console.error('Token refresh failed:', error);
+      // 续期失败是预期内的情况（凭证过期 / 后端不可用），交由调用方按未登录处理
+      console.debug('[api] token refresh unavailable:', error?.message || error);
       return false;
     } finally {
       if (timeoutId) {

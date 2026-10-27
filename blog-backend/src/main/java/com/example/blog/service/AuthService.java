@@ -143,6 +143,6 @@ public class AuthService {
             }
         }
 
-        throw new BusinessException("Invalid or expired token");
+        throw new BusinessException("Invalid or expired token", 401);
     }
 }

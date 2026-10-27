@@ -78,7 +78,12 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(
-            @RequestHeader("Authorization") String token) {
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        // 缺少凭证属于「未认证」，返回 401 而不是让容器抛 500
+        if (token == null || token.isBlank()) {
+            throw new BusinessException("Refresh token is required", 401);
+        }
+
         // Remove "Bearer " prefix
         String cleanToken = token.startsWith("Bearer ") ? token.substring(7) : token;
         AuthResponse response = authService.refreshToken(cleanToken);

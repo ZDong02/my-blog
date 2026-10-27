@@ -41,8 +41,12 @@
           }
         }
       } catch (error) {
-        console.error('Auth initialization failed:', error);
-        // Network error or other exception - assume not authenticated
+        // 未登录 / 会话过期属于正常访问状态：本地凭证已被清理，静默按未登录处理
+        if (error?.code === 'UNAUTHENTICATED') {
+          this.apiClient?.clearTokens();
+        } else {
+          console.error('Auth initialization failed:', error);
+        }
         this.currentUser = null;
         this.isAuthenticated = false;
       } finally {
