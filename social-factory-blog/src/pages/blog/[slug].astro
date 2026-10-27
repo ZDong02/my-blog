@@ -2,24 +2,44 @@
 import Layout from '../../layouts/Layout.astro';
 import { BUILD_API_BASE_URL } from '../../lib/api-config.js';
 
+// 详情页正文完全由下方客户端脚本按 URL 里的 id 拉取，服务端不渲染任何文章内容，
+// 所以路由表不需要「精确列举已有文章」—— 精确列举反而会让新建文章（id 超出启动时的列表）直接 404。
+// 这里改为给出一个够用的连续 id 区间：
+//   - dev：覆盖 1..1000，新建文章无需重启 dev server 即可访问
+//   - build：按当前最大 id + 余量生成，避免产物里堆积大量用不到的 HTML
+// 注意：Astro 会把 getStaticPaths 提取到独立模块执行，常量必须定义在函数体内。
+
 export async function getStaticPaths() {
+  const DEV_PATH_COUNT = 1000;
+  const BUILD_MIN_PATHS = 300;
+  const BUILD_ID_HEADROOM = 200;
+  const MAX_PATH_COUNT = 5000;
+
+  let maxExistingId = 0;
+
   try {
     const response = await fetch(`${BUILD_API_BASE_URL}/posts?page=1&size=1000`);
     const payload = await response.json();
     const posts = payload?.data?.content || payload?.data?.list || [];
 
-    if (Array.isArray(posts) && posts.length > 0) {
-      return posts
-        .filter((post) => post?.id !== undefined && post?.id !== null)
-        .map((post) => ({
-          params: { slug: String(post.id) }
-        }));
+    if (Array.isArray(posts)) {
+      maxExistingId = posts.reduce((max, post) => {
+        const id = Number(post?.id);
+        return Number.isFinite(id) && id > max ? id : max;
+      }, 0);
     }
   } catch (error) {
     console.warn('Falling back to numeric blog paths:', error);
   }
 
-  return Array.from({ length: 300 }, (_, index) => ({
+  const pathCount = import.meta.env.DEV
+    ? DEV_PATH_COUNT
+    : Math.min(
+        Math.max(maxExistingId + BUILD_ID_HEADROOM, BUILD_MIN_PATHS),
+        MAX_PATH_COUNT
+      );
+
+  return Array.from({ length: pathCount }, (_, index) => ({
     params: { slug: String(index + 1) }
   }));
 }
