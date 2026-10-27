@@ -75,6 +75,8 @@ public class SecurityConfig {
                 .requestMatchers("/captcha/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/posts/admin/**").hasRole("ADMIN")
+                // 这几个路径虽然挂在 /posts 前缀下，但依赖当前登录用户，不能跟着 GET /posts/** 一起放行
+                .requestMatchers(HttpMethod.GET, "/posts/my-posts", "/posts/my-recycle-bin").authenticated()
                 .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/tags/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()

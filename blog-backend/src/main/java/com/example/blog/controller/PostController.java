@@ -4,6 +4,7 @@ import com.example.blog.dto.request.PostCreateRequest;
 import com.example.blog.dto.response.ApiResponse;
 import com.example.blog.dto.response.PageResult;
 import com.example.blog.entity.Post;
+import com.example.blog.exception.BusinessException;
 import com.example.blog.security.JwtUserDetails;
 import com.example.blog.service.PostService;
 import jakarta.validation.Valid;
@@ -156,6 +157,9 @@ public class PostController {
     @GetMapping("/my-recycle-bin")
     public ResponseEntity<ApiResponse<List<Post>>> getMyDeletedPosts(
             @AuthenticationPrincipal JwtUserDetails userDetails) {
+        if (userDetails == null) {
+            throw new BusinessException("未登录或登录已过期", 401);
+        }
         List<Post> posts = postService.getDeletedPostsByAuthor(userDetails.getId());
         return ResponseEntity.ok(ApiResponse.success(posts));
     }
@@ -200,6 +204,9 @@ public class PostController {
     @GetMapping("/my-posts")
     public ResponseEntity<ApiResponse<List<Post>>> getMyPosts(
             @AuthenticationPrincipal JwtUserDetails userDetails) {
+        if (userDetails == null) {
+            throw new BusinessException("未登录或登录已过期", 401);
+        }
         List<Post> posts = postService.getPostsByAuthor(userDetails.getId());
         return ResponseEntity.ok(ApiResponse.success(posts));
     }

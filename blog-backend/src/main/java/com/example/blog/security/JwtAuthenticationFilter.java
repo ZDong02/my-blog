@@ -35,15 +35,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (isPublicRequest(request)) {
+        String token = getTokenFromRequest(request);
+
+        // 没有 token 时保持匿名，是否放行交给 SecurityConfig 的授权规则判断。
+        // 注意：不能因为「路径看起来是公开接口」就跳过后面的 token 解析 ——
+        // 否则 GET /posts/my-posts 这类既公开前缀、又需要当前用户身份的接口会拿不到 principal。
+        if (!StringUtils.hasText(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = getTokenFromRequest(request);
-
         try {
-            if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
+            if (tokenProvider.validateToken(token)) {
                 Long userId = tokenProvider.getUserIdFromToken(token);
                 UserDetails userDetails = userDetailsService.loadUserById(userId);
 
@@ -57,8 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (UsernameNotFoundException e) {
             SecurityContextHolder.clearContext();
-            sendUnauthorized(response, "Invalid authentication token");
-            return;
+            // 公开接口带着失效用户的历史 token 时不应阻断浏览，按匿名放行
+            if (!isPublicRequest(request)) {
+                sendUnauthorized(response, "Invalid authentication token");
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
